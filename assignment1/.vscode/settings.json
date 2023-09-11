@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.ir": "c",
+        "module.h": "c",
+        "kernel.h": "c",
+        "syscall.h": "c",
+        "unistd.h": "c",
+        "ioctl.h": "c"
+    }
+}

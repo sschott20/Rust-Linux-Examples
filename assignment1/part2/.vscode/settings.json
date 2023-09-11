@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.ir": "c",
+        "ioctl.h": "c",
+        "fcntl.h": "c"
+    }
+}

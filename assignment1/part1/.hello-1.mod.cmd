@@ -1,0 +1,1 @@
+cmd_/home/alex/cpsc-429-Principles-of-System-Design/assignment1/part1/hello-1.mod := printf '%s\n'   hello-1.o | awk '!x[$$0]++ { print("/home/alex/cpsc-429-Principles-of-System-Design/assignment1/part1/"$$0) }' > /home/alex/cpsc-429-Principles-of-System-Design/assignment1/part1/hello-1.mod
