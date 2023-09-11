@@ -1,12 +1,9 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
-#include <linux/ioctl.h>
 #include <linux/device.h>
-#include <linux/mm.h>
 #include <linux/uaccess.h>
 #include <linux/fs.h>
 #include "mdriver.h"
-#include <linux/proc_fs.h>
 
 #define DEVICE_NAME "mdriver"
 
@@ -60,7 +57,6 @@ static ssize_t mdriver_read(struct file *file, char *buffer, size_t length, loff
 
     if ((uintptr_t)length + (uintptr_t)offset_ptr - (uintptr_t)base_ptr > (uintptr_t)total_size)
     {
-        // print value of both parts
 
         pr_info("Error: read too large\n");
         return -EINVAL;
