@@ -5,3 +5,7 @@ graph here: https://docs.google.com/spreadsheets/d/1olfKFSXKf2er3WtHFtOPJP-Ic0Ki
 Mostly a straightforward impliamentation I think to impliament the file operations. However, getting to that point was not a straightforward path. It took quite a while to figure out how to actually get qemu up and running, and then to learn about kernel modules and device files etc. I found some pretty good tutorials online which were very helpful, but it seems like lots of the info was outdated. 
 
 The big takeaway from the graph is that from 1 byte up to 64000, the read/write times are about the same, which shows that the actually memory management is being done almost instantly, and the time taken is from having to switch into kernel mode. Once we get to reading the whole file, then we see that the switching is no longer the slowest part as it takes almost 10x as long.
+
+
+Relevent files are: mdriver.c mdriver.h mdriver_test.c Makefile 
+Running sh run.sh should get everything to compile and run 
