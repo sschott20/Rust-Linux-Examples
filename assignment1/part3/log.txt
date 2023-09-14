@@ -1,0 +1,23 @@
+I'm not sure if this means I was doing something incorrectly, but even with n=10 and w=2 I would get the incorrect value at the end most of the time. 
+The reason this must be occurring is the following sequence of events: 
+1. We fork two child processes, which begin incrementing the value independently.
+2. Child A reads the value VAL, but before it can write the new value, it is switched out for child B
+3. Thus child B reads the same value, increments it, then writes VAL + 1 to the memory
+4. Now Child A is running again and also writes VAL + 1 to the memory before continuing. 
+5. Now we have gone through two iterations of the increment, but the value has only increased by 1
+
+
+The solution I used was actually to switch to using pthreads_create instead of fork, and then used the very simple pthreads_mutex_lock / pthreads_mutex_unlock. 
+Simply lock, read, increment, write, unlock then repeat. Works for every W/N combo I tried. This solution is good, namely because it is simple to implement (ie the work has already been done by someone else), but it does make the program run slower as you have to lock and unlock before each step of each childs for loop.
+
+From within the kernel we could track each process that tries to read and write, and we sleep processes until the previous read / write pair has been completed by the same process. 
+
+The module allows unsafe behavior. 
+There is no check to see if the file has been closed, so it is possible for a thread to still interact with the file descriptor even after it has been closed by another thread or the parent. In practice this leads to the test program returning a very large final increment 
+There is no checks on the offset_ptr, meaning if you were to figure out how to modify it beyond the size check in read and write, you would be able to modify any memory address from user space 
+Another large exploit I'm just finding is that my llseek does not boundary check, so you could in theory use this to write data anywhere within kernel space 
+
+
+I think most of these problems could be avoided by just doing some good housekeeping - keep track of data boundaries, sizes and accesses and update them continuously with checks all over the place. A good way to do this would be to track each thread individually, and as the kernel we can make sure the order of access is consistent. 
+
+

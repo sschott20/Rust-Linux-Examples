@@ -1,1 +1,0 @@
-cmd_/home/alex/cpsc-429-Principles-of-System-Design/assignment1/part2/mdriver.mod := printf '%s\n'   mdriver.o | awk '!x[$$0]++ { print("/home/alex/cpsc-429-Principles-of-System-Design/assignment1/part2/"$$0) }' > /home/alex/cpsc-429-Principles-of-System-Design/assignment1/part2/mdriver.mod

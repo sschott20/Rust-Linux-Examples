@@ -5,6 +5,7 @@
         "kernel.h": "c",
         "syscall.h": "c",
         "unistd.h": "c",
-        "ioctl.h": "c"
+        "ioctl.h": "c",
+        "pthread.h": "c"
     }
 }
