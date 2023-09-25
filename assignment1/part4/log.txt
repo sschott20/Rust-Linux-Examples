@@ -1,0 +1,5 @@
+For the low byte ammounts, there seems to be no differance between the rust and c testers, but the rust code seems to have some problems with reads once we get to 64k and 512k bytes. This might be a issue with my code as I am not very comfortable with rust yet, but the read seems to be massivly slower than the write, almost 3x slower. I'm not really sure why this difference is occuring, as I would except them to be more similar as the performance impact should be mostly coming from the kernel operations, which should be the same between them. Also what seemed to happen is the first 1-2 reads would be espessially slow than get faster, which leads to me thinking my rust code is the problem.
+
+
+The big difference when writing the multi threading rust version as opposed to C is that rust doesn't let you do something that would cause a data race - sharing the file descriptor between threads simply is not allowed, which the compiler explains. Other than the compiler being more helpful, the actual impliamentation in pretty similar, using a lock on the file descriptor so only one thread accesses it at a time 
+
