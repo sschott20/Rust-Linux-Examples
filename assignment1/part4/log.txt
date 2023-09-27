@@ -1,5 +1,47 @@
 For the low byte ammounts, there seems to be no differance between the rust and c testers, but the rust code seems to have some problems with reads once we get to 64k and 512k bytes. This might be a issue with my code as I am not very comfortable with rust yet, but the read seems to be massivly slower than the write, almost 3x slower. I'm not really sure why this difference is occuring, as I would except them to be more similar as the performance impact should be mostly coming from the kernel operations, which should be the same between them. Also what seemed to happen is the first 1-2 reads would be espessially slow than get faster, which leads to me thinking my rust code is the problem.
 
-
 The big difference when writing the multi threading rust version as opposed to C is that rust doesn't let you do something that would cause a data race - sharing the file descriptor between threads simply is not allowed, which the compiler explains. Other than the compiler being more helpful, the actual impliamentation in pretty similar, using a lock on the file descriptor so only one thread accesses it at a time 
+
+Writing the memory driver itself in rust was absolutly a pain, but I think that is mostly my inexperiance with rust. The compiler is again super helpful - it is impossible to build the module in a way that would cause a data race. If the module compiles and doesn't panic, it is working correctly. The big difference in impliamentation is that rust forces using a mutex (or some other form of safety), while my c kernel module initially did nothing of the sort, and relied on the user space program to not have a data race. In addition, I noticed that while building the c module, my vm was crashing constantly for most bugs, but while doing the rust version, every runtime error would simply panic and exit without me having to restart the vm which is very nice. The compile time was much worse though. 
+
+Running with n = 100000 and W = 30, the C version takes around 13.5 secconds, while the rust version about the same, if not just a little bit faster. 
+
+Now that both are written in safe rust, the big thing the compiler helps with is not letting you stumble into a data race unwittingly like C does. When something compiles there may be errors, but they will not be the kind of disasterous memory bugs as with C, and the rust compiler is also EXTREMELY helpful at pointing you in the right direction and suggestion what fixes to make not just where the problem occurs. 
+
+C kernel module / Rust userspace test, n = 100000 and W = 30
+Finished release [optimized] target(s) in 0.00s
+Running `target/release/multi_mdriver`
+Target 3000069
+Actual 3000069
+
+real    0m13.511s
+user    0m8.423s
+sys     0m14.374s
+
+
+Rust kernel module / Rust userspace test, n = 100000 and W = 30
+Finished release [optimized] target(s) in 0.00s
+Running `target/release/multi_mdriver`
+Target 3000069
+Actual 3000069
+
+real    0m13.327s
+user    0m8.378s
+sys     0m13.889s
+
+For reference, here are the steps to compile and run: 
+
+For rust : 
+in linux-cs429-fall-2023:
+make SUBDIRS=./samples/rust/ modules -j16
+sudo sh run_rs.sh 
+
+for C:
+in part4:
+make
+sudo run_c.sh
+
+then in multi_mdriver:
+cargo run --release 
+
 

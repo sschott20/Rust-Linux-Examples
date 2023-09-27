@@ -4,8 +4,8 @@ use std::io::{Read, Seek, SeekFrom, Write};
 use std::sync::{Arc, Mutex};
 use std::thread;
 
-const N: i64 = 1000;
-const W: i64 = 54;
+const N: i64 = 100000;
+const W: i64 = 30;
 const INIT_VAL: i64 = 69;
 
 fn main() {
@@ -33,6 +33,7 @@ fn main() {
             for _ in 0..N {
                 // println!("Thread {:?} is running", thread::current().id());
                 let mut f = file_clone.lock().expect("Unable to lock file");
+
                 f.seek(SeekFrom::Start(0)).unwrap();
                 let mut buffer = [0; 8];
                 let _bytes_written = f.read_exact(&mut buffer);
@@ -41,7 +42,7 @@ fn main() {
                 let new_value_bytes = new_value.to_le_bytes();
                 // println!("new value is {}", new_value);
                 f.seek(SeekFrom::Start(0)).unwrap();
-                f.write(&new_value_bytes).unwrap();
+                f.write(&new_value_bytes).expect("Unable to write to file");
                 drop(f);
             }
         }));

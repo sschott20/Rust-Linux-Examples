@@ -54,7 +54,7 @@ static loff_t mdriver_llseek(struct file *file, loff_t off, int whence)
 
 static ssize_t mdriver_read(struct file *file, char *buffer, size_t length, loff_t *offset)
 {
-    pr_info("device_read: (%p,%p,%ld) \n", file, buffer, length);
+    // pr_info("device_read: (%p,%p,%ld) \n", file, buffer, length);
 
     if ((uintptr_t)length + (uintptr_t)offset_ptr - (uintptr_t)base_ptr > (uintptr_t)total_size)
     {
@@ -78,7 +78,7 @@ static ssize_t mdriver_read(struct file *file, char *buffer, size_t length, loff
 
 static ssize_t mdriver_write(struct file *file, const char *buffer, size_t length, loff_t *offset)
 {
-    pr_info("device_write (%p,%s,%ld) \n", file, buffer, length);
+    // pr_info("device_write (%p,%s,%ld) \n", file, buffer, length);
 
     if ((uintptr_t)length + (uintptr_t)offset_ptr - (uintptr_t)base_ptr > (uintptr_t)total_size)
     {
@@ -100,7 +100,7 @@ static ssize_t mdriver_write(struct file *file, const char *buffer, size_t lengt
 
 static int mdriver_open(struct inode *inode, struct file *file)
 {
-    pr_info("mdriver_open: successful\n");
+    // pr_info("mdriver_open: successful\n");
 
     // if (device_open)
     // {
@@ -114,7 +114,7 @@ static int mdriver_open(struct inode *inode, struct file *file)
 
 static int mdriver_close(struct inode *inode, struct file *file)
 {
-    pr_info("mdriver_close: successful\n");
+    // pr_info("mdriver_close: successful\n");
 
     // device_open--;
     return 0;
