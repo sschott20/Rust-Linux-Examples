@@ -1,0 +1,29 @@
+The inserting order obviously matters - since the test module uses functions from the mdriverf module, if we insert test first, those functions will not exist yet, so we cannot call them. 
+
+This is the result of the test module, in nano secconds. 
+(for comparisoin reads from part 2 were 2700, 2600, 3200, 5500, 31800)
+[13759.407053] mtest: average 1 size read time: 61 
+[13759.407056] mtest: average 64 size read time: 88 
+[13759.407066] mtest: average 1000 size read time: 745 
+[13759.407574] mtest: average 64000 size read time: 45540 
+[13759.411676] mtest: average 512000 size read time: 370865 
+[13759.411684] mtest: average 1 size write time: 50 
+[13759.411689] mtest: average 64 size write time: 158 
+[13759.411703] mtest: average 1000 size write time: 1032 
+[13759.412236] mtest: average 64000 size write time: 47685 
+[13759.416291] mtest: average 512000 size write time: 364891 
+
+As we can see, this is significantly faster, by about a factor of 100 for the small ammounts, and 10x for the large ammounts. This is because on the small reads/writes, almost all the time comes from having to switch in and out of kernel space, which we obviously dont have to do. In addition, just running things in kernel mode is faster as we have less overhead, so even the large access are much faster.
+
+I feel like the big difference is we don't really have to care about the data race at all, we just sort of trust that the module wont let us do anything unsafe, and so as long as we compile, the functionality will be what we want. Ie since we already have a mutex in the mdriverf, we can just read and write to it however we want in the mtest.
+
+Rust for linux uses bindgen and cbindgen which allow both c and rust files to pass around their headers and translate them from one type to the other, so a function written in either langugae in one module can be used by another module written in either language 
+
+To run: 
+in linux-cs429-fall-2023
+
+sh mdriverf.sh
+sh mtest.sh
+sudo sh part5.sh
+
+then sudo dmesg to see the results 
