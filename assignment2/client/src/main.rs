@@ -55,7 +55,7 @@ fn main() {
 
             let mut buffer = [1, 2, 3, 4, 5, 6, 7, 8]; // Adjust the buffer size as needed
             stream.write(&buffer).unwrap();
-
+            println!("Sent data: {:?}", &buffer);
             // set input (tensor0)
             interpreter.copy(&vec_1d[..], 0).unwrap();
 
