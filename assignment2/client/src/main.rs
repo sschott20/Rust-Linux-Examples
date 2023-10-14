@@ -42,7 +42,7 @@ fn main() -> std::io::Result<()> {
 
             imshow("MoveNet", &flipped).expect("imshow [ERROR]");
 
-            // println!("vec_1d.len(): {}", vec_1d.len());
+            println!("vec_1d.len(): {}", vec_1d.len());
         }
     }
 
