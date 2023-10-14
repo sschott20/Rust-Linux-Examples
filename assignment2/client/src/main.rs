@@ -32,7 +32,6 @@ fn main() {
         .expect("Set camera FPS [FAILED]");
 
     loop {
-        i += 1;
         let mut frame = Mat::default();
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
