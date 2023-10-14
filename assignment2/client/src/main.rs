@@ -39,7 +39,10 @@ fn main() -> std::io::Result<()> {
                 .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
                 .cloned()
                 .collect();
-            println!("vec_1d.len(): {}", vec_1d.len());
+
+            imshow("MoveNet", &flipped).expect("imshow [ERROR]");
+
+            // println!("vec_1d.len(): {}", vec_1d.len());
         }
     }
 
