@@ -13,6 +13,7 @@ use std::net::TcpStream;
 
 fn main() {
     // load model and create interpreter
+    let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
     // let mut stream = TcpStream::connect("
     let options = Options::default();
@@ -51,9 +52,9 @@ fn main() {
                 .cloned()
                 .collect();
 
-            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-            let data_to_send = vec![i, i];
-            stream.write(&data_to_send[..]).unwrap();
+            // send data to server
+            stream.write(&vec_1d).unwrap();
+            println!("Sent data size {}", vec_1d.len());
 
             // set input (tensor0)
             interpreter.copy(&vec_1d[..], 0).unwrap();
