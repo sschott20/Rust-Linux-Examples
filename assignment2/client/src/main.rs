@@ -9,11 +9,10 @@ use utils::*;
 
 use std::io::prelude::*;
 use std::io::{Read, Write};
-use std::net::{TcpListener, TcpStream};
+use std::net::TcpStream;
 
 fn main() {
     // load model and create interpreter
-    let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
     // let mut stream = TcpStream::connect("
     let options = Options::default();
@@ -31,7 +30,9 @@ fn main() {
     cam.set(CAP_PROP_FPS, 30.0)
         .expect("Set camera FPS [FAILED]");
 
+    let mut i = 0;
     loop {
+        i += 1;
         let mut frame = Mat::default();
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
@@ -49,7 +50,9 @@ fn main() {
                 .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
                 .cloned()
                 .collect();
-            let data_to_send = vec![1, 2, 3, 4, 5];
+
+            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+            let data_to_send = vec![i, i];
             stream.write(&data_to_send[..]).unwrap();
 
             // set input (tensor0)
