@@ -31,7 +31,6 @@ fn main() {
     cam.set(CAP_PROP_FPS, 30.0)
         .expect("Set camera FPS [FAILED]");
 
-    let mut i = 0;
     loop {
         i += 1;
         let mut frame = Mat::default();
@@ -57,14 +56,14 @@ fn main() {
             println!("Sent data size {}", vec_1d.len());
 
             // set input (tensor0)
-            interpreter.copy(&vec_1d[..], 0).unwrap();
+            // interpreter.copy(&vec_1d[..], 0).unwrap();
 
-            // run interpreter
-            interpreter.invoke().expect("Invoke [FAILED]");
+            // // run interpreter
+            // interpreter.invoke().expect("Invoke [FAILED]");
 
-            // get output
-            let output_tensor = interpreter.output(0).unwrap();
-            draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
+            // // get output
+            // let output_tensor = interpreter.output(0).unwrap();
+            // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
             imshow("MoveNet", &flipped).expect("imshow [ERROR]");
         }
         // keypress check
