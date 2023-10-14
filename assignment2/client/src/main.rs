@@ -40,7 +40,7 @@ fn main() {
             let mut flipped = Mat::default();
 
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-            let serialized = flipped.data().unwrap();
+            let serialized = flipped.data();
             stream.write_all(&serialized).unwrap();
 
             flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
