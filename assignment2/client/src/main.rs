@@ -39,11 +39,14 @@ fn main() {
             // flip the image horizontally
             let mut flipped = Mat::default();
             flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+
+            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+            let serialized = flipped.to_vec().unwrap();
+            stream.write_all(&serialized).unwrap();
+
             // resize the image as a square, size is
-            
-
-
             let resized_img = resize_with_padding(&flipped, [192, 192]);
+
             // turn Mat into Vec<u8>
             let vec_2d: Vec<Vec<Vec3b>> = resized_img.to_vec_2d().unwrap();
             let vec_1d: Vec<u8> = vec_2d
@@ -61,8 +64,8 @@ fn main() {
             // get output
             let output_tensor = interpreter.output(0).unwrap();
 
-            
             draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
+
             imshow("MoveNet", &flipped).expect("imshow [ERROR]");
         }
         // keypress check
