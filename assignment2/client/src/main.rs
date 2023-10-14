@@ -52,7 +52,7 @@ fn main() {
 
             // send data to server
             // stream.write(&vec_1d).unwrap();
-
+            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
             let mut buffer = [1, 2, 3, 4, 5, 6, 7, 8]; // Adjust the buffer size as needed
             stream.write(&buffer).unwrap();
             println!("Sent data: {:?}", &buffer);
