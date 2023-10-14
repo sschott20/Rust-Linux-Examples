@@ -51,18 +51,20 @@ fn main() {
                 .collect();
 
             // send data to server
-            stream.write(&vec_1d).unwrap();
-            println!("Sent data size {}", vec_1d.len());
+            // stream.write(&vec_1d).unwrap();
+
+            let mut buffer = [1, 2, 3, 4, 5, 6, 7, 8]; // Adjust the buffer size as needed
+            stream.write(&buffer).unwrap();
 
             // set input (tensor0)
-            // interpreter.copy(&vec_1d[..], 0).unwrap();
+            interpreter.copy(&vec_1d[..], 0).unwrap();
 
-            // // run interpreter
-            // interpreter.invoke().expect("Invoke [FAILED]");
+            // run interpreter
+            interpreter.invoke().expect("Invoke [FAILED]");
 
-            // // get output
-            // let output_tensor = interpreter.output(0).unwrap();
-            // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
+            // get output
+            let output_tensor = interpreter.output(0).unwrap();
+            draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
             imshow("MoveNet", &flipped).expect("imshow [ERROR]");
         }
         // keypress check
