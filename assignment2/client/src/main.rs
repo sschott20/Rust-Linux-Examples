@@ -11,8 +11,16 @@ use utils::*;
 use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 
+
+
+use std::io::prelude::*;
+use std::net::TcpStream;
+
+
 fn main() {
 	// load model and create interpreter
+    let mut stream = TcpStream::connect("127.0.0.1:54321")?;
+
 	let options = Options::default();
 	let path = format!("resource/lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite");
 	let model = Model::new(&path).expect("Load model [FAILED]");
