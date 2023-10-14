@@ -41,8 +41,8 @@ fn main() -> std::io::Result<()> {
                 .collect();
 
             imshow("MoveNet", &flipped).expect("imshow [ERROR]");
-
-            println!("vec_1d.len(): {}", vec_1d.len());
+            println("First 10 elements of vec_1d: {:?}", &vec_1d[0..10]);
+            // println!("vec_1d.len(): {}", vec_1d.len());
         }
     }
 
