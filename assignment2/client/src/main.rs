@@ -1,8 +1,13 @@
 use opencv::core::{flip, Vec3b};
 use opencv::videoio::*;
 use opencv::{highgui::*, prelude::*, videoio};
+
+mod utils;
 use std::io::prelude::*;
 use std::net::TcpStream;
+use tflitec::interpreter::{Interpreter, Options};
+use tflitec::model::Model;
+use utils::*;
 
 fn main() -> std::io::Result<()> {
     println!("Client started");
@@ -36,8 +41,6 @@ fn main() -> std::io::Result<()> {
                 .collect();
             println!("vec_1d.len(): {}", vec_1d.len());
         }
-
-
     }
 
     println!("Client exit");
