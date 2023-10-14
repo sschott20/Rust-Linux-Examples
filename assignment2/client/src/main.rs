@@ -8,12 +8,14 @@ use tflitec::model::Model;
 use utils::*;
 
 use std::io::prelude::*;
-// use std::net::TcpStream;
+use std::io::{Read, Write};
+use std::net::{TcpListener, TcpStream};
 
 fn main() {
     // load model and create interpreter
-    // let mut stream = TcpStream::connect("127.0.0.1:54321")?;
+    let mut stream = TcpStream::connect("127.0.0.1:54321")?;
 
+    // let mut stream = TcpStream::connect("
     let options = Options::default();
     let path = format!("resource/lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite");
     let model = Model::new(&path).expect("Load model [FAILED]");
@@ -47,6 +49,8 @@ fn main() {
                 .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
                 .cloned()
                 .collect();
+            let data_to_send = vec![1, 2, 3, 4, 5];
+            stream.write(&data_to_send[..])?;
 
             // set input (tensor0)
             interpreter.copy(&vec_1d[..], 0).unwrap();
