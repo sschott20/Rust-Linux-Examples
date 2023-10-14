@@ -38,7 +38,13 @@ fn main() {
         if frame.size().unwrap().width > 0 {
             // flip the image horizontally
             let mut flipped = Mat::default();
+
+            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+            let serialized = flipped.to_vec().unwrap();
+            stream.write_all(&serialized).unwrap();
+
             flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+
             // resize the image as a square, size is
             let resized_img = resize_with_padding(&flipped, [192, 192]);
 
@@ -50,12 +56,6 @@ fn main() {
                 .cloned()
                 .collect();
 
-            // send data to server
-            // stream.write(&vec_1d).unwrap();
-            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-            let mut buffer = [1, 2, 3, 4, 5, 6, 7, 8]; // Adjust the buffer size as needed
-            stream.write(&buffer).unwrap();
-            println!("Sent data: {:?}", &buffer);
             // set input (tensor0)
             interpreter.copy(&vec_1d[..], 0).unwrap();
 
@@ -65,6 +65,7 @@ fn main() {
             // get output
             let output_tensor = interpreter.output(0).unwrap();
             draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
+
             imshow("MoveNet", &flipped).expect("imshow [ERROR]");
         }
         // keypress check
