@@ -25,7 +25,7 @@ fn main() -> std::io::Result<()> {
         let mut frame = Mat::default();
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
-        if frame.size().unwrap.width > 0 {
+        if frame.size().unwrap().width > 0 {
             // flip the image horizontally
             let mut flipped = Mat::default();
             flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
