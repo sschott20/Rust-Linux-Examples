@@ -43,11 +43,6 @@ fn main() {
             // print out response
         }
 
-        {
-            let mut buffer: Vec<u8> = Vec::new();
-            stream.read_to_end(&mut buffer).unwrap();
-            println!("first bit of buffer is {}", buffer[0]);
-        }
         // keypress check
         let key = wait_key(1).unwrap();
         if key > 0 && key != 255 {
