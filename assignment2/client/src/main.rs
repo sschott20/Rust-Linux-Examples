@@ -17,7 +17,6 @@ fn main() {
     // load model and create interpreter
     let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
 
-
     // open camera
     let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
     videoio::VideoCapture::is_opened(&cam).expect("Open camera [FAILED]");
@@ -33,12 +32,15 @@ fn main() {
             buffer.clear();
             let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
-            // convert buffer into Vec<u8>
             let buffer: Vec<u8> = buffer.to_vec();
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
             stream.write_all(&buffer).unwrap();
 
+            let mut buffer: Vec<u8> = Vec::new();
+            stream.read_to_end(&mut buffer).unwrap();
+            println!("first bit of buffer is {}", buffer[0]);
             // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
+            // print out response
         }
         // keypress check
         let key = wait_key(1).unwrap();
