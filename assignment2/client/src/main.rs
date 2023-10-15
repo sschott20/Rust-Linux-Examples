@@ -37,6 +37,7 @@ fn main() {
                 let buffer: Vec<u8> = buffer.to_vec();
                 let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
                 stream.write_all(&buffer).unwrap();
+                println!("image sent to server");
             }
 
             let mut response_buffer = Vec::new();
