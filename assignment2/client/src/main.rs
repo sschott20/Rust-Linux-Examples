@@ -39,6 +39,22 @@ fn main() {
                 stream.write_all(&buffer).unwrap();
             }
 
+            let mut response_buffer = Vec::new();
+            let mut response = [0u8; 1024];
+            stream.read(&mut response) {
+                Ok(n) if n > 0 => {
+                    response_buffer.extend_from_slice(&response[0..n]);
+                    println!("Received response from server: {:?}", response_buffer);
+                }
+                Ok(_) => {
+                    // No data received, continue the loop
+                }
+                Err(err) => {
+                    eprintln!("Error reading from server: {:?}", err);
+                    break; // Break the loop on error
+                }
+            }
+
             // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
             // print out response
         }
