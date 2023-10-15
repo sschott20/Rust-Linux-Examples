@@ -1,6 +1,6 @@
 #![allow(unused_imports)]
 
-use opencv::core::{flip, Vec3b};
+use opencv::core::{flip, Vec3b, Vector};
 use opencv::videoio::*;
 use opencv::{highgui::*, prelude::*, videoio};
 
@@ -38,9 +38,10 @@ fn main() {
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
         if frame.size().unwrap().width > 0 {
-            let mut buffer: Vec<u8> = Vec::new();
+            let mut buffer = Vec::new();
+            buffer.clear();
+            let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
-            opencv::imgcodecs::imencode(".png", &frame, &mut buffer, &Vector::new()).unwrap();
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
             stream.write_all(&buffer).unwrap();
 
