@@ -15,17 +15,8 @@ use std::net::TcpStream;
 
 fn main() {
     // load model and create interpreter
-    let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+    let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
 
-    // let mut stream = TcpStream::connect("
-    // let options = Options::default();
-    // let path = format!("resource/lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite");
-    // let model = Model::new(&path).expect("Load model [FAILED]");
-    // let interpreter = Interpreter::new(&model, Some(options)).expect("Create interpreter [FAILED]");
-    // interpreter
-    //     .allocate_tensors()
-    //     .expect("Allocate tensors [FAILED]");
-    // Resize input
 
     // open camera
     let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
