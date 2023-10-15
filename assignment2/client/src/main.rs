@@ -28,7 +28,7 @@ fn main() {
     loop {
         let mut frame = Mat::default();
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
-        imshow("MoveNet", &flipped).expect("imshow [ERROR]");
+        imshow("MoveNet", &frame).expect("imshow [ERROR]");
 
         if frame.size().unwrap().width > 0 {
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
