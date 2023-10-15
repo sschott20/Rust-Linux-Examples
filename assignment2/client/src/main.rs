@@ -38,8 +38,12 @@ fn main() {
             stream.write_all(&buffer).unwrap();
             println!("image sent to server");
 
-            let mut buffer: Vec<u8> = vec![0; 80000];
-            stream.read(&mut buffer).unwrap();
+            // let mut buffer: Vec<u8> = vec![0; 80000];
+            let mut buffer: Vec<u8> = Vec::new();
+            // stream.read(&mut buffer).unwrap();
+            stream.read_to_end(&mut buffer).unwrap();
+            println!("buffer size: {}", buffer.len());
+
             let mut flipped = Mat::default();
 
             opencv::imgcodecs::imdecode_to(
