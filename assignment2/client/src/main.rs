@@ -38,6 +38,10 @@ fn main() {
             stream.write_all(&buffer).unwrap();
             println!("image sent to server");
 
+            let mut buffer: Vec<u8> = vec![0; 4];
+            stream.read(&mut buffer).unwrap();
+            println!("buffer : {:?}", buffer);
+
             // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
             // print out response
         }
