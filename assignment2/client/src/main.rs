@@ -42,6 +42,8 @@ fn main() {
             buffer.clear();
             let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
+            // convert buffer into Vec<u8>
+            let buffer: Vec<u8> = buffer.to_vec();
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
             stream.write_all(&buffer).unwrap();
 
