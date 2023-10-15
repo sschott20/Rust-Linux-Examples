@@ -33,9 +33,7 @@ fn main() {
                 let mut buffer: Vector<u8> = Vec::new().into();
                 buffer.clear();
                 let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
-            }
 
-            {
                 let buffer: Vec<u8> = buffer.to_vec();
                 let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
                 stream.write_all(&buffer).unwrap();
@@ -45,9 +43,11 @@ fn main() {
             // print out response
         }
 
-        let mut buffer: Vec<u8> = Vec::new();
-        stream.read_to_end(&mut buffer).unwrap();
-        println!("first bit of buffer is {}", buffer[0]);
+        {
+            let mut buffer: Vec<u8> = Vec::new();
+            stream.read_to_end(&mut buffer).unwrap();
+            println!("first bit of buffer is {}", buffer[0]);
+        }
         // keypress check
         let key = wait_key(1).unwrap();
         if key > 0 && key != 255 {
