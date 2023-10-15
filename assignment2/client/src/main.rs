@@ -8,6 +8,7 @@ mod utils;
 use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 use utils::*;
+use std::{thread, time::Duration};
 
 use std::io::prelude::*;
 use std::io::{Read, Write};
@@ -52,6 +53,7 @@ fn main() {
                 &mut flipped,
             )
             .unwrap();
+        thread::sleep(Duration::from_millis(4000));
 
             imshow("MoveNet", &flipped).expect("imshow [ERROR]");
             // print out response
