@@ -39,14 +39,8 @@ fn main() {
 
         if frame.size().unwrap().width > 0 {
             let mut buffer: Vec<u8> = Vec::new();
-            opencv::imgcodecs::imencode(
-                ".png",
-                &frame,
-                &mut buffer,
-                &opencv::types::VectorOfi32::new(),
-            )
-            .unwrap();
 
+            opencv::imgcodecs::imencode(".png", &frame, &mut buffer, &Vector::new()).unwrap();
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
             stream.write_all(&buffer).unwrap();
 
