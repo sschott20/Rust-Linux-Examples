@@ -29,16 +29,14 @@ fn main() {
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
         if frame.size().unwrap().width > 0 {
-            {
-                let mut buffer: Vector<u8> = Vec::new().into();
-                buffer.clear();
-                let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
+            let mut buffer: Vector<u8> = Vec::new().into();
+            buffer.clear();
+            let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
-                let buffer: Vec<u8> = buffer.to_vec();
-                let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-                stream.write_all(&buffer).unwrap();
-                println!("image sent to server");
-            }
+            let buffer: Vec<u8> = buffer.to_vec();
+            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+            stream.write_all(&buffer).unwrap();
+            println!("image sent to server");
 
             let mut response_buffer = Vec::new();
             let mut response = [0u8; 1024];
@@ -48,6 +46,7 @@ fn main() {
                     println!("Received response from server: {:?}", response_buffer);
                 }
                 Ok(_) => {
+                    println!("No data received");
                     // No data received, continue the loop
                 }
                 Err(err) => {
