@@ -39,17 +39,17 @@ fn main() -> opencv::Result<()> {
 
         if frame.size()?.width > 0 {
             let mut buffer = Vec::new();
-            opencv::imgcodecs::imencode_def(".png", &frame, &mut buffer)?;
+            opencv::imgcodecs::imencode_def(".png", &frame, &mut buffer).unwrap();
 
             let mut stream = TcpStream::connect("127.0.0.1:54321")?;
-            stream.write_all(&serialized)?;
+            stream.write_all(&buffer)?;
             
             // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
         }
         // keypress check
         let key = wait_key(1)?;
         if key > 0 && key != 255 {
-            break;
+            OK();
         }
     }
 }
