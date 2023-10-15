@@ -2,7 +2,7 @@
 
 use opencv::core::{flip, Mat, Vec3b, Vector};
 use opencv::videoio::*;
-use opencv::{highgui::*, prelude::*, videoio,imgcodecs};
+use opencv::{highgui::*, imgcodecs, prelude::*, videoio};
 
 mod utils;
 use tflitec::interpreter::{Interpreter, Options};
@@ -38,7 +38,7 @@ fn main() {
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
         if frame.size().unwrap().width > 0 {
-            let mut buffer = Vec::new();
+            let mut buffer: Vector<u8> = Vec::new();
             buffer.clear();
             let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
