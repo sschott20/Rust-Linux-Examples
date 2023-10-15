@@ -29,20 +29,27 @@ fn main() {
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
         if frame.size().unwrap().width > 0 {
+            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+
             let mut buffer: Vector<u8> = Vec::new().into();
-            buffer.clear();
             let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
             let buffer: Vec<u8> = buffer.to_vec();
-            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
             stream.write_all(&buffer).unwrap();
             println!("image sent to server");
 
-            let mut buffer: Vec<u8> = vec![0; 4];
+            let mut buffer: Vec<u8> = vec![0; 80000];
             stream.read(&mut buffer).unwrap();
-            println!("buffer : {:?}", buffer);
+            let mut flipped = Mat::default();
 
-            // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
+            opencv::imgcodecs::imdecode_to(
+                &opencv::types::VectorOfu8::from_iter(buffer),
+                -1,
+                &mut flipped,
+            )
+            .unwrap();
+
+            imshow("MoveNet", &flipped).expect("imshow [ERROR]");
             // print out response
         }
 
