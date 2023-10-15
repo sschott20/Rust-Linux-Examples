@@ -49,7 +49,7 @@ fn main() {
         // keypress check
         let key = wait_key(1).unwrap();
         if key > 0 && key != 255 {
-            OK();
+            break;
         }
     }
 }
