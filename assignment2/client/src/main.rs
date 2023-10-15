@@ -5,10 +5,10 @@ use opencv::videoio::*;
 use opencv::{highgui::*, imgcodecs, prelude::*, videoio};
 
 mod utils;
+use std::{thread, time::Duration};
 use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 use utils::*;
-use std::{thread, time::Duration};
 
 use std::io::prelude::*;
 use std::io::{Read, Write};
@@ -28,6 +28,7 @@ fn main() {
     loop {
         let mut frame = Mat::default();
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
+        imshow("MoveNet", &flipped).expect("imshow [ERROR]");
 
         if frame.size().unwrap().width > 0 {
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
@@ -53,9 +54,8 @@ fn main() {
                 &mut flipped,
             )
             .unwrap();
-        thread::sleep(Duration::from_millis(4000));
 
-            imshow("MoveNet", &flipped).expect("imshow [ERROR]");
+            // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
             // print out response
         }
 
