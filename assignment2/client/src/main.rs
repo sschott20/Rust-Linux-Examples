@@ -41,7 +41,7 @@ fn main() {
 
             let mut response_buffer = Vec::new();
             let mut response = [0u8; 1024];
-            stream.read(&mut response) {
+            match stream.read(&mut response) {
                 Ok(n) if n > 0 => {
                     response_buffer.extend_from_slice(&response[0..n]);
                     println!("Received response from server: {:?}", response_buffer);
