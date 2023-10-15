@@ -1,8 +1,8 @@
 #![allow(unused_imports)]
 
-use opencv::core::{flip, Vec3b, Vector};
+use opencv::core::{flip, Mat, Vec3b, Vector};
 use opencv::videoio::*;
-use opencv::{highgui::*, prelude::*, videoio};
+use opencv::{highgui::*, prelude::*, videoio,imgcodecs};
 
 mod utils;
 use tflitec::interpreter::{Interpreter, Options};
