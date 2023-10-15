@@ -14,6 +14,7 @@ use std::io::{Read, Write};
 use std::net::TcpStream;
 
 fn main() {
+    println!("Client started");
     // load model and create interpreter
     let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
 
