@@ -13,9 +13,9 @@ use std::io::prelude::*;
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
-fn main() -> opencv::Result<()> {
+fn main() {
     // load model and create interpreter
-    let mut stream = TcpStream::connect("127.0.0.1:54321")?;
+    let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
     // let mut stream = TcpStream::connect("
     // let options = Options::default();
@@ -28,7 +28,7 @@ fn main() -> opencv::Result<()> {
     // Resize input
 
     // open camera
-    let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY)?; // 0 is the default camera
+    let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
     videoio::VideoCapture::is_opened(&cam).expect("Open camera [FAILED]");
     cam.set(CAP_PROP_FPS, 30.0)
         .expect("Set camera FPS [FAILED]");
@@ -37,17 +37,17 @@ fn main() -> opencv::Result<()> {
         let mut frame = Mat::default();
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
-        if frame.size()?.width > 0 {
+        if frame.size().unwrap().width > 0 {
             let mut buffer = Vec::new();
             opencv::imgcodecs::imencode_def(".png", &frame, &mut buffer).unwrap();
 
-            let mut stream = TcpStream::connect("127.0.0.1:54321")?;
-            stream.write_all(&buffer)?;
+            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+            stream.write_all(&buffer).unwrap();
             
             // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
         }
         // keypress check
-        let key = wait_key(1)?;
+        let key = wait_key(1).unwrap();
         if key > 0 && key != 255 {
             OK();
         }
