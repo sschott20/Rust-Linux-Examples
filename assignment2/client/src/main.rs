@@ -38,7 +38,7 @@ fn main() {
         cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
 
         if frame.size().unwrap().width > 0 {
-            let mut buffer: Vector<u8> = Vec::new();
+            let mut buffer: Vector<u8> = Vec::new().into();
             buffer.clear();
             let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
