@@ -36,7 +36,7 @@ fn main() {
 
             let buffer: Vec<u8> = buffer.to_vec();
             stream.write_all(&buffer).unwrap();
-            println!("image sent to server");
+            // println!("image sent to server");
 
             // let mut buffer: Vec<u8> = vec![0; 80000];
             let mut buffer: Vec<u8> = Vec::new();
