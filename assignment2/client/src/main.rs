@@ -38,6 +38,7 @@ fn main() {
             let buffer: Vec<u8> = buffer.to_vec();
             stream.write_all(&buffer).unwrap();
             stream.flush().unwrap();
+            stream.shutdown(std::net::Shutdown::Write).unwrap();
             // println!("image sent to server");
 
             // let mut buffer: Vec<u8> = vec![0; 80000];
