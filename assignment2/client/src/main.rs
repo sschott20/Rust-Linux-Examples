@@ -37,12 +37,13 @@ fn main() {
 
             let buffer: Vec<u8> = buffer.to_vec();
             stream.write_all(&buffer).unwrap();
+            stream.flush().unwrap();
             // println!("image sent to server");
 
             // let mut buffer: Vec<u8> = vec![0; 80000];
-            // let mut buffer: Vec<u8> = Vec::new();
-            // stream.read_to_end(&mut buffer).unwrap();
-            // println!("buffer size: {}", buffer.len());
+            let mut buffer: Vec<u8> = Vec::new();
+            stream.read_to_end(&mut buffer).unwrap();
+            println!("buffer size: {}", buffer.len());
 
             let mut flipped = Mat::default();
 
