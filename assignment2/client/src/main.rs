@@ -48,7 +48,7 @@ impl Server {
         let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
         let mut buffer: Vector<u8> = Vec::new().into();
 
-        let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
+        let _ = opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
 
         let buffer: Vec<u8> = buffer.to_vec();
         stream.write_all(&buffer).unwrap();
@@ -67,7 +67,7 @@ impl Server {
         )
         .unwrap();
 
-        resize_with_padding(&flipped, [576, 576]);
+        // resize_with_padding(&flipped, [576, 576]);
         flipped
     }
 }

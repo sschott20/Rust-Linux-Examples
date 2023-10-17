@@ -66,7 +66,7 @@ fn main() {
                     draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
                     let mut buffer: Vector<u8> = Vec::new().into();
                     let _ = opencv::imgcodecs::imencode(
-                        ".jpg",
+                        ".bmp",
                         &frame,
                         &mut buffer,
                         &Vector::new(),
