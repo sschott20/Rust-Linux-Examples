@@ -31,7 +31,11 @@ impl App {
         self.cam
             .read(&mut frame)
             .expect("VideoCapture: read [FAILED]");
-        frame
+        // resize the image as a square, size is
+        let mut flipped = Mat::default();
+        flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+        let resized_img = resize_with_padding(&flipped, [192, 192]);
+        resized_img
     }
 }
 
@@ -52,11 +56,13 @@ fn main() {
     let mut app = App {
         cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
     };
+
     app.init();
-    let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
     loop {
         let mut frame = app.read();
+
+        let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
         if frame.size().unwrap().width > 0 {
             let mut buffer: Vector<u8> = Vec::new().into();

@@ -33,19 +33,19 @@ fn main() {
                     let bytes_read = stream.read_to_end(&mut buffer).unwrap();
                     println!("buffer size: {:?}", bytes_read);
 
-                    let mut frame = Mat::default();
+                    let mut resized_img = Mat::default();
                     opencv::imgcodecs::imdecode_to(
                         &opencv::types::VectorOfu8::from_iter(buffer),
                         -1,
-                        &mut frame,
+                        &mut resized_img,
                     )
                     .unwrap();
 
-                    let mut flipped = Mat::default();
-                    flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+                    // let mut flipped = Mat::default();
+                    // flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
 
-                    // resize the image as a square, size is
-                    let resized_img = resize_with_padding(&flipped, [192, 192]);
+                    // // resize the image as a square, size is
+                    // let resized_img = resize_with_padding(&flipped, [192, 192]);
 
                     // turn Mat into Vec<u8>
                     let vec_2d: Vec<Vec<Vec3b>> = resized_img.to_vec_2d().unwrap();
