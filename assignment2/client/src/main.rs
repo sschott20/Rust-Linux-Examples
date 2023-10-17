@@ -19,7 +19,7 @@ struct App {
 }
 
 impl App {
-    fn init(&mut self) {
+    fn default(&mut self) {
         self.cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap();
         self.cam
             .set(CAP_PROP_FPS, 30.0)
@@ -50,7 +50,6 @@ fn main() {
     // load model and create interpreter
     let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
     let mut app = App {};
-    app.init();
 
     // open camera
     // let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
