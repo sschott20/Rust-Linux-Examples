@@ -51,11 +51,11 @@ impl Server {
         let _ = opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
 
         let buffer: Vec<u8> = buffer.to_vec();
-        self.stream.rewind().unwrap();
+        // self.stream.rewind().unwrap();
         self.stream.write_all(&buffer).unwrap();
 
         let mut buffer: Vec<u8> = vec![0; 110646];
-        self.stream.rewind().unwrap();
+        // self.stream.rewind().unwrap();
         self.stream.read_exact(&mut buffer).unwrap();
         println!("buffer size: {}", buffer.len());
 

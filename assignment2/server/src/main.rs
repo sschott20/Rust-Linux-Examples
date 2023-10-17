@@ -27,7 +27,7 @@ fn main() {
                 Ok(mut stream) => {
                     let mut buffer: Vec<u8> = vec![0; 110646];
 
-                    stream.rewind().unwrap();
+                    // stream.rewind().unwrap();
                     let bytes_read = stream.read_exact(&mut buffer).unwrap();
                     println!("buffer size: {:?}", bytes_read);
 
@@ -71,7 +71,7 @@ fn main() {
 
                     let buffer: Vec<u8> = buffer.to_vec();
 
-                    stream.rewind().unwrap();
+                    // stream.rewind().unwrap();
                     stream.write_all(&buffer).unwrap();
                 }
                 Err(e) => {
