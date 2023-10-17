@@ -1,6 +1,3 @@
-#![allow(dead_code)]
-#![allow(unused_imports)]
-
 use opencv::core::{flip, Mat, Vec3b, Vector};
 use opencv::videoio::*;
 use opencv::{highgui::*, prelude::*, videoio};
@@ -12,6 +9,8 @@ use std::net::TcpListener;
 use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 use utils::*;
+
+struct App {}
 
 fn main() {
     println!("Server started");
@@ -28,13 +27,14 @@ fn main() {
 
     for stream in listener.incoming() {
         for stream in listener.incoming() {
-            println!("stream  incoming");
             match stream {
                 Ok(mut stream) => {
-                    let mut buffer: Vec<u8> = vec![0; 80000];
+                    // let mut buffer: Vec<u8> = vec![0; 40000];
+                    // let bytes_read = stream.read_exact(&mut buffer).unwrap();
 
-                    let bytes_read = stream.read_exact(&mut buffer).unwrap();
-                    println!("buffer size: {}", bytes_read);
+                    let mut buffer: Vec<u8> = Vec::new();
+                    let bytes_read = stream.read_to_end(&mut buffer).unwrap();
+                    println!("buffer size: {:?}", bytes_read);
 
                     let mut frame = Mat::default();
                     opencv::imgcodecs::imdecode_to(
@@ -46,6 +46,7 @@ fn main() {
 
                     let mut flipped = Mat::default();
                     flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+
                     // resize the image as a square, size is
                     let resized_img = resize_with_padding(&flipped, [192, 192]);
 
@@ -73,8 +74,6 @@ fn main() {
 
                     let buffer: Vec<u8> = buffer.to_vec();
                     stream.write_all(&buffer).unwrap();
-                    println!("new buffer sent");
-                    // imshow("MoveNet", &flipped).expect("imshow [ERROR]");
                 }
                 Err(e) => {
                     println!("Error accepting connection: {}", e);
