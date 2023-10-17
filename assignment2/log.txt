@@ -1,0 +1,11 @@
+The correctneess is pretty self evident I think, and seems to accurate (at least as accurate as running on one machine)
+
+Performance: this one was honestly a little hard to measure or observe,
+as the perforance on the local vm was terrible, and so while the client server
+setup is also not great, its not any worse than running just on the VM. 
+
+The elegance is mostly just what was described in the spec, two structs, one 
+for networking and one for the local processing (on both the client and the server). 
+There were improvments I could've made, and I'll probably make for part3 that I didn't
+have time for, like using image compression and a variable package size when sending the image, 
+and only sending the dnn output back instead of the whole image
