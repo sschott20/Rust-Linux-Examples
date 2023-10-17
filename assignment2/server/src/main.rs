@@ -17,7 +17,7 @@ impl Server {
     fn recieve(&mut self) -> Mat {
         let mut buffer: Vec<u8> = vec![0; 110646];
         self.stream.read_exact(&mut buffer).unwrap();
-        println!("buffer recieve size: {:?}", buffer.len());
+        // println!("buffer recieve size: {:?}", buffer.len());
 
         let mut frame = Mat::default();
         opencv::imgcodecs::imdecode_to(
