@@ -40,7 +40,7 @@ impl App {
 }
 
 struct Server {
-    stream: TcpStream,
+    // stream: TcpStream,
 }
 
 impl Server {
