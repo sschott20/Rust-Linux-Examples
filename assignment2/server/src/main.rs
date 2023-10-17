@@ -29,7 +29,7 @@ fn main() {
 
                     // stream.rewind().unwrap();
                     let bytes_read = stream.read_exact(&mut buffer).unwrap();
-                    println!("buffer size: {:?}", bytes_read);
+                    println!("buffer recieve size: {:?}", bytes_read);
 
                     let mut frame = Mat::default();
                     opencv::imgcodecs::imdecode_to(
@@ -72,7 +72,7 @@ fn main() {
                     let buffer: Vec<u8> = buffer.to_vec();
 
                     // stream.rewind().unwrap();
-                    println!("buffer size: {}", buffer.len());
+                    println!("buffer send size: {}", buffer.len());
                     stream.write_all(&buffer).unwrap();
                 }
                 Err(e) => {
