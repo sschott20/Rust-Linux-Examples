@@ -59,7 +59,7 @@ impl Server {
         self.stream.read_exact(&mut buffer).unwrap();
         // println!("buffer recieve size: {}", buffer.len());
 
-        let flipped = Mat::default();
+        let mut flipped = Mat::default();
 
         opencv::imgcodecs::imdecode_to(
             &opencv::types::VectorOfu8::from_iter(buffer),
