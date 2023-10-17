@@ -54,7 +54,7 @@ impl Server {
         // self.stream.rewind().unwrap();
         self.stream.write_all(&buffer).unwrap();
 
-        let mut buffer: Vec<u8> = vec![0; 110646];
+        let mut buffer: Vec<u8> = vec![0; 11064];
         // self.stream.rewind().unwrap();
         self.stream.read_exact(&mut buffer).unwrap();
         println!("buffer size: {}", buffer.len());
