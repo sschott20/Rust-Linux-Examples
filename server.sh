@@ -1,2 +1,2 @@
-cd assignment2/proc
-cargo run 
+cd assignment2/server
+cargo run -r 
