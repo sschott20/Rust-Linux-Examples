@@ -19,7 +19,7 @@ struct App {
 }
 
 impl App {
-    fn default(&mut self) {
+    fn default() -> App {
         self.cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap();
         self.cam
             .set(CAP_PROP_FPS, 30.0)
