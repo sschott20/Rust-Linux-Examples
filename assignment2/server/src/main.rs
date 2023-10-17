@@ -28,8 +28,8 @@ fn main() {
                     let mut buffer: Vec<u8> = vec![0; 110646];
 
                     // stream.rewind().unwrap();
-                    let bytes_read = stream.read_exact(&mut buffer).unwrap();
-                    println!("buffer recieve size: {:?}", bytes_read);
+                   stream.read_exact(&mut buffer).unwrap();
+                    println!("buffer recieve size: {:?}", buffer.len());
 
                     let mut frame = Mat::default();
                     opencv::imgcodecs::imdecode_to(
