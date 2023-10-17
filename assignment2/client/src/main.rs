@@ -19,8 +19,8 @@ struct App {
 }
 
 impl App {
-    fn default() -> App {
-        self.cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap();
+    fn init(&mut self) {
+        self.cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
         self.cam
             .set(CAP_PROP_FPS, 30.0)
             .expect("Set camera FPS [FAILED]");
@@ -38,6 +38,7 @@ impl App {
 
 struct Server {
     stream: TcpStream,
+
 }
 
 impl Server {
@@ -49,7 +50,12 @@ fn main() {
     println!("Client started");
     // load model and create interpreter
     let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
-    let mut app = App::default();
+
+    let mut app = App {
+        cam: videoio::VideoCapture::default(),
+    };
+    app.init();
+
 
     // open camera
     // let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
@@ -63,9 +69,11 @@ fn main() {
         //     .read(&mut frame)
         //     .expect("VideoCapture: read [FAILED]");
         let mut frame = app.read();
+        let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
         if frame.size().unwrap().width > 0 {
-            let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+
+
 
             let mut buffer: Vector<u8> = Vec::new().into();
             let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
