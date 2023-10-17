@@ -72,6 +72,7 @@ fn main() {
                     let buffer: Vec<u8> = buffer.to_vec();
 
                     // stream.rewind().unwrap();
+                    println!("buffer size: {}", buffer.len());
                     stream.write_all(&buffer).unwrap();
                 }
                 Err(e) => {
