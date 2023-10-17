@@ -37,7 +37,6 @@ impl App {
 
 struct Server {
     stream: TcpStream,
-
 }
 
 impl Server {
@@ -54,26 +53,12 @@ fn main() {
         cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
     };
     app.init();
-
-
-    // open camera
-    // let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
-    // videoio::VideoCapture::is_opened(&cam).expect("Open camera [FAILED]");
-    // cam.set(CAP_PROP_FPS, 30.0)
-    //     .expect("Set camera FPS [FAILED]");
+    let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
     loop {
-        // let mut frame = Mat::default();
-        // app.cam
-        //     .read(&mut frame)
-        //     .expect("VideoCapture: read [FAILED]");
         let mut frame = app.read();
-        let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
         if frame.size().unwrap().width > 0 {
-
-
-
             let mut buffer: Vector<u8> = Vec::new().into();
             let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
 
