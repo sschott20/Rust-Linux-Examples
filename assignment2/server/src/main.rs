@@ -1,5 +1,5 @@
 use opencv::core::{flip, Mat, Vec3b, Vector};
-use opencv::{ prelude::*};
+use opencv::prelude::*;
 
 mod utils;
 use std::io::{Read, Write};
@@ -8,7 +8,6 @@ use std::net::TcpListener;
 use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 use utils::*;
-
 
 fn main() {
     println!("Server started");
@@ -19,7 +18,7 @@ fn main() {
     interpreter
         .allocate_tensors()
         .expect("Allocate tensors [FAILED]");
-    
+
     let listener = TcpListener::bind("10.0.2.15:23451").unwrap();
 
     for stream in listener.incoming() {
@@ -33,19 +32,19 @@ fn main() {
                     let bytes_read = stream.read_to_end(&mut buffer).unwrap();
                     println!("buffer size: {:?}", bytes_read);
 
-                    let mut resized_img = Mat::default();
+                    let mut frame = Mat::default();
                     opencv::imgcodecs::imdecode_to(
                         &opencv::types::VectorOfu8::from_iter(buffer),
                         -1,
-                        &mut resized_img,
+                        &mut frame,
                     )
                     .unwrap();
 
-                    // let mut flipped = Mat::default();
-                    // flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+                    let mut flipped = Mat::default();
+                    flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
 
-                    // // resize the image as a square, size is
-                    // let resized_img = resize_with_padding(&flipped, [192, 192]);
+                    // resize the image as a square, size is
+                    let mut resized_img = resize_with_padding(&flipped, [192, 192]);
 
                     // turn Mat into Vec<u8>
                     let vec_2d: Vec<Vec<Vec3b>> = resized_img.to_vec_2d().unwrap();
@@ -63,11 +62,17 @@ fn main() {
 
                     // get output
                     let output_tensor = interpreter.output(0).unwrap();
-                    draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
-
+                    // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
+                    draw_keypoints(&mut resized_img, output_tensor.data::<f32>(), 0.25);
                     let mut buffer: Vector<u8> = Vec::new().into();
-                    let _ =
-                        opencv::imgcodecs::imencode(".jpg", &flipped, &mut buffer, &Vector::new());
+                    let _ = opencv::imgcodecs::imencode(
+                        ".jpg",
+                        &resized_img,
+                        &mut buffer,
+                        &Vector::new(),
+                    );
+                    // let _ =
+                    //     opencv::imgcodecs::imencode(".jpg", &flipped, &mut buffer, &Vector::new());
 
                     let buffer: Vec<u8> = buffer.to_vec();
                     stream.write_all(&buffer).unwrap();
