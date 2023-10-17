@@ -92,7 +92,7 @@ fn main() {
             }
             Err(e) => {
                 println!("Error accepting connection: {}", e);
-                eprintln!("Error accepting connection: {}", e);
+                // eprintln!("Error accepting connection: {}", e);
             }
         }
     }
