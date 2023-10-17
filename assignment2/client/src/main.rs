@@ -67,6 +67,8 @@ impl Server {
             &mut flipped,
         )
         .unwrap();
+        let mut flipped resize_with_padding(&flipped, [576, 576]);
+        
         flipped
     }
 }
@@ -84,6 +86,7 @@ fn main() {
     loop {
         let mut frame = app.read();
         let mut flipped = server.send(frame);
+
         imshow("MoveNet", &flipped).expect("imshow [ERROR]");
 
         let key = wait_key(1).unwrap();
