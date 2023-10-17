@@ -1,6 +1,5 @@
 use opencv::core::{flip, Mat, Vec3b, Vector};
-use opencv::videoio::*;
-use opencv::{highgui::*, prelude::*, videoio};
+use opencv::{ prelude::*};
 
 mod utils;
 use std::io::{Read, Write};
@@ -10,7 +9,6 @@ use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 use utils::*;
 
-struct App {}
 
 fn main() {
     println!("Server started");
@@ -22,7 +20,13 @@ fn main() {
         .allocate_tensors()
         .expect("Allocate tensors [FAILED]");
 
-    // let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
+    let server = Dnn {
+        options: options,
+        path: path,
+        model: model,
+        interpreter: interpreter,
+    };
+
     let listener = TcpListener::bind("10.0.2.15:23451").unwrap();
 
     for stream in listener.incoming() {
