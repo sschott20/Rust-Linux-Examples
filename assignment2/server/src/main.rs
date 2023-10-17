@@ -19,14 +19,7 @@ fn main() {
     interpreter
         .allocate_tensors()
         .expect("Allocate tensors [FAILED]");
-
-    let server = Dnn {
-        options: options,
-        path: path,
-        model: model,
-        interpreter: interpreter,
-    };
-
+    
     let listener = TcpListener::bind("10.0.2.15:23451").unwrap();
 
     for stream in listener.incoming() {
