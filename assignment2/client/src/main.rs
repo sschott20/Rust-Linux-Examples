@@ -40,19 +40,19 @@ impl App {
 }
 
 struct Server {
-    // stream: TcpStream,
+    stream: TcpStream,
 }
 
 impl Server {
     fn send(&mut self, frame: Mat) -> Mat {
-        let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+        // let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
         let mut buffer: Vector<u8> = Vec::new().into();
 
         let _ = opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
 
         let buffer: Vec<u8> = buffer.to_vec();
-        stream.write_all(&buffer).unwrap();
-        stream.shutdown(std::net::Shutdown::Write).unwrap();
+        self.stream.write_all(&buffer).unwrap();
+        self.stream.shutdown(std::net::Shutdown::Write).unwrap();
 
         let mut buffer: Vec<u8> = Vec::new();
         stream.read_to_end(&mut buffer).unwrap();
@@ -72,7 +72,9 @@ impl Server {
     }
 }
 fn main() {
-    let mut server = Server {};
+    let mut server = Server {
+        stream: TcpStream::connect("127.0.0.1:54321").unwrap(),
+    };
 
     let mut app = App {
         cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
