@@ -56,7 +56,6 @@ impl Server {
         println!("buffer send size: {}", buffer.len());
 
         let mut buffer: Vec<u8> = vec![0; 110646];
-        // self.stream.rewind().unwrap();
         self.stream.read_exact(&mut buffer).unwrap();
         println!("buffer recieve size: {}", buffer.len());
 

@@ -22,64 +22,59 @@ fn main() {
     let listener = TcpListener::bind("10.0.2.15:23451").unwrap();
 
     for stream in listener.incoming() {
-        for stream in listener.incoming() {
-            match stream {
-                Ok(mut stream) => {
-                    let mut buffer: Vec<u8> = vec![0; 110646];
+        match stream {
+            Ok(mut stream) => {
+                let mut buffer: Vec<u8> = vec![0; 110646];
+                stream.read_exact(&mut buffer).unwrap();
+                println!("buffer recieve size: {:?}", buffer.len());
 
-                    // stream.rewind().unwrap();
-                   stream.read_exact(&mut buffer).unwrap();
-                    println!("buffer recieve size: {:?}", buffer.len());
+                let mut frame = Mat::default();
+                opencv::imgcodecs::imdecode_to(
+                    &opencv::types::VectorOfu8::from_iter(buffer),
+                    -1,
+                    &mut frame,
+                )
+                .unwrap();
 
-                    let mut frame = Mat::default();
-                    opencv::imgcodecs::imdecode_to(
-                        &opencv::types::VectorOfu8::from_iter(buffer),
-                        -1,
-                        &mut frame,
-                    )
-                    .unwrap();
+                // let mut flipped = Mat::default();
+                // flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
 
-                    // let mut flipped = Mat::default();
-                    // flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+                // resize the image as a square, size is
+                // let mut resized_img = resize_with_padding(&flipped, [192, 192]);
 
-                    // resize the image as a square, size is
-                    // let mut resized_img = resize_with_padding(&flipped, [192, 192]);
+                // turn Mat into Vec<u8>
+                let vec_2d: Vec<Vec<Vec3b>> = frame.to_vec_2d().unwrap();
+                let vec_1d: Vec<u8> = vec_2d
+                    .iter()
+                    .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
+                    .cloned()
+                    .collect();
 
-                    // turn Mat into Vec<u8>
-                    let vec_2d: Vec<Vec<Vec3b>> = frame.to_vec_2d().unwrap();
-                    let vec_1d: Vec<u8> = vec_2d
-                        .iter()
-                        .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
-                        .cloned()
-                        .collect();
+                // set input (tensor0)
+                interpreter.copy(&vec_1d[..], 0).unwrap();
 
-                    // set input (tensor0)
-                    interpreter.copy(&vec_1d[..], 0).unwrap();
+                // run interpreter
+                interpreter.invoke().expect("Invoke [FAILED]");
 
-                    // run interpreter
-                    interpreter.invoke().expect("Invoke [FAILED]");
+                // get output
+                let output_tensor = interpreter.output(0).unwrap();
+                // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
+                draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
 
-                    // get output
-                    let output_tensor = interpreter.output(0).unwrap();
-                    // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
-                    draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
+                let mut buffer: Vector<u8> = Vec::new().into();
+                let _ = opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
+                // let _ =
+                //     opencv::imgcodecs::imencode(".jpg", &flipped, &mut buffer, &Vector::new());
 
-                    let mut buffer: Vector<u8> = Vec::new().into();
-                    let _ =
-                        opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
-                    // let _ =
-                    //     opencv::imgcodecs::imencode(".jpg", &flipped, &mut buffer, &Vector::new());
+                let buffer: Vec<u8> = buffer.to_vec();
 
-                    let buffer: Vec<u8> = buffer.to_vec();
-
-                    // stream.rewind().unwrap();
-                    stream.write_all(&buffer).unwrap();
-                    println!("buffer send size: {}", buffer.len());
-                }
-                Err(e) => {
-                    println!("Error accepting connection: {}", e);
-                    eprintln!("Error accepting connection: {}", e);
-                }
+                // stream.rewind().unwrap();
+                stream.write_all(&buffer).unwrap();
+                println!("buffer send size: {}", buffer.len());
+            }
+            Err(e) => {
+                println!("Error accepting connection: {}", e);
+                eprintln!("Error accepting connection: {}", e);
             }
         }
     }
