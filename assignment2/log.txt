@@ -10,6 +10,7 @@ There were improvments I could've made, and I'll probably make for part3 that I 
 have time for, like using image compression and a variable package size when sending the image, 
 and only sending the dnn output back instead of the whole image
 
+code is in client/src/main.rs and server/src/main.rs 
 Running part 2:
 from base directory: 
 client - 
