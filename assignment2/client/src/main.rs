@@ -67,7 +67,7 @@ impl Server {
             &mut flipped,
         )
         .unwrap();
-        let mut flipped resize_with_padding(&flipped, [576, 576]);
+        let mut flipped = resize_with_padding(&flipped, [576, 576]);
         
         flipped
     }
