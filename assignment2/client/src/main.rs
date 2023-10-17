@@ -53,11 +53,11 @@ impl Server {
         let buffer: Vec<u8> = buffer.to_vec();
         // self.stream.rewind().unwrap();
         self.stream.write_all(&buffer).unwrap();
-        println!("buffer send size: {}", buffer.len());
+        // println!("buffer send size: {}", buffer.len());
 
         let mut buffer: Vec<u8> = vec![0; 110646];
         self.stream.read_exact(&mut buffer).unwrap();
-        println!("buffer recieve size: {}", buffer.len());
+        // println!("buffer recieve size: {}", buffer.len());
 
         let mut flipped = Mat::default();
 

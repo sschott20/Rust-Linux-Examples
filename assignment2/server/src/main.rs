@@ -36,17 +36,44 @@ impl Server {
         self.stream.write_all(&buffer).unwrap();
     }
 }
-// strcut App{
+struct App<'a> {
+    interpreter: Interpreter<'a>,
+}
+impl App<'_> {
+    fn dnn(&mut self, mut frame: Mat) -> Mat {
+        let vec_2d: Vec<Vec<Vec3b>> = frame.to_vec_2d().unwrap();
+        let vec_1d: Vec<u8> = vec_2d
+            .iter()
+            .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
+            .cloned()
+            .collect();
 
-// }
+        // set input (tensor0)
+        self.interpreter.copy(&vec_1d[..], 0).unwrap();
+
+        // run interpreter
+        self.interpreter.invoke().expect("Invoke [FAILED]");
+
+        // get output
+        let output_tensor = self.interpreter.output(0).unwrap();
+        // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
+
+        draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
+        frame
+    }
+}
 
 fn main() {
     println!("Server started");
-    let options = Options::default();
     let path = format!("resource/lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite");
     let model = Model::new(&path).expect("Load model [FAILED]");
-    let interpreter = Interpreter::new(&model, Some(options)).expect("Create interpreter [FAILED]");
-    interpreter
+
+    let mut app = App {
+        interpreter: Interpreter::new(&model, Some(Options::default()))
+            .expect("Create interpreter [FAILED]"),
+    };
+
+    app.interpreter
         .allocate_tensors()
         .expect("Allocate tensors [FAILED]");
 
@@ -59,26 +86,7 @@ fn main() {
 
                 loop {
                     let mut frame = server.recieve();
-
-                    let vec_2d: Vec<Vec<Vec3b>> = frame.to_vec_2d().unwrap();
-                    let vec_1d: Vec<u8> = vec_2d
-                        .iter()
-                        .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
-                        .cloned()
-                        .collect();
-
-                    // set input (tensor0)
-                    interpreter.copy(&vec_1d[..], 0).unwrap();
-
-                    // run interpreter
-                    interpreter.invoke().expect("Invoke [FAILED]");
-
-                    // get output
-                    let output_tensor = interpreter.output(0).unwrap();
-                    // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
-
-                    draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
-
+                    let mut frame = app.dnn(frame);
                     server.send(frame);
                 }
             }
