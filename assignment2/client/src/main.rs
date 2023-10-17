@@ -39,19 +39,39 @@ impl App {
     }
 }
 
-struct Server {
-    stream: TcpStream,
-}
+struct Server {}
 
 impl Server {
-    fn init(&mut self) {
-        self.stream = TcpStream::connect("127.0.0.1:54321").expect("Connection  failed");
+    fn send(&mut self, frame: Mat) {
+        let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+
+        let mut buffer: Vector<u8> = Vec::new().into();
+        let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
+
+        let buffer: Vec<u8> = buffer.to_vec();
+        stream.write_all(&buffer).unwrap();
+        stream.flush().unwrap();
+        stream.shutdown(std::net::Shutdown::Write).unwrap();
+        // println!("image sent to server");
+
+        // let mut buffer: Vec<u8> = vec![0; 80000];
+        let mut buffer: Vec<u8> = Vec::new();
+        stream.read_to_end(&mut buffer).unwrap();
+        println!("buffer size: {}", buffer.len());
+
+        let mut flipped = Mat::default();
+
+        opencv::imgcodecs::imdecode_to(
+            &opencv::types::VectorOfu8::from_iter(buffer),
+            -1,
+            &mut flipped,
+        )
+        .unwrap();
+        flipped
     }
 }
 fn main() {
-    println!("Client started");
-    // load model and create interpreter
-    let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
+    let mut server = Server {};
 
     let mut app = App {
         cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
@@ -61,36 +81,9 @@ fn main() {
 
     loop {
         let mut frame = app.read();
-
-        let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-
-        if frame.size().unwrap().width > 0 {
-            let mut buffer: Vector<u8> = Vec::new().into();
-            let _ = opencv::imgcodecs::imencode(".jpg", &frame, &mut buffer, &Vector::new());
-
-            let buffer: Vec<u8> = buffer.to_vec();
-            stream.write_all(&buffer).unwrap();
-            stream.flush().unwrap();
-            stream.shutdown(std::net::Shutdown::Write).unwrap();
-            // println!("image sent to server");
-
-            // let mut buffer: Vec<u8> = vec![0; 80000];
-            let mut buffer: Vec<u8> = Vec::new();
-            stream.read_to_end(&mut buffer).unwrap();
-            println!("buffer size: {}", buffer.len());
-
-            let mut flipped = Mat::default();
-
-            opencv::imgcodecs::imdecode_to(
-                &opencv::types::VectorOfu8::from_iter(buffer),
-                -1,
-                &mut flipped,
-            )
-            .unwrap();
-
-            imshow("MoveNet", &flipped).expect("imshow [ERROR]");
-            // print out response
-        }
+        let mut flipped = server.send(frame);
+        imshow("MoveNet", &flipped).expect("imshow [ERROR]");
+        // print out response
 
         // keypress check
         let key = wait_key(1).unwrap();
