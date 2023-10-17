@@ -60,8 +60,11 @@ fn main() {
                     // get output
                     let output_tensor = interpreter.output(0).unwrap();
                     // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
-                    draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
 
+
+
+                    draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
+                    println!("frame size: {:?}", output_tensor.data::<f32>().len());
                     let mut buffer: Vector<u8> = Vec::new().into();
                     let _ =
                         opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
