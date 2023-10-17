@@ -52,10 +52,9 @@ impl Server {
 
         let buffer: Vec<u8> = buffer.to_vec();
         self.stream.write_all(&buffer).unwrap();
-        self.stream.shutdown(std::net::Shutdown::Write).unwrap();
 
-        let mut buffer: Vec<u8> = Vec::new();
-        self.stream.read_to_end(&mut buffer).unwrap();
+        let mut buffer: Vec<u8> = vec![0; 110646]
+        self.stream.read_exact(&mut buffer).unwrap();
         println!("buffer size: {}", buffer.len());
 
         let mut flipped = Mat::default();

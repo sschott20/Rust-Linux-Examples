@@ -25,11 +25,9 @@ fn main() {
         for stream in listener.incoming() {
             match stream {
                 Ok(mut stream) => {
-                    // let mut buffer: Vec<u8> = vec![0; 40000];
+                    let mut buffer: Vec<u8> = vec![0; 110646];
                     // let bytes_read = stream.read_exact(&mut buffer).unwrap();
-
-                    let mut buffer: Vec<u8> = Vec::new();
-                    let bytes_read = stream.read_to_end(&mut buffer).unwrap();
+                    let bytes_read = stream.read_exact(&mut buffer).unwrap();
                     println!("buffer size: {:?}", bytes_read);
 
                     let mut frame = Mat::default();
