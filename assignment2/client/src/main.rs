@@ -20,7 +20,6 @@ struct App {
 
 impl App {
     fn init(&mut self) {
-        self.cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
         self.cam
             .set(CAP_PROP_FPS, 30.0)
             .expect("Set camera FPS [FAILED]");
