@@ -5,9 +5,40 @@ mod utils;
 use std::io::{Read, Write};
 
 use std::net::TcpListener;
+use std::net::TcpStream;
 use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 use utils::*;
+
+struct Server {
+    stream: TcpStream,
+}
+impl Server {
+    fn recieve(&mut self) -> Mat {
+        let mut buffer: Vec<u8> = vec![0; 110646];
+        self.stream.read_exact(&mut buffer).unwrap();
+        println!("buffer recieve size: {:?}", buffer.len());
+
+        let mut frame = Mat::default();
+        opencv::imgcodecs::imdecode_to(
+            &opencv::types::VectorOfu8::from_iter(buffer),
+            -1,
+            &mut frame,
+        )
+        .unwrap();
+        frame
+    }
+    fn send(&mut self, frame: Mat) {
+        let mut buffer: Vector<u8> = Vec::new().into();
+        let _ = opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
+
+        let buffer: Vec<u8> = buffer.to_vec();
+        self.stream.write_all(&buffer).unwrap();
+    }
+}
+// strcut App{
+
+// }
 
 fn main() {
     println!("Server started");
@@ -24,26 +55,11 @@ fn main() {
     for stream in listener.incoming() {
         match stream {
             Ok(mut stream) => {
+                let mut server = Server { stream: stream };
+
                 loop {
-                    let mut buffer: Vec<u8> = vec![0; 110646];
-                    stream.read_exact(&mut buffer).unwrap();
-                    println!("buffer recieve size: {:?}", buffer.len());
+                    let mut frame = server.recieve();
 
-                    let mut frame = Mat::default();
-                    opencv::imgcodecs::imdecode_to(
-                        &opencv::types::VectorOfu8::from_iter(buffer),
-                        -1,
-                        &mut frame,
-                    )
-                    .unwrap();
-
-                    // let mut flipped = Mat::default();
-                    // flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
-
-                    // resize the image as a square, size is
-                    // let mut resized_img = resize_with_padding(&flipped, [192, 192]);
-
-                    // turn Mat into Vec<u8>
                     let vec_2d: Vec<Vec<Vec3b>> = frame.to_vec_2d().unwrap();
                     let vec_1d: Vec<u8> = vec_2d
                         .iter()
@@ -61,21 +77,9 @@ fn main() {
                     let output_tensor = interpreter.output(0).unwrap();
                     // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
 
-
-
                     draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
-                    println!("frame size: {:?}", output_tensor.data::<f32>().len());
-                    let mut buffer: Vector<u8> = Vec::new().into();
-                    let _ =
-                        opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
-                    // let _ =
-                    //     opencv::imgcodecs::imencode(".jpg", &flipped, &mut buffer, &Vector::new());
 
-                    let buffer: Vec<u8> = buffer.to_vec();
-
-                    // stream.rewind().unwrap();
-                    stream.write_all(&buffer).unwrap();
-                    println!("buffer send size: {}", buffer.len());
+                    server.send(frame);
                 }
             }
             Err(e) => {
