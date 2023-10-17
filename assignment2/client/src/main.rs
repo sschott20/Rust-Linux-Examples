@@ -46,9 +46,7 @@ struct Server {
 impl Server {
     fn send(&mut self, frame: Mat) -> Mat {
         let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-
         let mut buffer: Vector<u8> = Vec::new().into();
-        let mut resized_img = resize_with_padding(&frame, [192, 192]);
 
         let _ = opencv::imgcodecs::imencode(".jpg", &resized_img, &mut buffer, &Vector::new());
 

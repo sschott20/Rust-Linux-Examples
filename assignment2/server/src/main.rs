@@ -40,14 +40,14 @@ fn main() {
                     )
                     .unwrap();
 
-                    let mut flipped = Mat::default();
-                    flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
+                    // let mut flipped = Mat::default();
+                    // flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
 
                     // resize the image as a square, size is
-                    let mut resized_img = resize_with_padding(&flipped, [192, 192]);
+                    // let mut resized_img = resize_with_padding(&flipped, [192, 192]);
 
                     // turn Mat into Vec<u8>
-                    let vec_2d: Vec<Vec<Vec3b>> = resized_img.to_vec_2d().unwrap();
+                    let vec_2d: Vec<Vec<Vec3b>> = frame.to_vec_2d().unwrap();
                     let vec_1d: Vec<u8> = vec_2d
                         .iter()
                         .flat_map(|v| v.iter().flat_map(|w| w.as_slice()))
@@ -63,11 +63,11 @@ fn main() {
                     // get output
                     let output_tensor = interpreter.output(0).unwrap();
                     // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
-                    draw_keypoints(&mut resized_img, output_tensor.data::<f32>(), 0.25);
+                    draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
                     let mut buffer: Vector<u8> = Vec::new().into();
                     let _ = opencv::imgcodecs::imencode(
                         ".jpg",
-                        &resized_img,
+                        &frame,
                         &mut buffer,
                         &Vector::new(),
                     );
