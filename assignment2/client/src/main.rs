@@ -18,22 +18,45 @@ struct App {
     cam: videoio::VideoCapture,
 }
 
+impl App {
+    fn init(&mut self) {
+        self.cam
+            .set(CAP_PROP_FPS, 30.0)
+            .expect("Set camera FPS [FAILED]");
+        videoio::VideoCapture::is_opened(&self.cam).expect("Open camera [FAILED]");
+    }
+
+    fn read(&mut self) -> Mat {
+        let mut frame = Mat::default();
+        self.cam
+            .read(&mut frame)
+            .expect("VideoCapture: read [FAILED]");
+        frame
+    }
+}
+
 fn main() {
     println!("Client started");
     // load model and create interpreter
     let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
+
     let app = App {
         cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
     };
+    app.init();
+
     // open camera
-    let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
-    videoio::VideoCapture::is_opened(&cam).expect("Open camera [FAILED]");
-    cam.set(CAP_PROP_FPS, 30.0)
-        .expect("Set camera FPS [FAILED]");
+    // let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
+    // videoio::VideoCapture::is_opened(&cam).expect("Open camera [FAILED]");
+    // cam.set(CAP_PROP_FPS, 30.0)
+    //     .expect("Set camera FPS [FAILED]");
 
     loop {
-        let mut frame = Mat::default();
-        cam.read(&mut frame).expect("VideoCapture: read [FAILED]");
+        // let mut frame = Mat::default();
+        // app.cam
+        //     .read(&mut frame)
+        //     .expect("VideoCapture: read [FAILED]");
+        let mut frame = app.read();
 
         if frame.size().unwrap().width > 0 {
             let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
