@@ -66,7 +66,8 @@ impl Server {
             &mut flipped,
         )
         .unwrap();
-        
+
+        resize_with_padding(&flipped, [576, 576]);
         flipped
     }
 }
