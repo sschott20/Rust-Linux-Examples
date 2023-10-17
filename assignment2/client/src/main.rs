@@ -49,7 +49,7 @@ fn main() {
     println!("Client started");
     // load model and create interpreter
     let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
-    let mut app = App {};
+    let mut app = App::default();
 
     // open camera
     // let mut cam = videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(); // 0 is the default camera
