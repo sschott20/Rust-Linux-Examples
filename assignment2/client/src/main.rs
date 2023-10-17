@@ -42,13 +42,13 @@ struct Server {
 
 impl Server {
     fn init(&mut self) {
-        self.stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
+        self.stream = TcpStream::connect("127.0.0.1:54321").expect("Connection  failed");
     }
 }
 fn main() {
     println!("Client started");
     // load model and create interpreter
-    let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection  failed");
+    let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
 
     let mut app = App {
         cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap();
