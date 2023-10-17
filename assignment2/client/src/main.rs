@@ -51,7 +51,7 @@ fn main() {
     let mut stream = TcpStream::connect("127.0.0.1:54321").expect("Connection failed");
 
     let mut app = App {
-        cam: videoio::VideoCapture::default(),
+        cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap();
     };
     app.init();
 
