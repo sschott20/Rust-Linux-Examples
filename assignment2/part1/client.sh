@@ -1,2 +1,2 @@
 cd assignment2/client
-cargo run 
+cargo run -r 
