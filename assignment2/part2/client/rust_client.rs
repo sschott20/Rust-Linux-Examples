@@ -2,10 +2,10 @@ use kernel::prelude::*;
 
 module! {
     type: Client,
-    name: b"vdev",
-    license: b"GPL",
+    name: "client",
+    author: "Alex Schott",
+    license: "GPL",
 }
-
 struct Client;
 
 impl kernel::Module for Client {
