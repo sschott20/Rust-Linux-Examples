@@ -6,8 +6,6 @@ use opencv::{highgui::*, imgcodecs, prelude::*, videoio};
 
 mod utils;
 use std::{thread, time::Duration};
-use tflitec::interpreter::{Interpreter, Options};
-use tflitec::model::Model;
 use utils::*;
 
 use std::io::prelude::*;

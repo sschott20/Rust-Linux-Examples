@@ -32,7 +32,6 @@ impl kernel::Module for Client {
 
 impl Drop for Client {
     fn drop(&mut self) {
-        pr_info!("My numbers are {:?}\n", self.numbers);
-        pr_info!("Rust minimal sample (exit)\n");
+        pr_info!("Rust Client (exit)\n");
     }
 }

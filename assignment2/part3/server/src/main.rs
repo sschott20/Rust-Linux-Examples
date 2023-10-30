@@ -56,8 +56,8 @@ impl App<'_> {
 
         // get output
         let output_tensor = self.interpreter.output(0).unwrap();
-        // draw_keypoints(&mut flipped, output_tensor.data::<f32>(), 0.25);
 
+        // draw keypoints on the image and return it to be sent
         draw_keypoints(&mut frame, output_tensor.data::<f32>(), 0.25);
         frame
     }
@@ -92,7 +92,6 @@ fn main() {
             }
             Err(e) => {
                 println!("Error accepting connection: {}", e);
-                // eprintln!("Error accepting connection: {}", e);
             }
         }
     }
