@@ -39,12 +39,17 @@ pub struct v4l2_pix_format {
     pub priv_: u32,
 }
 
+#[repr(C)]
+pub union v4l2_format_fmt {
+    pub pix: v4l2_pix_format,
+    pub raw_data: [u8; 200],
+}
 
 #[repr(C)]
 #[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
-    pub fmt: v4l2_pix_format,
+    pub fmt: v4l2_format_fmt,
 }
 
 fn main() {
