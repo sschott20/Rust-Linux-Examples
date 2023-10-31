@@ -6,15 +6,15 @@ use nix::ioctl_readwrite;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
 // #define VIDIOC_QUERYCAP          _IOR('V',  0, struct v4l2_capability)
-const VIDIOC_QUERYCAP_MAGIC: u8 = 'V' as u8;
+const VIDIOC_QUERYCAP_MAGIC: u8 = b'V';
 const VIDIOC_QUERYCAP_TYPE_MODE: u8 = 0;
 
 // #define VIDIOC_G_INPUT           _IOR('V', 38, int)
-const VIDIOC_G_INPUT_MAGIC: u8 = 'V' as u8;
+const VIDIOC_G_INPUT_MAGIC: u8 = b'V';
 const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
 
 // #define VIDIOC_ENUMINPUT	_IOWR('V', 26, struct v4l2_input)
-const VIDIOC_ENUMINPUT_MAGIC: u8 = 'V' as u8;
+const VIDIOC_ENUMINPUT_MAGIC: u8 = b'V';
 const VIDIOC_ENUMINPUT_TYPE_MODE: u8 = 26;
 
 #[repr(C)]
@@ -42,8 +42,6 @@ pub struct v4l2_input {
     pub capabilities: u32,
     pub reserved: [u32; 3],
 }
-
-
 
 fn main() {
     let file = File::options()
@@ -98,19 +96,17 @@ fn main() {
         Ok(_) => {
             println!("get info g_input [OK]");
 
-            let mut input : v4l2_input = Default::default();
+            let mut input: v4l2_input = Default::default();
             input.index = index;
 
-            match unsafe {vidioc_enuminput(media_fd, &mut input)}{
+            match unsafe { vidioc_enuminput(media_fd, &mut input) } {
                 Ok(_) => {
                     println!("get info enuminput [OK]");
-
                 }
                 Err(e) => {
                     println!("get info enuminput [FAILED]: {:?}", e);
                 }
             }
-
         }
 
         Err(e) => {
