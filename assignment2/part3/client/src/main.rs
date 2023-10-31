@@ -44,6 +44,11 @@ pub union v4l2_format_fmt {
     pub pix: v4l2_pix_format,
     pub raw_data: [u8; 200],
 }
+impl Default for v4l2_format_fmt {
+    fn default() -> Self {
+        unsafe { std::mem::zeroed() }
+    }
+}
 
 #[repr(C)]
 #[derive(Default)]
