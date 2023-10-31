@@ -26,7 +26,7 @@ pub struct v4l2_capability {
     pub reserved: [u32; 3],
 }
 #[repr(C)]
-union V4L2FormatUnion {
+pub union V4L2FormatUnion {
     raw_data: [u8; 200],
 }
 
