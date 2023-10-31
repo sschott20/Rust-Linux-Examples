@@ -1,5 +1,5 @@
-use nix::{ioctl_read, ioctl_readwrite, sys::ioctl};
-use std::mem::size_of;
+use nix::{ioctl_read, ioctl_readwrite};
+// use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
 // #define VIDIOC_QUERYCAP          _IOR('V',  0, struct v4l2_capability)
@@ -62,7 +62,7 @@ pub struct v4l2_format {
 }
 
 fn main() {
-    let mut file = File::options()
+    let file = File::options()
         .write(true)
         .read(true)
         .open("/dev/video0")
