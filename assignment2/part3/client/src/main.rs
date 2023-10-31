@@ -85,7 +85,7 @@ fn main() {
         }
     }
 
-    ioctl!(
+    ioctl_write_ptr!(
         vidio_g_fmt,
         VIDIOC_G_FMT_MAGIC,
         VIDIOC_G_FMT_TYPE_MODE,
