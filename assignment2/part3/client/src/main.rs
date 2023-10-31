@@ -65,19 +65,15 @@ fn main() {
         }
     }
 
-    ioctl_read!(videoc_g_input, b'V', 4, v4l2_input);
+    ioctl_read!(vidioc_g_input, b'V', 4, v4l2_input);
 
     let mut info_input: v4l2_input = Default::default();
 
-    match unsafe { videoc_g_input(media_fd, &mut info_input as *mut v4l2_input) } {
+    match unsafe { vidioc_g_input(media_fd, &mut info_input as *mut v4l2_input) } {
         Ok(_) => {
             println!("get info g_input [OK]");
-            // println!("driver: {:?}", str::from_utf8(&info_input.driver));
-            // println!("card: {:?}", str::from_utf8(&info_input.card));
-            // println!("bus_info: {:?}", str::from_utf8(&info_input.bus_info));
+
             println!("index: {:?}", info_input.index);
-            // println!("capabilities: {:?}", info_input.capabilities);
-            // println!("device_caps: {:?}", info_input.device_caps);
         }
         Err(e) => {
             println!("get info g_input [FAILED]: {:?}", e);
