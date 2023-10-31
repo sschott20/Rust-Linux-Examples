@@ -154,7 +154,7 @@ fn main() {
         VIDIOC_ENUM_FMT_TYPE_MODE,
         v4l2_fmtdesc
     );
-    let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
+    let mut info_fmtdesc: v4l2_fmtdesc = unsafe { std::mem::zeroed() };
     loop {
         match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
             Ok(_) => {
