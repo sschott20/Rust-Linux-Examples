@@ -65,12 +65,7 @@ fn main() {
         }
     }
 
-    ioctl_read!(
-        videoc_g_input,
-        VIDIOC_QUERYCAP_MAGIC,
-        VIDIOC_QUERYCAP_TYPE_MODE,
-        v4l2_input
-    );
+    ioctl_read!(videoc_g_input, b'V', 4, v4l2_input);
 
     let mut info_input: v4l2_input = Default::default();
 
