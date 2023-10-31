@@ -25,10 +25,10 @@ pub struct v4l2_capability {
     pub device_caps: u32,
     pub reserved: [u32; 3],
 }
-#[repr(C)]
-pub union V4L2FormatUnion {
-    raw_data: [u8; 200],
-}
+// #[repr(C)]
+// pub union V4L2FormatUnion {
+//     raw_data: [u8; 200],
+// }
 
 #[repr(C)]
 // #[derive(Default)]
@@ -99,7 +99,8 @@ fn main() {
     // let mut info_format: v4l2_format = Default::default();
     let mut info_format: v4l2_format = v4l2_format {
         r#type: 1,
-        fmt: V4L2FormatUnion { raw_data: [0; 200] },
+        fmt: [0; 200],
+        // fmt: V4L2FormatUnion { raw_data: [0; 200] },
     };
     info_format.r#type = 1;
     match unsafe { vidioc_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
