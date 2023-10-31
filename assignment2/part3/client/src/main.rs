@@ -73,11 +73,15 @@ fn main() {
         VIDIOC_QUERYCAP_TYPE_MODE,
         info
     );
-    match unsafe { videoc_g_input(media_fd, &mut info_input) } {
+    match unsafe { videoc_g_input(media_fd, &mut info_input ) } {
         Ok(_) => {
             println!("get info [OK]");
-            println!("index: {:?}", str::from_utf8(&info_input.index));
-
+            // println!("driver: {:?}", str::from_utf8(&info_input.driver));
+            // println!("card: {:?}", str::from_utf8(&info_input.card));
+            // println!("bus_info: {:?}", str::from_utf8(&info_input.bus_info));
+            println!("index: {:?}", info_input.index);
+            // println!("capabilities: {:?}", info_input.capabilities);
+            // println!("device_caps: {:?}", info_input.device_caps);
         }
         Err(e) => {
             println!("get info [FAILED]: {:?}", e);
