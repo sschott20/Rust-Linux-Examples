@@ -50,7 +50,7 @@ fn main() {
     );
     let mut info_capability: v4l2_capability = Default::default();
 
-    match unsafe { vidioc_querycap(media_fd, &mut info as *mut v4l2_capability) } {
+    match unsafe { vidioc_querycap(media_fd, &mut info_capability as *mut v4l2_capability) } {
         Ok(_) => {
             println!("get info [OK]");
             println!("driver: {:?}", str::from_utf8(&info_capability.driver));
@@ -73,7 +73,7 @@ fn main() {
         VIDIOC_QUERYCAP_TYPE_MODE,
         info
     );
-    match unsafe { videoc_g_input(media_fd, &mut info_input ) } {
+    match unsafe { videoc_g_input(media_fd, &mut info_input as *mut v4l2_input) } {
         Ok(_) => {
             println!("get info [OK]");
             // println!("driver: {:?}", str::from_utf8(&info_input.driver));
