@@ -31,7 +31,7 @@ union V4L2FormatUnion {
 }
 
 #[repr(C)]
-#[derive(Default)]
+// #[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
     pub fmt: V4L2FormatUnion,
