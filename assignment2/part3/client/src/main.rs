@@ -99,8 +99,8 @@ fn main() {
             println!("get info g_input [OK]");
 
             let mut input: v4l2_input = unsafe { std::mem::zeroed() };
-            input.index = index;
-            
+            // input.index = index;
+
             match unsafe { vidioc_enuminput(media_fd, &mut input) } {
                 Ok(_) => {
                     println!("get info enuminput [OK]");
