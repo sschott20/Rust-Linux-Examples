@@ -1,4 +1,4 @@
-use nix::{ioctl_read, sys::ioctl};
+use nix::{ioctl_read, ioctl_write_ptr; sys::ioctl};
 use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
@@ -10,9 +10,9 @@ const VIDIOC_QUERYCAP_TYPE_MODE: u8 = 0;
 const VIDIOC_G_INPUT_MAGIC: u8 = 'V' as u8;
 const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
 
-// #define VIDIOC_ENUMINPUT        _IOWR('V', 26, struct v4l2_input)
-const VIDIOC_ENUMINPUT_MAGIC: u8 = 'V' as u8;
-const VIDIOC_ENUMINPUT_TYPE_MODE: u8 = 26;
+// #define VIDIOC_G_FMT            _IOWR('V',  4, struct v4l2_format)
+const VIDIOC_G_FMT_MAGIC: u8 = 'V' as u8;
+const VIDIOC_G_FMT_TYPE_MODE: u8 = 4;
 
 #[repr(C)]
 #[derive(Default)]
@@ -28,16 +28,9 @@ pub struct v4l2_capability {
 
 #[repr(C)]
 #[derive(Default)]
-pub struct v4l2_input {
-    pub index: u32,
-    pub name: [u8; 32],
-    pub type_: u32,
-    pub audioset: u32,
-    pub tuner: u32,
-    pub std: u32,
-    pub status: u32,
-    pub capabilities: u32,
-    pub reserved: [u32; 3],
+pub struct v4l2_format {
+    pub r#type: u32,
+    pub fmt: [u8; 200],
 }
 
 fn main() {
@@ -85,35 +78,33 @@ fn main() {
     match unsafe { vidioc_g_input(media_fd, &mut info_input as *mut u32) } {
         Ok(_) => {
             println!("get info g_input [OK]");
-            let mut info_enuminput: v4l2_input = Default::default();
-            info_enuminput.index = info_input;
-            ioctl_read!(
-                vidioc_enuminput,
-                VIDIOC_ENUMINPUT_MAGIC,
-                VIDIOC_ENUMINPUT_TYPE_MODE,
-                v4l2_input
-            );
-            match unsafe { vidioc_enuminput(media_fd, &mut info_enuminput as *mut v4l2_input) } {
-                Ok(_) => {
-                    println!("get info enuminput [OK]");
-                    println!("index: {:?}", info_enuminput.index);
-                    println!("name: {:?}", str::from_utf8(&info_enuminput.name));
-                    println!("type: {:?}", info_enuminput.type_);
-                    println!("audioset: {:?}", info_enuminput.audioset);
-                    println!("tuner: {:?}", info_enuminput.tuner);
-                    println!("std: {:?}", info_enuminput.std);
-                    println!("status: {:?}", info_enuminput.status);
-                    println!("capabilities: {:?}", info_enuminput.capabilities);
-                }
-                Err(e) => {
-                    println!("get info enuminput [FAILED]: {:?}", e);
-                }
-            }
         }
+
         Err(e) => {
             println!("get info g_input [FAILED]: {:?}", e);
         }
     }
+
+    ioctl_write_ptr!(
+        vidio_g_fmt,
+        VIDIOC_G_FMT_MAGIC,
+        VIDIOC_G_FMT_TYPE_MODE,
+        v4l2_format
+    );
+
+    let mut info_format: v4l2_format = Default::default();
+    info_format.r#type = 1;
+    match unsafe { vidio_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
+        Ok(_) => {
+            println!("get info g_fmt [OK]");
+            println!("type: {:?}", info_format.r#type);
+            println!("fmt: {:?}", info_format.fmt);
+        }
+
+        Err(e) => {
+            println!("get info g_fmt [FAILED]: {:?}", e);
+        }
+
 
     println!("Client exit [OK]");
 }
