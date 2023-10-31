@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate nix;
 
 use nix::{ioctl_read, sys::ioctl};
