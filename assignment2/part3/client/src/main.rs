@@ -25,21 +25,6 @@ pub struct v4l2_capability {
     pub device_caps: u32,
     pub reserved: [u32; 3],
 }
-// __u32 	width
-
-// __u32 	height
-
-// __u32 	pixelformat
-
-// __u32 	field
-
-// __u32 	bytesperline
-
-// __u32 	sizeimage
-
-// __u32 	colorspace
-
-// __u32 	priv
 
 #[repr(C)]
 #[derive(Default)]
@@ -53,6 +38,7 @@ pub struct v4l2_pix_format {
     pub colorspace: u32,
     pub priv_: u32,
 }
+
 
 #[repr(C)]
 #[derive(Default)]
