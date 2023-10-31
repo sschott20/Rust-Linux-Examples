@@ -7,43 +7,7 @@ use bindings::*;
 
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
-// #define VIDIOC_QUERYCAP          _IOR('V',  0, struct v4l2_capability)
-const VIDIOC_QUERYCAP_MAGIC: u8 = b'V';
-const VIDIOC_QUERYCAP_TYPE_MODE: u8 = 0;
-
-// #define VIDIOC_G_INPUT           _IOR('V', 38, int)
-const VIDIOC_G_INPUT_MAGIC: u8 = b'V';
-const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
-
-// #define VIDIOC_ENUMINPUT	_IOWR('V', 26, struct v4l2_input)
-const VIDIOC_ENUMINPUT_MAGIC: u8 = b'V';
-const VIDIOC_ENUMINPUT_TYPE_MODE: u8 = 26;
-
-// #[repr(C)]
-// #[derive(Default)]
-// pub struct v4l2_capability {
-//     pub driver: [u8; 16],
-//     pub card: [u8; 32],
-//     pub bus_info: [u8; 32],
-//     pub version: u32,
-//     pub capabilities: u32,
-//     pub device_caps: u32,
-//     pub reserved: [u32; 3],
-// }
-
-// #[repr(C)]
-// #[derive(Default)]
-// pub struct v4l2_input {
-//     pub index: u32,
-//     pub name: [u8; 32],
-//     pub r#type: u32,
-//     pub audioset: u32,
-//     pub tuner: u32,
-//     pub std: u64,
-//     pub status: u32,
-//     pub capabilities: u32,
-//     pub reserved: [u32; 3],
-// }
+const VIDIOC_MAGIC: u8 = b'V';
 
 fn main() {
     let file = File::options()
@@ -55,12 +19,9 @@ fn main() {
     let media_fd = file.as_raw_fd();
     println!("camera fd = {}", media_fd);
 
-    ioctl_read!(
-        vidioc_querycap,
-        VIDIOC_QUERYCAP_MAGIC,
-        VIDIOC_QUERYCAP_TYPE_MODE,
-        v4l2_capability
-    );
+    // #define VIDIOC_QUERYCAP          _IOR('V',  0, struct v4l2_capability)
+    ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
+
     let mut info_capability: v4l2_capability = unsafe { std::mem::zeroed() };
 
     match unsafe { vidioc_querycap(media_fd, &mut info_capability) } {
@@ -78,21 +39,11 @@ fn main() {
         }
     }
 
-    ioctl_read!(
-        vidioc_g_input,
-        VIDIOC_G_INPUT_MAGIC,
-        VIDIOC_G_INPUT_TYPE_MODE,
-        u32
-    );
+    // #define VIDIOC_G_INPUT           _IOR('V', 38, int)
+    ioctl_read!(vidioc_g_input, VIDIOC_MAGIC, 38, u32);
 
-    // ioctl_readwrite!(
-    //     vidioc_enuminput,
-    //     VIDIOC_ENUMINPUT_MAGIC,
-    //     VIDIOC_ENUMINPUT_TYPE_MODE,
-    //     v4l2_input
-    // );
-
-    ioctl_readwrite!(vidioc_enuminput, b'V', 26, v4l2_input);
+    // #define VIDIOC_ENUMINPUT	_IOWR('V', 26, struct v4l2_input)
+    ioctl_readwrite!(vidioc_enuminput, VIDIOC_MAGIC, 26, v4l2_input);
 
     let mut index: u32 = Default::default();
 
@@ -116,6 +67,29 @@ fn main() {
 
         Err(e) => {
             println!("get info g_input [FAILED]: {:?}", e);
+        }
+    }
+
+    // #define VIDIOC_G_FMT		_IOWR('V',  4, struct v4l2_format)
+    ioctl_readwrite!(vidio_g_fmt, VIDIOC_MAGIC, 4, v4l2_format);
+    let mut format: v4l2_format = unsafe { std::mem::zeroed() };
+    format.type_ = 1;
+
+    match unsafe { vidio_g_fmt(media_fd, &mut format) } {
+        Ok(_) => {
+            println!("get vidio_g_fmt [OK]");
+            println!("Image format:");
+            println!("width: {:?}", unsafe{ format.fmt.pix.width});
+            // println!("height: {:?}", format.fmt.pix.height);
+            // println!("pixelformat: {:?}", format.fmt.pix.pixelformat);
+            // println!("field: {:?}", format.fmt.pix.field);
+            // println!("bytesperline: {:?}", format.fmt.pix.bytesperline);
+            // println!("sizeimage: {:?}", format.fmt.pix.sizeimage);
+            // println!("colorspace: {:?}", format.fmt.pix.colorspace);
+
+        }
+        Err(e) => {
+            println!("get vidio_g_fmt [FAILED]: {:?}", e);
         }
     }
 
