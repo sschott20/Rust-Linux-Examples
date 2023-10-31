@@ -52,7 +52,7 @@ fn main() {
 
     match unsafe { vidioc_querycap(media_fd, &mut info_capability as *mut v4l2_capability) } {
         Ok(_) => {
-            println!("get info [OK]");
+            println!("get info querycap [OK]");
             println!("driver: {:?}", str::from_utf8(&info_capability.driver));
             println!("card: {:?}", str::from_utf8(&info_capability.card));
             println!("bus_info: {:?}", str::from_utf8(&info_capability.bus_info));
@@ -61,7 +61,7 @@ fn main() {
             println!("device_caps: {:?}", info_capability.device_caps);
         }
         Err(e) => {
-            println!("get info [FAILED]: {:?}", e);
+            println!("get info querycap [FAILED]: {:?}", e);
         }
     }
 
@@ -76,7 +76,7 @@ fn main() {
 
     match unsafe { videoc_g_input(media_fd, &mut info_input as *mut v4l2_input) } {
         Ok(_) => {
-            println!("get info [OK]");
+            println!("get info g_input [OK]");
             // println!("driver: {:?}", str::from_utf8(&info_input.driver));
             // println!("card: {:?}", str::from_utf8(&info_input.card));
             // println!("bus_info: {:?}", str::from_utf8(&info_input.bus_info));
@@ -85,7 +85,7 @@ fn main() {
             // println!("device_caps: {:?}", info_input.device_caps);
         }
         Err(e) => {
-            println!("get info [FAILED]: {:?}", e);
+            println!("get info g_input [FAILED]: {:?}", e);
         }
     }
 
