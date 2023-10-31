@@ -1,4 +1,4 @@
-use nix::{ioctl_read, ioctl_write_ptr; sys::ioctl};
+use nix::{ioctl_read, ioctl_write_ptr, sys::ioctl};
 use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
