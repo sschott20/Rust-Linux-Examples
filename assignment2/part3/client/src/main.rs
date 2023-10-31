@@ -1,4 +1,6 @@
-use nix::{ioctl_read, sys::ioctl};
+use nix;
+use nix::ioctl_read;
+
 // use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
@@ -28,50 +30,6 @@ pub struct v4l2_capability {
     pub capabilities: u32,
     pub device_caps: u32,
     pub reserved: [u32; 3],
-}
-
-#[repr(C)]
-#[derive(Default)]
-pub struct v4l2_fmtdesc {
-    pub index: u32,
-    pub r#type: u32,
-    pub flags: u32,
-    pub description: [u8; 32],
-    pub pixelformat: u32,
-    pub reserved: [u32; 4],
-}
-
-#[repr(C)]
-#[derive(Default)]
-pub struct v4l2_pix_format {
-    pub width: u32,
-    pub height: u32,
-    pub pixelformat: u32,
-    pub field: u32,
-    pub bytesperline: u32,
-    pub sizeimage: u32,
-    pub colorspace: u32,
-    pub priv_: u32,
-}
-
-#[repr(C)]
-pub union v4l2_format_fmt {
-    pub pix: std::mem::ManuallyDrop<v4l2_pix_format>,
-    pub raw_data: [u8; 200],
-}
-impl Default for v4l2_format_fmt {
-    fn default() -> Self {
-        {
-            v4l2_format_fmt { raw_data: [0; 200] }
-        }
-    }
-}
-
-#[repr(C)]
-#[derive(Default)]
-pub struct v4l2_format {
-    pub r#type: u32,
-    pub fmt: v4l2_format_fmt,
 }
 
 fn main() {
@@ -126,27 +84,27 @@ fn main() {
         }
     }
 
-    ioctl_readwrite!(
-        vidioc_g_fmt,
-        VIDIOC_G_FMT_MAGIC,
-        VIDIOC_G_FMT_TYPE_MODE,
-        v4l2_format
-    );
+    // ioctl_readwrite!(
+    //     vidioc_g_fmt,
+    //     VIDIOC_G_FMT_MAGIC,
+    //     VIDIOC_G_FMT_TYPE_MODE,
+    //     v4l2_format
+    // );
 
-    let mut info_format: v4l2_format = Default::default();
+    // let mut info_format: v4l2_format = Default::default();
 
-    info_format.r#type = 1;
-    match unsafe { vidioc_g_fmt(media_fd, &mut info_format) } {
-        Ok(_) => {
-            println!("get info g_fmt [OK]");
-            println!("type: {:?}", info_format.r#type);
-            // println!("fmt: {:?}", info_format.fmt);
-        }
+    // info_format.r#type = 1;
+    // match unsafe { vidioc_g_fmt(media_fd, &mut info_format) } {
+    //     Ok(_) => {
+    //         println!("get info g_fmt [OK]");
+    //         println!("type: {:?}", info_format.r#type);
+    //         // println!("fmt: {:?}", info_format.fmt);
+    //     }
 
-        Err(e) => {
-            println!("get info g_fmt [FAILED]: {:?}", e);
-        }
-    }
+    //     Err(e) => {
+    //         println!("get info g_fmt [FAILED]: {:?}", e);
+    //     }
+    // }
 
     // ioctl_readwrite!(
     //     vidioc_enum_fmt,
