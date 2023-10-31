@@ -34,7 +34,7 @@ pub union V4L2FormatUnion {
 // #[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
-    pub fmt: V4L2FormatUnion,
+    pub fmt: [u8, 200],
 }
 
 fn main() {
