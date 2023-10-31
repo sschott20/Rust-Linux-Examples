@@ -73,16 +73,14 @@ fn main() {
         vidioc_g_input,
         VIDIOC_G_INPUT_MAGIC,
         VIDIOC_G_INPUT_TYPE_MODE,
-        v4l2_input
+        u32
     );
 
-    let mut info_input: v4l2_input = Default::default();
+    let mut info_input: u32 = Default::default();
 
-    match unsafe { vidioc_g_input(media_fd, &mut info_input as *mut v4l2_input) } {
+    match unsafe { vidioc_g_input(media_fd, &info_input as *mut u32) } {
         Ok(_) => {
             println!("get info g_input [OK]");
-
-            println!("index: {:?}", info_input.index);
         }
         Err(e) => {
             println!("get info g_input [FAILED]: {:?}", e);
