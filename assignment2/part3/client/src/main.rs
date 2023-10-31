@@ -154,7 +154,7 @@ fn main() {
         VIDIOC_ENUM_FMT_TYPE_MODE,
         v4l2_fmtdesc
     );
-    let mut info_fmtdesc: v4l2_fmtdesc = unsafe { std::mem::zeroed() };
+    let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
     loop {
         match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
             Ok(_) => {
@@ -173,7 +173,7 @@ fn main() {
                 println!("get info enum_fmt [FAILED]: {:?}", e);
             }
         }
-        info_fmtdesc.index += 1;
+        info_fmtdesc.index = info_fmtdesc.index + 1;
     }
 
     println!("Client exit [OK]");
