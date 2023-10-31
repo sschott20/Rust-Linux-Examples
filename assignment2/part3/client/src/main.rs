@@ -104,6 +104,7 @@ fn main() {
             match unsafe { vidioc_enuminput(media_fd, &mut input) } {
                 Ok(_) => {
                     println!("get info enuminput [OK]");
+                    println!("current input name: {:?}", str::from_utf8(&input.name));
                 }
                 Err(e) => {
                     println!("get info enuminput [FAILED]: {:?}", e);
