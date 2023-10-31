@@ -92,7 +92,11 @@ fn main() {
         v4l2_format
     );
 
-    let mut info_format: v4l2_format = Default::default();
+    // let mut info_format: v4l2_format = Default::default();
+    let mut info_format: v4l2_format = v4l2_format {
+        r#type: 1,
+        fmt: [0; 200],
+    };
     info_format.r#type = 1;
     match unsafe { vidio_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
         Ok(_) => {
@@ -105,7 +109,6 @@ fn main() {
             println!("get info g_fmt [FAILED]: {:?}", e);
         }
     }
-
 
     println!("Client exit [OK]");
 }
