@@ -2,9 +2,13 @@ use nix::{ioctl_read, sys::ioctl};
 use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
+// #define VIDIOC_QUERYCAP          _IOR('V',  0, struct v4l2_capability)
 const VIDIOC_QUERYCAP_MAGIC: u8 = 'V' as u8;
 const VIDIOC_QUERYCAP_TYPE_MODE: u8 = 0;
-// const VIDIO_
+
+// #define VIDIOC_G_INPUT           _IOR('V', 38, int)
+const VIDIOC_G_INPUT_MAGIC: u8 = 'V' as u8;
+const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
 
 #[repr(C)]
 #[derive(Default)]
@@ -44,8 +48,8 @@ fn main() {
 
     ioctl_read!(
         vidioc_querycap,
-        VIDIOC_QUERYCAP_MAGIC,
-        VIDIOC_QUERYCAP_TYPE_MODE,
+        VIDIOC_G_INPUT_MAGIC,
+        VIDIOC_G_INPUT_TYPE_MODE,
         v4l2_capability
     );
     let mut info_capability: v4l2_capability = Default::default();
