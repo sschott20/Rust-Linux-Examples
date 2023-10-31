@@ -156,6 +156,7 @@ fn main() {
     );
     let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
     loop {
+        println!("index: {:?}", info_fmtdesc.index);
         match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
             Ok(_) => {
                 println!("get info enum_fmt [OK]");
