@@ -37,7 +37,7 @@ pub struct v4l2_input {
     pub r#type: u32,
     pub audioset: u32,
     pub tuner: u32,
-    pub std: u32,
+    pub std: u64,
     pub status: u32,
     pub capabilities: u32,
     pub reserved: [u32; 3],
