@@ -86,7 +86,7 @@ fn main() {
     );
 
     ioctl_readwrite!(
-        vidioc_enum_input,
+        vidioc_enuminput,
         VIDIOC_ENUMINPUT_MAGIC,
         VIDIOC_ENUMINPUT_TYPE_MODE,
         v4l2_input
@@ -101,13 +101,13 @@ fn main() {
             let mut input : v4l2_input = Default::default();
             input.index = index;
 
-            match unsafe {vidioc_enum_input(media_fd, &mut input)}{
+            match unsafe {vidioc_enuminput(media_fd, &mut input)}{
                 Ok(_) => {
-                    println!("get info enum_input [OK]");
+                    println!("get info enuminput [OK]");
 
                 }
                 Err(e) => {
-                    println!("get info enum_input [FAILED]: {:?}", e);
+                    println!("get info enuminput [FAILED]: {:?}", e);
                 }
             }
 
