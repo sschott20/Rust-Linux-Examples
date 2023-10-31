@@ -155,22 +155,25 @@ fn main() {
         v4l2_fmtdesc
     );
     let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
-    match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
-        Ok(_) => {
-            println!("get info enum_fmt [OK]");
-            println!("index: {:?}", info_fmtdesc.index);
-            println!("type: {:?}", info_fmtdesc.r#type);
-            println!("flags: {:?}", info_fmtdesc.flags);
-            println!(
-                "description: {:?}",
-                str::from_utf8(&info_fmtdesc.description)
-            );
-            println!("pixelformat: {:?}", info_fmtdesc.pixelformat);
-        }
+    loop {
+        match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
+            Ok(_) => {
+                println!("get info enum_fmt [OK]");
+                println!("index: {:?}", info_fmtdesc.index);
+                println!("type: {:?}", info_fmtdesc.r#type);
+                println!("flags: {:?}", info_fmtdesc.flags);
+                println!(
+                    "description: {:?}",
+                    str::from_utf8(&info_fmtdesc.description)
+                );
+                println!("pixelformat: {:?}", info_fmtdesc.pixelformat);
+            }
 
-        Err(e) => {
-            println!("get info enum_fmt [FAILED]: {:?}", e);
+            Err(e) => {
+                println!("get info enum_fmt [FAILED]: {:?}", e);
+            }
         }
+        info_fmtdesc.index += 1;
     }
 
     println!("Client exit [OK]");
