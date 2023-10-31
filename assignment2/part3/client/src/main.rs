@@ -104,6 +104,7 @@ fn main() {
         Err(e) => {
             println!("get info g_fmt [FAILED]: {:?}", e);
         }
+    }
 
 
     println!("Client exit [OK]");
