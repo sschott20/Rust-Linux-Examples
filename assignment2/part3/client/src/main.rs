@@ -1,5 +1,6 @@
 use nix;
 use nix::ioctl_read;
+use nix::ioctl_readwrite;
 use nix::
 
 // use std::mem::size_of;
@@ -13,13 +14,9 @@ const VIDIOC_QUERYCAP_TYPE_MODE: u8 = 0;
 const VIDIOC_G_INPUT_MAGIC: u8 = 'V' as u8;
 const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
 
-// #define VIDIOC_G_FMT            _IOWR('V',  4, struct v4l2_format)
-const VIDIOC_G_FMT_MAGIC: u8 = 'V' as u8;
-const VIDIOC_G_FMT_TYPE_MODE: u8 = 4;
-
-// #define VIDIOC_ENUM_FMT         _IOWR('V',  2, struct v4l2_fmtdesc)
-const VIDIOC_ENUM_FMT_MAGIC: u8 = 'V' as u8;
-const VIDIOC_ENUM_FMT_TYPE_MODE: u8 = 2;
+// #define VIDIOC_ENUMINPUT	_IOWR('V', 26, struct v4l2_input)
+const VIDIOC_ENUMINPUT_MAGIC: u8 = 'V' as u8;
+const VIDIOC_ENUMINPUT_TYPE_MODE: u8 = 26;
 
 #[repr(C)]
 #[derive(Default)]
@@ -32,6 +29,22 @@ pub struct v4l2_capability {
     pub device_caps: u32,
     pub reserved: [u32; 3],
 }
+
+#[repr(C)]
+#[derive(Default)]
+pub struct v4l2_input {
+    pub index: u32,
+    pub name: [u8; 32],
+    pub r#type: u32,
+    pub audioset: u32,
+    pub tuner: u32,
+    pub std: u32,
+    pub status: u32,
+    pub capabilities: u32,
+    pub reserved: [u32; 3],
+}
+
+
 
 fn main() {
     let file = File::options()
@@ -73,11 +86,32 @@ fn main() {
         u32
     );
 
-    let mut info_input: u32 = Default::default();
+    ioctl_readwrite!(
+        vidioc_enum_input,
+        VIDIOC_ENUMINPUT_MAGIC,
+        VIDIOC_ENUMINPUT_TYPE_MODE,
+        v4l2_input
+    );
 
-    match unsafe { vidioc_g_input(media_fd, &mut info_input) } {
+    let mut index: u32 = Default::default();
+
+    match unsafe { vidioc_g_input(media_fd, &mut index) } {
         Ok(_) => {
             println!("get info g_input [OK]");
+
+            let mut input : v4l2_input = Default::default();
+            input.index = index;
+
+            match unsafe {vidioc_enum_input(media_fd, &mut input)}{
+                Ok(_) => {
+                    println!("get info enum_input [OK]");
+
+                }
+                Err(e) => {
+                    println!("get info enum_input [FAILED]: {:?}", e);
+                }
+            }
+
         }
 
         Err(e) => {
