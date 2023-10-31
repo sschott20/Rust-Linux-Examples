@@ -80,13 +80,13 @@ fn main() {
             println!("get vidio_g_fmt [OK]");
             println!("Image format:");
             println!("width: {:?}", unsafe{ format.fmt.pix.width});
-            // println!("height: {:?}", format.fmt.pix.height);
-            // println!("pixelformat: {:?}", format.fmt.pix.pixelformat);
-            // println!("field: {:?}", format.fmt.pix.field);
-            // println!("bytesperline: {:?}", format.fmt.pix.bytesperline);
-            // println!("sizeimage: {:?}", format.fmt.pix.sizeimage);
-            // println!("colorspace: {:?}", format.fmt.pix.colorspace);
-
+            println!("height: {:?}", unsafe{ format.fmt.pix.height});
+            println!("pixelformat: {:?}", unsafe{ format.fmt.pix.pixelformat});
+            println!("field: {:?}", unsafe{ format.fmt.pix.field});
+            println!("bytesperline: {:?}", unsafe{ format.fmt.pix.bytesperline});
+            println!("sizeimage: {:?}", unsafe{ format.fmt.pix.sizeimage});
+            println!("colorspace: {:?}", unsafe{ format.fmt.pix.colorspace});
+            
         }
         Err(e) => {
             println!("get vidio_g_fmt [FAILED]: {:?}", e);
