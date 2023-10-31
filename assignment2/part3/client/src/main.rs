@@ -65,14 +65,15 @@ fn main() {
         }
     }
 
-    let mut info_input: v4l2_input = Default::default();
-
     ioctl_read!(
         videoc_g_input,
         VIDIOC_QUERYCAP_MAGIC,
         VIDIOC_QUERYCAP_TYPE_MODE,
-        info
+        v4l2_input
     );
+
+    let mut info_input: v4l2_input = Default::default();
+
     match unsafe { videoc_g_input(media_fd, &mut info_input as *mut v4l2_input) } {
         Ok(_) => {
             println!("get info [OK]");
