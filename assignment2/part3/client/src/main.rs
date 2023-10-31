@@ -2,7 +2,9 @@ use nix;
 use nix::ioctl_read;
 use nix::ioctl_readwrite;
 
-// use std::mem::size_of;
+mod bindings;
+use bindings::*;
+
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
 // #define VIDIOC_QUERYCAP          _IOR('V',  0, struct v4l2_capability)
@@ -17,31 +19,31 @@ const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
 const VIDIOC_ENUMINPUT_MAGIC: u8 = b'V';
 const VIDIOC_ENUMINPUT_TYPE_MODE: u8 = 26;
 
-#[repr(C)]
-#[derive(Default)]
-pub struct v4l2_capability {
-    pub driver: [u8; 16],
-    pub card: [u8; 32],
-    pub bus_info: [u8; 32],
-    pub version: u32,
-    pub capabilities: u32,
-    pub device_caps: u32,
-    pub reserved: [u32; 3],
-}
+// #[repr(C)]
+// #[derive(Default)]
+// pub struct v4l2_capability {
+//     pub driver: [u8; 16],
+//     pub card: [u8; 32],
+//     pub bus_info: [u8; 32],
+//     pub version: u32,
+//     pub capabilities: u32,
+//     pub device_caps: u32,
+//     pub reserved: [u32; 3],
+// }
 
-#[repr(C)]
-#[derive(Default)]
-pub struct v4l2_input {
-    pub index: u32,
-    pub name: [u8; 32],
-    pub r#type: u32,
-    pub audioset: u32,
-    pub tuner: u32,
-    pub std: u64,
-    pub status: u32,
-    pub capabilities: u32,
-    pub reserved: [u32; 3],
-}
+// #[repr(C)]
+// #[derive(Default)]
+// pub struct v4l2_input {
+//     pub index: u32,
+//     pub name: [u8; 32],
+//     pub r#type: u32,
+//     pub audioset: u32,
+//     pub tuner: u32,
+//     pub std: u64,
+//     pub status: u32,
+//     pub capabilities: u32,
+//     pub reserved: [u32; 3],
+// }
 
 fn main() {
     let file = File::options()
