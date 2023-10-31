@@ -27,7 +27,7 @@ pub struct v4l2_capability {
 }
 
 #[repr(C)]
-#[derive(Default)]
+// #[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
     pub fmt: [u8; 200],
