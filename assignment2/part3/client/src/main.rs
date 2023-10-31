@@ -172,11 +172,11 @@ fn main() {
                     str::from_utf8(&info_fmtdesc.description)
                 );
                 println!("pixelformat: {:?}", info_fmtdesc.pixelformat);
+                break;
             }
 
             Err(e) => {
                 println!("get info enum_fmt [FAILED]: {:?}", e);
-                break;
             }
         }
         info_fmtdesc.index = info_fmtdesc.index + 1;
