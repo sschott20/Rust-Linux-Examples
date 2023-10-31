@@ -25,24 +25,42 @@ pub struct v4l2_capability {
     pub device_caps: u32,
     pub reserved: [u32; 3],
 }
-// #[repr(C)]
-// pub union V4L2FormatUnion {
-//     raw_data: [u8; 200],
-// }
+// __u32 	width
+
+// __u32 	height
+
+// __u32 	pixelformat
+
+// __u32 	field
+
+// __u32 	bytesperline
+
+// __u32 	sizeimage
+
+// __u32 	colorspace
+
+// __u32 	priv
 
 #[repr(C)]
+#[derive(Default)]
+pub struct v4l2_pix_format {
+    pub width: u32,
+    pub height: u32,
+    pub pixelformat: u32,
+    pub field: u32,
+    pub bytesperline: u32,
+    pub sizeimage: u32,
+    pub colorspace: u32,
+    pub priv_: u32,
+}
+
+#[repr(C)]
+#[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
-    pub fmt: [u8; 200],
+    pub fmt: v4l2_pix_format,
 }
-impl Default for v4l2_format {
-    fn default() -> Self {
-        v4l2_format {
-            r#type: 0,
-            fmt: [0; 200],
-        }
-    }
-}
+
 fn main() {
     let mut file = File::options()
         .write(true)
