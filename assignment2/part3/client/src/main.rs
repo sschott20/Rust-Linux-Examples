@@ -27,11 +27,6 @@ pub struct v4l2_capability {
 }
 #[repr(C)]
 union V4L2FormatUnion {
-    pix: v4l2_pix_format,
-    pix_mp: v4l2_pix_format_mplane,
-    win: v4l2_window,
-    vbi: v4l2_vbi_format,
-    sliced: v4l2_sliced_vbi_format,
     raw_data: [u8; 200],
 }
 
