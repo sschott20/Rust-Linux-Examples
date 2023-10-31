@@ -48,24 +48,24 @@ fn main() {
         VIDIOC_QUERYCAP_TYPE_MODE,
         v4l2_capability
     );
-    let mut info: v4l2_capability = Default::default();
+    let mut info_capability: v4l2_capability = Default::default();
 
     match unsafe { vidioc_querycap(media_fd, &mut info as *mut v4l2_capability) } {
         Ok(_) => {
             println!("get info [OK]");
-            println!("driver: {:?}", str::from_utf8(&info.driver));
-            println!("card: {:?}", str::from_utf8(&info.card));
-            println!("bus_info: {:?}", str::from_utf8(&info.bus_info));
-            println!("version: {:?}", info.version);
-            println!("capabilities: {:?}", info.capabilities);
-            println!("device_caps: {:?}", info.device_caps);
+            println!("driver: {:?}", str::from_utf8(&info_capability.driver));
+            println!("card: {:?}", str::from_utf8(&info_capability.card));
+            println!("bus_info: {:?}", str::from_utf8(&info_capability.bus_info));
+            println!("version: {:?}", info_capability.version);
+            println!("capabilities: {:?}", info_capability.capabilities);
+            println!("device_caps: {:?}", info_capability.device_caps);
         }
         Err(e) => {
             println!("get info [FAILED]: {:?}", e);
         }
     }
 
-    let mut info: v4l2_input = Default::default();
+    let mut info_input: v4l2_input = Default::default();
 
     ioctl_read!(
         videoc_g_input,
@@ -73,15 +73,15 @@ fn main() {
         VIDIOC_QUERYCAP_TYPE_MODE,
         info
     );
-    match unsafe { videoc_g_input(media_fd, &mut info as *mut v4l2_input) } {
+    match unsafe { videoc_g_input(media_fd, &mut info_input) } {
         Ok(_) => {
             println!("get info [OK]");
-            println!("driver: {:?}", str::from_utf8(&info.driver));
-            println!("card: {:?}", str::from_utf8(&info.card));
-            println!("bus_info: {:?}", str::from_utf8(&info.bus_info));
-            println!("version: {:?}", info.version);
-            println!("capabilities: {:?}", info.capabilities);
-            println!("device_caps: {:?}", info.device_caps);
+            println!("driver: {:?}", str::from_utf8(&info_input.driver));
+            println!("card: {:?}", str::from_utf8(&info_input.card));
+            println!("bus_info: {:?}", str::from_utf8(&info_input.bus_info));
+            println!("version: {:?}", info_input.version);
+            println!("capabilities: {:?}", info_input.capabilities);
+            println!("device_caps: {:?}", info_input.device_caps);
         }
         Err(e) => {
             println!("get info [FAILED]: {:?}", e);
