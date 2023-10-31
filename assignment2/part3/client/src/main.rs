@@ -41,7 +41,7 @@ pub struct v4l2_pix_format {
 
 #[repr(C)]
 pub union v4l2_format_fmt {
-    pub pix: v4l2_pix_format,
+    pub pix: std::mem::ManuallyDrop<v4l2_pix_format>,
     pub raw_data: [u8; 200],
 }
 impl Default for v4l2_format_fmt {
