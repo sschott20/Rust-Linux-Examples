@@ -78,7 +78,7 @@ fn main() {
 
     let mut info_input: u32 = Default::default();
 
-    match unsafe { vidioc_g_input(media_fd, &info_input as *mut u32) } {
+    match unsafe { vidioc_g_input(media_fd, &mut info_input as *mut u32) } {
         Ok(_) => {
             println!("get info g_input [OK]");
         }
