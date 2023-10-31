@@ -31,7 +31,7 @@ pub struct v4l2_capability {
 // }
 
 #[repr(C)]
-// #[derive(Default)]
+#[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
     pub fmt: [u8; 200],
@@ -102,7 +102,7 @@ fn main() {
         fmt: [0; 200],
         // fmt: V4L2FormatUnion { raw_data: [0; 200] },
     };
-    println!("type: {:?}", info_format.r#type);
+
     info_format.r#type = 1;
     match unsafe { vidioc_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
         Ok(_) => {
