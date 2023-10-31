@@ -34,9 +34,17 @@ fn main() {
         v4l2_capability
     );
     let mut info: v4l2_capability = Default::default();
+
     match unsafe { vidioc_querycap(media_fd, &mut info as *mut v4l2_capability) } {
         Ok(_) => {
             println!("get info [OK]");
+            println!("driver: {:?}", str::from_utf8(&info.driver));
+            println("card: {:?}", str::from_utf8(&info.card));
+            println!("bus_info: {:?}", str::from_utf8(&info.bus_info));
+            println!("version: {:?}", info.version);
+            println!("capabilities: {:?}", info.capabilities);
+            println!("device_caps: {:?}", info.device_caps);
+            
         }
         Err(e) => {
             println!("get info [FAILED]: {:?}", e);
