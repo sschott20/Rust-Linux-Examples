@@ -83,12 +83,14 @@ fn main() {
         u32
     );
 
-    ioctl_readwrite!(
-        vidioc_enuminput,
-        VIDIOC_ENUMINPUT_MAGIC,
-        VIDIOC_ENUMINPUT_TYPE_MODE,
-        v4l2_input
-    );
+    // ioctl_readwrite!(
+    //     vidioc_enuminput,
+    //     VIDIOC_ENUMINPUT_MAGIC,
+    //     VIDIOC_ENUMINPUT_TYPE_MODE,
+    //     v4l2_input
+    // );
+
+    ioctl_readwrite!(vidioc_enuminput, b'V', 26, v4l2_input);
 
     let mut index: u32 = Default::default();
 
@@ -98,7 +100,7 @@ fn main() {
 
             let mut input: v4l2_input = unsafe { std::mem::zeroed() };
             input.index = index;
-
+            
             match unsafe { vidioc_enuminput(media_fd, &mut input) } {
                 Ok(_) => {
                     println!("get info enuminput [OK]");
