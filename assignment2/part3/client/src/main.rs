@@ -1,4 +1,4 @@
-use nix::{ioctl_read, ioctl_write_ptr, sys::ioctl};
+use nix::{ioctl_read, ioctl_readwrite, sys::ioctl};
 use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
@@ -85,8 +85,8 @@ fn main() {
         }
     }
 
-    ioctl_read!(
-        vidioc_g_fmt,
+    ioctl_readwrite!(
+        vidio_g_fmt,
         VIDIOC_G_FMT_MAGIC,
         VIDIOC_G_FMT_TYPE_MODE,
         v4l2_format
@@ -98,7 +98,7 @@ fn main() {
         fmt: [0; 200],
     };
     info_format.r#type = 1;
-    match unsafe { vidioc_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
+    match unsafe { vidio_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
         Ok(_) => {
             println!("get info g_fmt [OK]");
             println!("type: {:?}", info_format.r#type);
