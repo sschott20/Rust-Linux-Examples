@@ -1,4 +1,4 @@
-use nix::{ioctl_read, ioctl_readwrite};
+use nix::{ioctl_read, sys::ioctl};
 // use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
@@ -126,61 +126,61 @@ fn main() {
         }
     }
 
-    // ioctl_readwrite!(
-    //     vidioc_g_fmt,
-    //     VIDIOC_G_FMT_MAGIC,
-    //     VIDIOC_G_FMT_TYPE_MODE,
-    //     v4l2_format
-    // );
-
-    // let mut info_format: v4l2_format = Default::default();
-
-    // info_format.r#type = 1;
-    // match unsafe { vidioc_g_fmt(media_fd, &mut info_format) } {
-    //     Ok(_) => {
-    //         println!("get info g_fmt [OK]");
-    //         println!("type: {:?}", info_format.r#type);
-    //         // println!("fmt: {:?}", info_format.fmt);
-    //     }
-
-    //     Err(e) => {
-    //         println!("get info g_fmt [FAILED]: {:?}", e);
-    //     }
-    // }
-
     ioctl_readwrite!(
-        vidioc_enum_fmt,
-        VIDIOC_ENUM_FMT_MAGIC,
-        VIDIOC_ENUM_FMT_TYPE_MODE,
-        v4l2_fmtdesc
+        vidioc_g_fmt,
+        VIDIOC_G_FMT_MAGIC,
+        VIDIOC_G_FMT_TYPE_MODE,
+        v4l2_format
     );
-    let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
-    info_fmtdesc.index = 1;
-    loop {
-        println!("index: {:?}", info_fmtdesc.index);
-        if info_fmtdesc.index == 5 {
-            break;
-        }
-        match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
-            Ok(_) => {
-                println!("get info enum_fmt [OK]");
-                println!("index: {:?}", info_fmtdesc.index);
-                println!("type: {:?}", info_fmtdesc.r#type);
-                println!("flags: {:?}", info_fmtdesc.flags);
-                println!(
-                    "description: {:?}",
-                    str::from_utf8(&info_fmtdesc.description)
-                );
-                println!("pixelformat: {:?}", info_fmtdesc.pixelformat);
-                break;
-            }
 
-            Err(e) => {
-                println!("get info enum_fmt [FAILED]: {:?}", e);
-            }
+    let mut info_format: v4l2_format = Default::default();
+
+    info_format.r#type = 1;
+    match unsafe { vidioc_g_fmt(media_fd, &mut info_format) } {
+        Ok(_) => {
+            println!("get info g_fmt [OK]");
+            println!("type: {:?}", info_format.r#type);
+            // println!("fmt: {:?}", info_format.fmt);
         }
-        info_fmtdesc.index = info_fmtdesc.index + 1;
+
+        Err(e) => {
+            println!("get info g_fmt [FAILED]: {:?}", e);
+        }
     }
+
+    // ioctl_readwrite!(
+    //     vidioc_enum_fmt,
+    //     VIDIOC_ENUM_FMT_MAGIC,
+    //     VIDIOC_ENUM_FMT_TYPE_MODE,
+    //     v4l2_fmtdesc
+    // );
+    // let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
+    // info_fmtdesc.index = 1;
+    // loop {
+    //     println!("index: {:?}", info_fmtdesc.index);
+    //     if info_fmtdesc.index == 5 {
+    //         break;
+    //     }
+    //     match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
+    //         Ok(_) => {
+    //             println!("get info enum_fmt [OK]");
+    //             println!("index: {:?}", info_fmtdesc.index);
+    //             println!("type: {:?}", info_fmtdesc.r#type);
+    //             println!("flags: {:?}", info_fmtdesc.flags);
+    //             println!(
+    //                 "description: {:?}",
+    //                 str::from_utf8(&info_fmtdesc.description)
+    //             );
+    //             println!("pixelformat: {:?}", info_fmtdesc.pixelformat);
+    //             break;
+    //         }
+
+    //         Err(e) => {
+    //             println!("get info enum_fmt [FAILED]: {:?}", e);
+    //         }
+    //     }
+    //     info_fmtdesc.index = info_fmtdesc.index + 1;
+    // }
 
     println!("Client exit [OK]");
 }
