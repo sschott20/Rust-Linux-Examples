@@ -46,7 +46,9 @@ pub union v4l2_format_fmt {
 }
 impl Default for v4l2_format_fmt {
     fn default() -> Self {
-        unsafe { std::mem::zeroed() }
+        {
+            v4l2_format_fmt { raw_data: [0; 200] }
+        }
     }
 }
 
