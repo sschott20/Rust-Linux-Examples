@@ -1,5 +1,3 @@
-extern crate nix;
-
 use nix::{ioctl_read, sys::ioctl};
 use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
@@ -29,21 +27,21 @@ fn main() {
     let media_fd = file.as_raw_fd();
     println!("camera fd = {}", media_fd);
 
-    // ioctl_read!(
-    //     vidioc_querycap,
-    //     VIDIOC_QUERYCAP_MAGIC,
-    //     VIDIOC_QUERYCAP_TYPE_MODE,
-    //     v4l2_capability
-    // );
-    // let mut info: v4l2_capability = Default::default();
-    // match unsafe { vidioc_querycap(media_fd, &mut info as *mut v4l2_capability) } {
-    //     Ok(_) => {
-    //         println!("get info [OK]");
-    //     }
-    //     Err(e) => {
-    //         println!("get info [FAILED]: {:?}", e);
-    //     }
-    // }
+    ioctl_read!(
+        vidioc_querycap,
+        VIDIOC_QUERYCAP_MAGIC,
+        VIDIOC_QUERYCAP_TYPE_MODE,
+        v4l2_capability
+    );
+    let mut info: v4l2_capability = Default::default();
+    match unsafe { vidioc_querycap(media_fd, &mut info as *mut v4l2_capability) } {
+        Ok(_) => {
+            println!("get info [OK]");
+        }
+        Err(e) => {
+            println!("get info [FAILED]: {:?}", e);
+        }
+    }
 
-    // println!("driver: {:?}", str::from_utf8(&info.driver));
+    println!("driver: {:?}", str::from_utf8(&info.driver));
 }
