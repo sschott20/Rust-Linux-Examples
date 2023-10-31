@@ -31,12 +31,18 @@ pub struct v4l2_capability {
 // }
 
 #[repr(C)]
-#[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
     pub fmt: [u8; 200],
 }
-
+impl Default for v4l2_format {
+    fn default() -> Self {
+        v4l2_format {
+            r#type: 0,
+            fmt: [0; 200],
+        }
+    }
+}
 fn main() {
     let mut file = File::options()
         .write(true)
