@@ -171,6 +171,7 @@ fn main() {
         Err(e) => {
             println!("get info enum_fmt [FAILED]: {:?}", e);
         }
+    }
 
     println!("Client exit [OK]");
 }
