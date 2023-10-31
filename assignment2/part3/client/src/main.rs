@@ -14,6 +14,10 @@ const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
 const VIDIOC_G_FMT_MAGIC: u8 = 'V' as u8;
 const VIDIOC_G_FMT_TYPE_MODE: u8 = 4;
 
+// #define VIDIOC_ENUM_FMT         _IOWR('V',  2, struct v4l2_fmtdesc)
+const VIDIOC_ENUM_FMT_MAGIC: u8 = 'V' as u8;
+const VIDIOC_ENUM_FMT_TYPE_MODE: u8 = 2;
+
 #[repr(C)]
 #[derive(Default)]
 pub struct v4l2_capability {
@@ -24,6 +28,17 @@ pub struct v4l2_capability {
     pub capabilities: u32,
     pub device_caps: u32,
     pub reserved: [u32; 3],
+}
+
+#[repr(C)]
+#[derive(Default)]
+pub struct v4l2_fmtdesc {
+    pub index: u32,
+    pub r#type: u32,
+    pub flags: u32,
+    pub description: [u8; 32],
+    pub pixelformat: u32,
+    pub reserved: [u32; 4],
 }
 
 #[repr(C)]
@@ -111,27 +126,51 @@ fn main() {
         }
     }
 
+    // ioctl_readwrite!(
+    //     vidioc_g_fmt,
+    //     VIDIOC_G_FMT_MAGIC,
+    //     VIDIOC_G_FMT_TYPE_MODE,
+    //     v4l2_format
+    // );
+
+    // let mut info_format: v4l2_format = Default::default();
+
+    // info_format.r#type = 1;
+    // match unsafe { vidioc_g_fmt(media_fd, &mut info_format) } {
+    //     Ok(_) => {
+    //         println!("get info g_fmt [OK]");
+    //         println!("type: {:?}", info_format.r#type);
+    //         // println!("fmt: {:?}", info_format.fmt);
+    //     }
+
+    //     Err(e) => {
+    //         println!("get info g_fmt [FAILED]: {:?}", e);
+    //     }
+    // }
+
     ioctl_readwrite!(
-        vidioc_g_fmt,
-        VIDIOC_G_FMT_MAGIC,
-        VIDIOC_G_FMT_TYPE_MODE,
-        v4l2_format
+        vidioc_enum_fmt,
+        VIDIOC_ENUM_FMT_MAGIC,
+        VIDIOC_ENUM_FMT_TYPE_MODE,
+        v4l2_fmtdesc
     );
-
-    let mut info_format: v4l2_format = Default::default();
-
-    info_format.r#type = 1;
-    match unsafe { vidioc_g_fmt(media_fd, &mut info_format) } {
+    let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
+    match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
         Ok(_) => {
-            println!("get info g_fmt [OK]");
-            println!("type: {:?}", info_format.r#type);
-            // println!("fmt: {:?}", info_format.fmt);
+            println!("get info enum_fmt [OK]");
+            println!("index: {:?}", info_fmtdesc.index);
+            println!("type: {:?}", info_fmtdesc.r#type);
+            println!("flags: {:?}", info_fmtdesc.flags);
+            println!(
+                "description: {:?}",
+                str::from_utf8(&info_fmtdesc.description)
+            );
+            println!("pixelformat: {:?}", info_fmtdesc.pixelformat);
         }
 
         Err(e) => {
-            println!("get info g_fmt [FAILED]: {:?}", e);
+            println!("get info enum_fmt [FAILED]: {:?}", e);
         }
-    }
 
     println!("Client exit [OK]");
 }
