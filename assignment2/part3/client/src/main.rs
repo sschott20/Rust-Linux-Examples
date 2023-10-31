@@ -1,4 +1,7 @@
-// use nix::{ioctl_read, sys::ioctl};
+#[macro_use]
+extern crate nix;
+
+use nix::{ioctl_read, sys::ioctl};
 use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 
