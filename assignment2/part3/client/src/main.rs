@@ -102,12 +102,7 @@ fn main() {
         v4l2_format
     );
 
-    // let mut info_format: v4l2_format = Default::default();
-    let mut info_format: v4l2_format = v4l2_format {
-        r#type: 1,
-        fmt: [0; 200],
-        // fmt: V4L2FormatUnion { raw_data: [0; 200] },
-    };
+    let mut info_format: v4l2_format = Default::default();
 
     info_format.r#type = 1;
     match unsafe { vidioc_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
