@@ -155,6 +155,7 @@ fn main() {
         v4l2_fmtdesc
     );
     let mut info_fmtdesc: v4l2_fmtdesc = Default::default();
+    info_fmtdesc.index = 1;
     loop {
         println!("index: {:?}", info_fmtdesc.index);
         if info_fmtdesc.index == 100 {
