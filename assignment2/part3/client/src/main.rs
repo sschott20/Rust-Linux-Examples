@@ -48,8 +48,8 @@ fn main() {
 
     ioctl_read!(
         vidioc_querycap,
-        VIDIOC_G_INPUT_MAGIC,
-        VIDIOC_G_INPUT_TYPE_MODE,
+        VIDIOC_QUERYCAP_MAGIC,
+        VIDIOC_QUERYCAP_TYPE_MODE,
         v4l2_capability
     );
     let mut info_capability: v4l2_capability = Default::default();
@@ -69,7 +69,12 @@ fn main() {
         }
     }
 
-    ioctl_read!(vidioc_g_input, b'V', 4, v4l2_input);
+    ioctl_read!(
+        vidioc_g_input,
+        VIDIOC_G_INPUT_MAGIC,
+        VIDIOC_G_INPUT_TYPE_MODE,
+        v4l2_input
+    );
 
     let mut info_input: v4l2_input = Default::default();
 
