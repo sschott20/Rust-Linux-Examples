@@ -76,12 +76,8 @@ fn main() {
     match unsafe { videoc_g_input(media_fd, &mut info_input) } {
         Ok(_) => {
             println!("get info [OK]");
-            println!("driver: {:?}", str::from_utf8(&info_input.driver));
-            println!("card: {:?}", str::from_utf8(&info_input.card));
-            println!("bus_info: {:?}", str::from_utf8(&info_input.bus_info));
-            println!("version: {:?}", info_input.version);
-            println!("capabilities: {:?}", info_input.capabilities);
-            println!("device_caps: {:?}", info_input.device_caps);
+            println!("index: {:?}", str::from_utf8(&info_input.index));
+
         }
         Err(e) => {
             println!("get info [FAILED]: {:?}", e);
