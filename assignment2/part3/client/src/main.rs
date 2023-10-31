@@ -1,6 +1,6 @@
 use nix;
 use nix::ioctl_read;
-use nix::ioctl_readwrite_buf;
+use nix::ioctl_readwrite;
 
 // use std::mem::size_of;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
@@ -83,7 +83,7 @@ fn main() {
         u32
     );
 
-    ioctl_readwrite_buf!(
+    ioctl_readwrite!(
         vidioc_enuminput,
         VIDIOC_ENUMINPUT_MAGIC,
         VIDIOC_ENUMINPUT_TYPE_MODE,
