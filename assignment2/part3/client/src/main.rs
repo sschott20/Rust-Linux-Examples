@@ -14,7 +14,6 @@ const VIDIOC_G_INPUT_TYPE_MODE: u8 = 38;
 const VIDIOC_ENUMINPUT_MAGIC: u8 = 'V' as u8;
 const VIDIOC_ENUMINPUT_TYPE_MODE: u8 = 26;
 
-
 #[repr(C)]
 #[derive(Default)]
 pub struct v4l2_capability {
@@ -86,7 +85,7 @@ fn main() {
     match unsafe { vidioc_g_input(media_fd, &mut info_input as *mut u32) } {
         Ok(_) => {
             println!("get info g_input [OK]");
-            let mut info_enuminput : v4l2_input = Default::default();
+            let mut info_enuminput: v4l2_input = Default::default();
             info_enuminput.index = info_input;
             ioctl_read!(
                 vidioc_enuminput,
@@ -94,7 +93,7 @@ fn main() {
                 VIDIOC_ENUMINPUT_TYPE_MODE,
                 v4l2_input
             );
-            match unsafe {vidioc_enuminput(media_fd, &mut info_enuminput as *mut v4l2_input)} {
+            match unsafe { vidioc_enuminput(media_fd, &mut info_enuminput as *mut v4l2_input) } {
                 Ok(_) => {
                     println!("get info enuminput [OK]");
                     println!("index: {:?}", info_enuminput.index);
@@ -109,14 +108,12 @@ fn main() {
                 Err(e) => {
                     println!("get info enuminput [FAILED]: {:?}", e);
                 }
-
+            }
         }
         Err(e) => {
             println!("get info g_input [FAILED]: {:?}", e);
         }
     }
-
-
 
     println!("Client exit [OK]");
 }
