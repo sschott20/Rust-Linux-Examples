@@ -25,12 +25,21 @@ pub struct v4l2_capability {
     pub device_caps: u32,
     pub reserved: [u32; 3],
 }
+#[repr(C)]
+union V4L2FormatUnion {
+    pix: v4l2_pix_format,
+    pix_mp: v4l2_pix_format_mplane,
+    win: v4l2_window,
+    vbi: v4l2_vbi_format,
+    sliced: v4l2_sliced_vbi_format,
+    raw_data: [u8; 200],
+}
 
 #[repr(C)]
-// #[derive(Default)]
+#[derive(Default)]
 pub struct v4l2_format {
     pub r#type: u32,
-    pub fmt: [u8; 200],
+    pub fmt: V4L2FormatUnion,
 }
 
 fn main() {
