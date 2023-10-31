@@ -106,7 +106,7 @@ fn main() {
         Ok(_) => {
             println!("get info g_fmt [OK]");
             println!("type: {:?}", info_format.r#type);
-            println!("fmt: {:?}", info_format.fmt);
+            // println!("fmt: {:?}", info_format.fmt);
         }
 
         Err(e) => {
