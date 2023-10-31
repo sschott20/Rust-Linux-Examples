@@ -61,7 +61,7 @@ fn main() {
         VIDIOC_QUERYCAP_TYPE_MODE,
         v4l2_capability
     );
-    let mut info_capability: v4l2_capability = Default::default();
+    let mut info_capability: v4l2_capability = unsafe { std::mem::zeroed() };
 
     match unsafe { vidioc_querycap(media_fd, &mut info_capability) } {
         Ok(_) => {
