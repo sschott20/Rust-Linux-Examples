@@ -39,7 +39,7 @@ fn main() {
         Ok(_) => {
             println!("get info [OK]");
             println!("driver: {:?}", str::from_utf8(&info.driver));
-            println("card: {:?}", str::from_utf8(&info.card));
+            println!("card: {:?}", str::from_utf8(&info.card));
             println!("bus_info: {:?}", str::from_utf8(&info.bus_info));
             println!("version: {:?}", info.version);
             println!("capabilities: {:?}", info.capabilities);
