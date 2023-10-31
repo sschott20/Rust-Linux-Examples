@@ -158,7 +158,7 @@ fn main() {
     info_fmtdesc.index = 1;
     loop {
         println!("index: {:?}", info_fmtdesc.index);
-        if info_fmtdesc.index == 100 {
+        if info_fmtdesc.index == 5 {
             break;
         }
         match unsafe { vidioc_enum_fmt(media_fd, &mut info_fmtdesc) } {
