@@ -90,7 +90,7 @@ fn main() {
     }
 
     ioctl_readwrite!(
-        vidio_g_fmt,
+        vidioc_g_fmt,
         VIDIOC_G_FMT_MAGIC,
         VIDIOC_G_FMT_TYPE_MODE,
         v4l2_format
@@ -102,7 +102,7 @@ fn main() {
         fmt: V4L2FormatUnion { raw_data: [0; 200] },
     };
     info_format.r#type = 1;
-    match unsafe { vidio_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
+    match unsafe { vidioc_g_fmt(media_fd, &mut info_format as *mut v4l2_format) } {
         Ok(_) => {
             println!("get info g_fmt [OK]");
             println!("type: {:?}", info_format.r#type);
