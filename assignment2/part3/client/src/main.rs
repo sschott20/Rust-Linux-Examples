@@ -37,6 +37,24 @@ fn request_buffer(media_fd: i32) -> v4l2_requestbuffers {
     reqbufs
 }
 
+fn query_buffer(media_fd: i32) -> v4l2_buffer {
+    // #define VIDIOC_QUERYBUF _IOWR('V', 9, struct v4l2_buffer)
+    ioctl_readwrite!(vidioc_querybuf, VIDIOC_MAGIC, 9, v4l2_buffer);
+    let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
+    buf.type_ = 1;
+    buf.memory = 2;
+    buf.index = 0;
+    match unsafe { vidioc_querybuf(media_fd, &mut buf) } {
+        Ok(_) => {
+            println!("querybuf [OK]");
+        }
+        Err(e) => {
+            println!("querybuf [FAILED]: {:?}", e);
+        }
+    }
+    buf
+}
+
 fn main() {
     let file = File::options()
         .write(true)
