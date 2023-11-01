@@ -13,6 +13,8 @@ use bindings::*;
 use memmap::Mmap;
 use memmap::MmapOptions;
 mod setup;
+use nix::sys::select;
+use nix::sys::select::FdSet;
 use setup::*;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 use std::{
@@ -99,8 +101,13 @@ fn main() {
     // file.seek(SeekFrom::Start(SIZE)).unwrap();
     // file.write_all(&[0]).unwrap();
     // file.seek(SeekFrom::Start(0)).unwrap();
+    // println!("file read {:f}");
+    let mut buffer = unsafe { memmap::MmapOptions::new().len(4096).map_mut(&file).unwrap() };
 
-    let mut data = unsafe { memmap::MmapOptions::new().len(1).map_mut(&file).unwrap() };
+    let mut readfds = FdSet::new();
+    readfds.insert(media_fd);
+
+    let _ = select::select(1, &mut readfds, None, None, None);
 
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
