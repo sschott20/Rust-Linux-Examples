@@ -54,7 +54,7 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     }
     buf
 }
-fn stream_on(media_fd: i32, buf: v4l2_buffer) {
+fn stream_on(media_fd: i32) {
     // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
     ioctl_write_int!(vidioc_streamon, VIDIOC_MAGIC, 18);
 
