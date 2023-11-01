@@ -69,7 +69,7 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
             println!("Image format:");
             println!("width: {:?}", unsafe { format.fmt.pix.width });
             println!("height: {:?}", unsafe { format.fmt.pix.height });
-            println!("pixelformat: {:?}", unsafe { format.fmt.pix.pixelformat });
+            println!("pixelformat: {:x}", unsafe { format.fmt.pix.pixelformat });
             println!("field: {:?}", unsafe { format.fmt.pix.field });
             println!("bytesperline: {:?}", unsafe { format.fmt.pix.bytesperline });
             println!("sizeimage: {:?}", unsafe { format.fmt.pix.sizeimage });
