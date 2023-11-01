@@ -1,6 +1,7 @@
 #![allow(unused_mut)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
+use core::slice::SlicePattern;
 use std::{thread, time};
 
 use nix;
@@ -126,7 +127,7 @@ fn main() {
     let mut buffer = unsafe { memmap::MmapOptions::new().len(4096).map_mut(&file).unwrap() };
     // let mut writefds: FdSet = FdSet::new();
     println!("buffer: {:?}", buffer);
-    println!("read buffer {:?}", buffer[0]);
+    println!("read buffer {:?}", buffer);
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
 
