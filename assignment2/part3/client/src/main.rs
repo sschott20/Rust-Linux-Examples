@@ -91,13 +91,14 @@ fn main() {
     // let mut buffer: memmap::Mmap = unsafe { MmapOptions::new().map(&file).unwrap() };
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
-
-    match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
-        Ok(_) => {
-            println!("dqbuf [OK]");
-        }
-        Err(e) => {
-            println!("dqbuf [FAILED]: {:?}", e);
+    loop {
+        match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+            Ok(_) => {
+                println!("dqbuf [OK]");
+            }
+            Err(e) => {
+                println!("dqbuf [FAILED]: {:?}", e);
+            }
         }
     }
 
