@@ -2,8 +2,6 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
 
-
-
 use nix;
 use nix::ioctl_read;
 use nix::ioctl_readwrite;
@@ -87,6 +85,9 @@ fn main() {
     let mut format: v4l2_format = setup_vidio(media_fd);
     let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
     let mut buf: v4l2_buffer = query_buffer(media_fd);
+
+    let mut file = File::open("resource/buffer.txt").unwrap();
+
     let mut stream_on = stream_on(media_fd);
 
     println!("Client exit [OK]");
