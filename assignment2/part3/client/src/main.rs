@@ -1,7 +1,7 @@
 use nix;
 use nix::ioctl_read;
 use nix::ioctl_readwrite;
-
+use nix::ioctl_write_int;
 mod bindings;
 use bindings::*;
 
@@ -54,6 +54,19 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     }
     buf
 }
+fn stream_on(media_fd: i32, buf: v4l2_buffer) {
+    // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
+    ioctl_write_int!(vidioc_streamon, VIDIOC_MAGIC, 18);
+
+    match unsafe { vidioc_streamon(media_fd, 1) } {
+        Ok(_) => {
+            println!("streamon [OK]");
+        }
+        Err(e) => {
+            println!("streamon [FAILED]: {:?}", e);
+        }
+    }
+}
 
 fn main() {
     let file = File::options()
@@ -68,5 +81,7 @@ fn main() {
     let mut format: v4l2_format = setup_vidio(media_fd);
     let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
     let mut buf: v4l2_buffer = query_buffer(media_fd);
+    let mut stream_on = stream_on(media_fd);
+
     println!("Client exit [OK]");
 }
