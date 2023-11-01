@@ -1,6 +1,7 @@
 #![allow(unused_mut)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
+use std::{thread, time};
 
 use nix;
 use nix::ioctl_read;
@@ -97,6 +98,13 @@ fn main() {
     buf.type_ = 1;
     buf.memory = 1;
     buf.index = 0;
+
+    use std::{thread, time};
+
+    let ten_millis = time::Duration::from_millis(10000);
+    let now = time::Instant::now();
+    thread::sleep(ten_millis);
+    print!("time passed");
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("dqbuf [OK]");
