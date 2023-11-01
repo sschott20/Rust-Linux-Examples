@@ -19,7 +19,7 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
             println!("card: {:?}", str::from_utf8(&info_capability.card));
             println!("bus_info: {:?}", str::from_utf8(&info_capability.bus_info));
             println!("version: {:?}", info_capability.version);
-            println!("capabilities: {:?}", info_capability.capabilities);
+            println!("capabilities: {:x}", info_capability.capabilities);
             println!("device_caps: {:?}", info_capability.device_caps);
         }
         Err(e) => {
