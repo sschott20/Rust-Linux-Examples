@@ -23,6 +23,7 @@ fn main() {
     println!("camera fd = {}", media_fd);
 
     let mut format: v4l2_format = setup_vidio(media_fd);
+    
 
     println!("Client exit [OK]");
 }
