@@ -93,7 +93,6 @@ fn main() {
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
-    // loop {
     let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
     buf.type_ = 1;
     buf.memory = 1;
@@ -104,7 +103,7 @@ fn main() {
     let ten_millis = time::Duration::from_millis(1000);
     let now = time::Instant::now();
     thread::sleep(ten_millis);
-    print!("time passed");
+    println!("time passed");
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("dqbuf [OK]");
