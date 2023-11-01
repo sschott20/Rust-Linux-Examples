@@ -22,8 +22,8 @@ fn request_buffer(media_fd: i32) -> v4l2_requestbuffers {
     // V4L2_BUF_TYPE_VIDEO_CAPTURE
     reqbufs.type_ = 1;
 
-    // userptr
-    reqbufs.memory = 2;
+    // mmap
+    reqbufs.memory = 1;
 
     match unsafe { vidioc_reqbufs(media_fd, &mut reqbufs) } {
         Ok(_) => {
@@ -42,7 +42,7 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     ioctl_readwrite!(vidioc_querybuf, VIDIOC_MAGIC, 9, v4l2_buffer);
     let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
     buf.type_ = 1;
-    buf.memory = 2;
+    buf.memory = 1;
     buf.index = 0;
     match unsafe { vidioc_querybuf(media_fd, &mut buf) } {
         Ok(_) => {
