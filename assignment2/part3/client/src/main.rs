@@ -9,6 +9,13 @@ use nix::ioctl_readwrite;
 use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
+use opencv::core::{flip, Vec3b};
+use opencv::videoio::*;
+use opencv::{
+	prelude::*,
+	videoio,
+	highgui::*,
+};
 
 use memmap::Mmap;
 use memmap::MmapOptions;
@@ -162,9 +169,11 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
-    println!(
-        "first {} bytes: {:?}",
-        buf.bytesused,
-        &buffer[0..buf.bytesused as usize]
-    );
+    // println!(
+    //     "first {} bytes: {:?}",
+    //     buf.bytesused,
+    //     &buffer[0..buf.bytesused as usize]
+    // );
+
+
 }
