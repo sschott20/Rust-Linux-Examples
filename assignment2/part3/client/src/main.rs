@@ -109,6 +109,11 @@ fn main() {
 
     let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
     println!("select [OK]");
+
+    let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
+    buf.type_ = 1;
+    buf.memory = 1;
+
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
