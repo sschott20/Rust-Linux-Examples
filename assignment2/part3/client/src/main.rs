@@ -106,7 +106,7 @@ fn main() {
 
     let mut readfds = FdSet::new();
     readfds.insert(media_fd);
-    println!("readfds [OK]");
+    readfds.insert(0);
 
     let _ = select::select(1, &mut readfds, None, None, None);
     println!("select [OK]");
