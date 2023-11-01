@@ -165,9 +165,10 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
-    // println!(
-    //     "first {} bytes: {:?}",
-    //     buf.bytesused,
-    //     &buffer[0..buf.bytesused as usize]
-    // );
+    
+    println!(
+        "first {} ",
+        buf.bytesused,
+        // &buffer[0..buf.bytesused as usize]
+    );
 }
