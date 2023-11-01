@@ -53,7 +53,7 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     match unsafe { vidioc_querybuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("querybuf [OK]");
-            println!("buf.m.offset: {:?}", buf.m.offset);
+            println!("buf.m.offset: {:?}", unsafe { buf.m.offset });
         }
         Err(e) => {
             println!("querybuf [FAILED]: {:?}", e);
