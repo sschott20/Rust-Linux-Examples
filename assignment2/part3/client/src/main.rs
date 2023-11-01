@@ -99,8 +99,7 @@ fn main() {
         Err(e) => {
             println!("dqbuf [FAILED]: {:?}", e);
         }
-
-
+    }
 
     println!("Client exit [OK]");
 }
