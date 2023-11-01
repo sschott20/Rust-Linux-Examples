@@ -110,7 +110,6 @@ fn stream_on(media_fd: i32) {
         }
     }
 
-
     // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
     ioctl_write_ptr!(vidioc_streamon, VIDIOC_MAGIC, 18, i32);
     let buf_type = 1;
@@ -163,6 +162,6 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
-
+    println!("buf.bytesused = {}", buf.bytesused);
     println!("Client exit [OK]");
 }
