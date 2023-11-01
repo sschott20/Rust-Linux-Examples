@@ -1,7 +1,6 @@
 #![allow(unused_mut)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
-use core::slice::SlicePattern;
 use std::{thread, time};
 
 use nix;
