@@ -69,8 +69,8 @@ static int xioctl(int fh, int request, void *arg)
 
 static void process_image(const void *p, int size)
 {
-
-    fwrite(p, size, 1, stdout);
+    if (out_buf)
+        fwrite(p, size, 1, stdout);
 
     fflush(stderr);
     fprintf(stderr, ".");
