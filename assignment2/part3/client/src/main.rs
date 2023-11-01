@@ -14,8 +14,11 @@ use memmap::Mmap;
 use memmap::MmapOptions;
 mod setup;
 use setup::*;
-
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
+use std::{
+    fs::OpenOptions,
+    io::{Seek, SeekFrom, Write},
+};
 
 const VIDIOC_MAGIC: u8 = b'V';
 
@@ -92,16 +95,11 @@ fn main() {
     let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
     let mut buf: v4l2_buffer = query_buffer(media_fd);
     let mut stream_on = stream_on(media_fd);
+    file.seek(SeekFrom::Start(SIZE)).unwrap();
+    file.write_all(&[0]).unwrap();
+    file.seek(SeekFrom::Start(0)).unwrap();
 
-    // let mmap = unsafe {
-    //     MmapOptions::new()
-    //         .offset(buf.m.offset as u64)
-    //         .map(&file)
-    //         .unwrap()
-    // };
-    let mmap = unsafe { Mmap::map(&file).expect("failed to map the file") };
-    // let mmap = unsafe { MmapOptions::new().map(&file).unwrap(). };
-    // let mut mut_mmap = mmap.make_mut().unwrap();
+    let mut data = unsafe { memmap::MmapOptions::new().map_mut(&file).unwrap() };
 
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
