@@ -13,6 +13,7 @@ use bindings::*;
 use memmap::Mmap;
 use memmap::MmapOptions;
 mod setup;
+use nix::sys::ioctl;
 use nix::sys::select;
 use nix::sys::select::FdSet;
 use setup::*;
@@ -93,6 +94,23 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     buf
 }
 fn stream_on(media_fd: i32) {
+    // #define VIDIOC_QBUF _IOWR('V', 15, struct v4l2_buffer)
+    ioctl_readwrite!(vidioc_qbuf, VIDIOC_MAGIC, 15, v4l2_buffer);
+    let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
+    buf.type_ = 1;
+    buf.memory = 1;
+    buf.index = 0;
+
+    match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
+        Ok(_) => {
+            println!("qbuf [OK]");
+        }
+        Err(e) => {
+            println!("qbuf [FAILED]: {:?}", e);
+        }
+    }
+
+
     // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
     ioctl_write_ptr!(vidioc_streamon, VIDIOC_MAGIC, 18, i32);
     let buf_type = 1;
@@ -106,8 +124,6 @@ fn stream_on(media_fd: i32) {
         }
     }
 }
-const SIZE: u64 = 1024 * 1024;
-
 fn main() {
     let mut file = File::options()
         .write(true)
@@ -129,9 +145,7 @@ fn main() {
             .map_mut(&file)
             .unwrap()
     };
-    // let mut writefds: FdSet = FdSet::new();
-    println!("buffer: {:?}", buffer);
-    println!("read buffer {:?}", buffer);
+
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
 
