@@ -124,11 +124,13 @@ fn main() {
     let mut stream_on = stream_on(media_fd);
 
     let mut buffer = unsafe { memmap::MmapOptions::new().len(4096).map_mut(&file).unwrap() };
+    // let mut writefds: FdSet = FdSet::new();
 
-    let mut readfds = FdSet::new();
+    let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
+    // writefds.insert(media_fd);
 
-    let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
+    let _ = select::select(media_fd + 1, None, &mut readfds, None, None);
     println!("select [OK]");
 
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
