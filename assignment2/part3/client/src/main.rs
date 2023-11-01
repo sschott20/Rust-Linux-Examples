@@ -108,7 +108,7 @@ fn main() {
     readfds.insert(media_fd);
 
     let _ = select::select(1, &mut readfds, None, None, None);
-
+    println!("select [OK]");
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
