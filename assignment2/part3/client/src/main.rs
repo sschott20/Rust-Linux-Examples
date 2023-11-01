@@ -18,15 +18,19 @@ fn request_buffer(media_fd: i32) -> v4l2_requestbuffers {
 
     let mut reqbufs: v4l2_requestbuffers = unsafe { std::mem::zeroed() };
     reqbufs.count = 1;
+
+    // V4L2_BUF_TYPE_VIDEO_CAPTURE
     reqbufs.type_ = 1;
-    reqbufs.memory = 1;
+
+    // userptr
+    reqbufs.memory = 2;
 
     match unsafe { vidioc_reqbufs(media_fd, &mut reqbufs) } {
         Ok(_) => {
-            println!("get info reqbufs [OK]");
+            println!("reqbufs [OK]");
         }
         Err(e) => {
-            println!("get info reqbufs [FAILED]: {:?}", e);
+            println!("reqbufs [FAILED]: {:?}", e);
         }
     }
 
@@ -44,7 +48,7 @@ fn main() {
     println!("camera fd = {}", media_fd);
 
     let mut format: v4l2_format = setup_vidio(media_fd);
-    
+    let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
 
     println!("Client exit [OK]");
 }
