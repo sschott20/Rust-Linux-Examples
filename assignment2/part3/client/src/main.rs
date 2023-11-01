@@ -104,12 +104,6 @@ fn main() {
     // println!("file read {:f}");
     let mut buffer = unsafe { memmap::MmapOptions::new().len(4096).map_mut(&file).unwrap() };
 
-    let mut readfds = FdSet::new();
-    readfds.insert(media_fd);
-    readfds.insert(0);
-
-    let _ = select::select(1, &mut readfds, None, None, None);
-    println!("select [OK]");
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
