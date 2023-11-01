@@ -67,6 +67,6 @@ fn main() {
 
     let mut format: v4l2_format = setup_vidio(media_fd);
     let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
-
+    let mut buf: v4l2_buffer = query_buffer(media_fd);
     println!("Client exit [OK]");
 }
