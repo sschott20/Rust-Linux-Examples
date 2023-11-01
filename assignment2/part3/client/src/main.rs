@@ -125,7 +125,8 @@ fn main() {
 
     let mut buffer = unsafe { memmap::MmapOptions::new().len(4096).map_mut(&file).unwrap() };
     // let mut writefds: FdSet = FdSet::new();
-
+    println!("buffer: {:?}", buffer);
+    println!("read buffer {:?}", buffer[0]);
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
 
