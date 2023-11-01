@@ -43,7 +43,7 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
     buf.type_ = 1;
     buf.memory = 2;
-    buf.index = 0;
+    buf.index = 1;
     match unsafe { vidioc_querybuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("querybuf [OK]");
