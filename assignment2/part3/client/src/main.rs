@@ -104,9 +104,32 @@ fn main() {
                 fmtdesc.index = fmtdesc.index + 1;
             }
             Err(e) => {
-                println!("get vidio_enum_fmt [FAILED]: {:?}", e);
+                // println!("get vidio_enum_fmt [FAILED]: {:?}", e);
                 break;
             }
+        }
+    }
+    // #define VIDIOC_S_FMT		_IOWR('V',  5, struct v4l2_format)
+    ioctl_readwrite!(vidio_s_fmt, VIDIOC_MAGIC, 5, v4l2_format);
+
+    // #define VIDIOC_G_FMT		_IOWR('V',  4, struct v4l2_format)
+    ioctl_readwrite!(vidio_g_fmt, VIDIOC_MAGIC, 4, v4l2_format);
+
+    format.fmt.pix.pixelformat = 0x56595559;
+    match unsafe { vidio_s_fmt(media_fd, &mut format) } {
+        Ok(_) => {
+            println!("set vidio_s_fmt [OK]");
+            match unsafe { vidio_g_fmt(media_fd, &mut format) } {
+                Ok(_) => {
+                    println!("get vidio_g_fmt [OK]");
+                }
+                Err(e) => {
+                    println!("get vidio_g_fmt [FAILED]: {:?}", e);
+                }
+            }
+        }
+        Err(e) => {
+            println!("set vidio_s_fmt [FAILED]: {:?}", e);
         }
     }
 
