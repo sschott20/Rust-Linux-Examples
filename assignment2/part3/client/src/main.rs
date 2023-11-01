@@ -96,9 +96,9 @@ fn main() {
     let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
     let mut buf: v4l2_buffer = query_buffer(media_fd);
     let mut stream_on = stream_on(media_fd);
-    file.seek(SeekFrom::Start(SIZE)).unwrap();
-    file.write_all(&[0]).unwrap();
-    file.seek(SeekFrom::Start(0)).unwrap();
+    // file.seek(SeekFrom::Start(SIZE)).unwrap();
+    // file.write_all(&[0]).unwrap();
+    // file.seek(SeekFrom::Start(0)).unwrap();
 
     let mut data = unsafe { memmap::MmapOptions::new().map_mut(&file).unwrap() };
 
