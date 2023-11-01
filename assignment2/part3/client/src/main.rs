@@ -1,3 +1,4 @@
+#![allow(unused_mut)]
 use nix;
 use nix::ioctl_read;
 use nix::ioctl_readwrite;
