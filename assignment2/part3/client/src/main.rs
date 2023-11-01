@@ -1,4 +1,7 @@
 #![allow(unused_mut)]
+#![allow(unused_imports)]
+
+
 use nix;
 use nix::ioctl_read;
 use nix::ioctl_readwrite;
