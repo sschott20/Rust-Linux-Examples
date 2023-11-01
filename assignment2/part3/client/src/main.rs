@@ -135,14 +135,14 @@ fn main() {
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
-    // match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
-    //     Ok(_) => {
-    //         println!("dqbuf [OK]");
-    //     }
-    //     Err(e) => {
-    //         println!("dqbuf [FAILED]: {:?}", e);
-    //     }
-    // }
+    match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+        Ok(_) => {
+            println!("dqbuf [OK]");
+        }
+        Err(e) => {
+            println!("dqbuf [FAILED]: {:?}", e);
+        }
+    }
 
     println!("Client exit [OK]");
 }
