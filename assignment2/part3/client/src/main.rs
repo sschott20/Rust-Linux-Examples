@@ -123,7 +123,12 @@ fn main() {
     let mut buf: v4l2_buffer = query_buffer(media_fd);
     let mut stream_on = stream_on(media_fd);
 
-    let mut buffer = unsafe { memmap::MmapOptions::new().len(4096).map_mut(&file).unwrap() };
+    let mut buffer = unsafe {
+        memmap::MmapOptions::new()
+            .len(buf.length as usize)
+            .map_mut(&file)
+            .unwrap()
+    };
     // let mut writefds: FdSet = FdSet::new();
     println!("buffer: {:?}", buffer);
     println!("read buffer {:?}", buffer);
