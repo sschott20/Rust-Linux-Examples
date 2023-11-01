@@ -162,8 +162,9 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
-
-    println!("buf.bytesused = {}", buf.bytesused);
-    println!("buffer: {:?}", buffer);
-    println!("Client exit [OK]");
+    println!(
+        "first {} bytes: {:?}",
+        buf.bytesused,
+        &buffer[0..buf.bytesused as usize]
+    );
 }
