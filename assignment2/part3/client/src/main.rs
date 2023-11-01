@@ -53,6 +53,7 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     match unsafe { vidioc_querybuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("querybuf [OK]");
+
             println!("buf.m.offset: {:?}", unsafe { buf.m.offset });
         }
         Err(e) => {
@@ -91,12 +92,14 @@ fn main() {
     let mut buf: v4l2_buffer = query_buffer(media_fd);
     let mut stream_on = stream_on(media_fd);
 
-    let mmap = unsafe {
-        MmapOptions::new()
-            .offset(buf.m.offset as u64)
-            .map(&file)
-            .unwrap()
-    };
+    // let mmap = unsafe {
+    //     MmapOptions::new()
+    //         .offset(buf.m.offset as u64)
+    //         .map(&file)
+    //         .unwrap()
+    // };
+    let mmap = unsafe { MmapOptions::new().map(&file).unwrap() };
+    
 
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
