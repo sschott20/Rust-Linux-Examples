@@ -83,7 +83,7 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
     // #define VIDIOC_S_FMT		_IOWR('V',  5, struct v4l2_format)
     ioctl_readwrite!(vidio_s_fmt, VIDIOC_MAGIC, 5, v4l2_format);
 
-    format.fmt.pix.pixelformat = 0x56595559;
+    format.fmt.pix.pixelformat = 1448695129;
     match unsafe { vidio_s_fmt(media_fd, &mut format) } {
         Ok(_) => {
             println!("set vidio_s_fmt [OK]");
