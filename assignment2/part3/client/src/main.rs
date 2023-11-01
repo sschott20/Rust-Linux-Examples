@@ -132,7 +132,7 @@ fn main() {
     println!("select [OK]");
 
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
-    buf.bytesused = 1024;
+    buf.bytesused = 500000;
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
