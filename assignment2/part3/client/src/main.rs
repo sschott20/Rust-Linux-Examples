@@ -61,7 +61,7 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
 fn stream_on(media_fd: i32) {
     // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
     ioctl_write_ptr!(vidioc_streamon, VIDIOC_MAGIC, 18, i32);
-    let buf_type = 1;
+    let buf_type = 0;
     match unsafe { vidioc_streamon(media_fd, &buf_type) } {
         Ok(_) => {
             println!("streamon [OK]");
@@ -93,6 +93,10 @@ fn main() {
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
     // loop {
+    let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
+    buf.type_ = 1;
+    buf.memory = 1;
+    buf.index = 0;
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("dqbuf [OK]");
