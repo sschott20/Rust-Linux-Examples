@@ -82,7 +82,7 @@ fn stream_on(media_fd: i32) {
 }
 
 fn main() {
-    let file = File::options()
+    let mut file = File::options()
         .write(true)
         .read(true)
         .open("/dev/video0")
