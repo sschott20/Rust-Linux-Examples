@@ -135,8 +135,8 @@ fn main() {
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
     buf = unsafe { std::mem::zeroed() };
-    buf.type_ = 2;
-    buf.memory = 1;
+    buf.type_ = 1;
+    buf.memory = 2;
     buf.index = 0;
 
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
