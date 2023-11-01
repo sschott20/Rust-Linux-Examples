@@ -11,11 +11,7 @@ mod bindings;
 use bindings::*;
 use opencv::core::{flip, Vec3b};
 use opencv::videoio::*;
-use opencv::{
-	prelude::*,
-	videoio,
-	highgui::*,
-};
+use opencv::{highgui::*, prelude::*, videoio};
 
 use memmap::Mmap;
 use memmap::MmapOptions;
@@ -174,6 +170,4 @@ fn main() {
     //     buf.bytesused,
     //     &buffer[0..buf.bytesused as usize]
     // );
-
-
 }
