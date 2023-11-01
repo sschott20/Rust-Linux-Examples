@@ -128,23 +128,21 @@ fn main() {
 
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
-    // writefds.insert(media_fd);
 
-    let _ = select::select(media_fd + 1, None, &mut readfds, None, None);
+    let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
     println!("select [OK]");
 
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
-    // buf.bytesused = 500000;
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
-    // match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
-    //     Ok(_) => {
-    //         println!("dqbuf [OK]");
-    //     }
-    //     Err(e) => {
-    //         println!("dqbuf [FAILED]: {:?}", e);
-    //     }
-    // }
+    match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+        Ok(_) => {
+            println!("dqbuf [OK]");
+        }
+        Err(e) => {
+            println!("dqbuf [FAILED]: {:?}", e);
+        }
+    }
 
     println!("Client exit [OK]");
 }
