@@ -49,6 +49,21 @@ fn request_buffer(media_fd: i32) -> v4l2_requestbuffers {
     reqbufs
 }
 
+// pub struct v4l2_buffer {
+//     pub index: __u32,
+//     pub type_: __u32,
+//     pub bytesused: __u32,
+//     pub flags: __u32,
+//     pub field: __u32,
+//     pub timestamp: timeval,
+//     pub timecode: v4l2_timecode,
+//     pub sequence: __u32,
+//     pub memory: __u32,
+//     pub m: v4l2_buffer__bindgen_ty_1,
+//     pub length: __u32,
+//     pub reserved2: __u32,
+//     pub __bindgen_anon_1: v4l2_buffer__bindgen_ty_2,
+// }
 fn query_buffer(media_fd: i32) -> v4l2_buffer {
     // #define VIDIOC_QUERYBUF _IOWR('V', 9, struct v4l2_buffer)
     ioctl_readwrite!(vidioc_querybuf, VIDIOC_MAGIC, 9, v4l2_buffer);
@@ -59,8 +74,17 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     match unsafe { vidioc_querybuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("querybuf [OK]");
-
-            println!("buf.m.offset: {:?}", unsafe { buf.m.offset });
+            println!("index: {:?}", buf.index);
+            println!("type_: {:?}", buf.type_);
+            println!("bytesused: {:?}", buf.bytesused);
+            println!("flags: {:?}", buf.flags);
+            println!("field: {:?}", buf.field);
+            println!("timestamp: {:?}", buf.timestamp);
+            println!("timecode: {:?}", buf.timecode);
+            println!("sequence: {:?}", buf.sequence);
+            println!("memory: {:?}", buf.memory);
+            println!("length: {:?}", buf.length);
+            println!("reserved2: {:?}", buf.reserved2);
         }
         Err(e) => {
             println!("querybuf [FAILED]: {:?}", e);
@@ -98,10 +122,7 @@ fn main() {
     let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
     let mut buf: v4l2_buffer = query_buffer(media_fd);
     let mut stream_on = stream_on(media_fd);
-    // file.seek(SeekFrom::Start(SIZE)).unwrap();
-    // file.write_all(&[0]).unwrap();
-    // file.seek(SeekFrom::Start(0)).unwrap();
-    // println!("file read {:f}");
+
     let mut buffer = unsafe { memmap::MmapOptions::new().len(4096).map_mut(&file).unwrap() };
 
     let mut readfds = FdSet::new();
@@ -109,11 +130,6 @@ fn main() {
 
     let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
     println!("select [OK]");
-
-    let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
-    buf.type_ = 1;
-    buf.memory = 1;
-    buf.index = 0;
 
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
 
