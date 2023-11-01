@@ -112,9 +112,6 @@ fn main() {
     // #define VIDIOC_S_FMT		_IOWR('V',  5, struct v4l2_format)
     ioctl_readwrite!(vidio_s_fmt, VIDIOC_MAGIC, 5, v4l2_format);
 
-    // #define VIDIOC_G_FMT		_IOWR('V',  4, struct v4l2_format)
-    ioctl_readwrite!(vidio_g_fmt, VIDIOC_MAGIC, 4, v4l2_format);
-
     format.fmt.pix.pixelformat = 0x56595559;
     match unsafe { vidio_s_fmt(media_fd, &mut format) } {
         Ok(_) => {
