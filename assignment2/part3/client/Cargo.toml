@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 nix = "0.26.0"
+memmap = "0.7.0"

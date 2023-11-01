@@ -8,7 +8,7 @@ use nix::ioctl_readwrite;
 use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
-
+use memmap::MmapOptions;
 mod setup;
 use setup::*;
 
@@ -85,10 +85,22 @@ fn main() {
     let mut format: v4l2_format = setup_vidio(media_fd);
     let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
     let mut buf: v4l2_buffer = query_buffer(media_fd);
-
-    let mut file = File::open("resource/buffer.txt").unwrap();
-
     let mut stream_on = stream_on(media_fd);
+
+    // let mut file = File::open("resource/buffer.txt").unwrap();
+    // let mut buffer: memmap::Mmap = unsafe { MmapOptions::new().map(&file).unwrap() };
+    // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
+    ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
+
+    match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+        Ok(_) => {
+            println!("dqbuf [OK]");
+        }
+        Err(e) => {
+            println!("dqbuf [FAILED]: {:?}", e);
+        }
+
+
 
     println!("Client exit [OK]");
 }
