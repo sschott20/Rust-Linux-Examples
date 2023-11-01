@@ -79,17 +79,29 @@ fn main() {
         Ok(_) => {
             println!("get vidio_g_fmt [OK]");
             println!("Image format:");
-            println!("width: {:?}", unsafe{ format.fmt.pix.width});
-            println!("height: {:?}", unsafe{ format.fmt.pix.height});
-            println!("pixelformat: {:?}", unsafe{ format.fmt.pix.pixelformat});
-            println!("field: {:?}", unsafe{ format.fmt.pix.field});
-            println!("bytesperline: {:?}", unsafe{ format.fmt.pix.bytesperline});
-            println!("sizeimage: {:?}", unsafe{ format.fmt.pix.sizeimage});
-            println!("colorspace: {:?}", unsafe{ format.fmt.pix.colorspace});
-            
+            println!("width: {:?}", unsafe { format.fmt.pix.width });
+            println!("height: {:?}", unsafe { format.fmt.pix.height });
+            println!("pixelformat: {:?}", unsafe { format.fmt.pix.pixelformat });
+            println!("field: {:?}", unsafe { format.fmt.pix.field });
+            println!("bytesperline: {:?}", unsafe { format.fmt.pix.bytesperline });
+            println!("sizeimage: {:?}", unsafe { format.fmt.pix.sizeimage });
+            println!("colorspace: {:?}", unsafe { format.fmt.pix.colorspace });
         }
         Err(e) => {
             println!("get vidio_g_fmt [FAILED]: {:?}", e);
+        }
+    }
+    // #define VIDIOC_ENUM_FMT         _IOWR('V',  2, struct v4l2_fmtdesc)
+    ioctl_readwrite!(vidio_enum_fmt, VIDIOC_MAGIC, 2, v4l2_fmtdesc);
+    let mut fmtdesc: v4l2_fmtdesc = unsafe { std::mem::zeroed() };
+    fmtdesc.type_ = 1;
+    match unsafe {vidio_enum_fmt(media_fd, &mut fmtdesc)} {
+        Ok(_) => {
+            println!("get vidio_enum_fmt [OK]");
+            println!("description: {:?}", str::from_utf8(&fmtdesc.description));
+        }
+        Err(e) => {
+            println!("get vidio_enum_fmt [FAILED]: {:?}", e);
         }
     }
 
