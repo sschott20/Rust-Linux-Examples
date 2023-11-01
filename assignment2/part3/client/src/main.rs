@@ -165,10 +165,17 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
-    
-    println!(
-        "first {} ",
-        buf.bytesused,
-        // &buffer[0..buf.bytesused as usize]
-    );
+
+    // println!(
+    //     "first {} ",
+    //     buf.bytesused,
+    //     // &buffer[0..buf.bytesused as usize]
+    // );
+
+    let mut output: File = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .open("output.yuv")
+        .unwrap();
+    output.write_all(&buffer[0..buf.bytesused as usize]).unwrap();
 }

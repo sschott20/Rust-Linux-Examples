@@ -100,5 +100,6 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
             println!("set vidio_s_fmt [FAILED]: {:?}", e);
         }
     }
+
     format
 }
