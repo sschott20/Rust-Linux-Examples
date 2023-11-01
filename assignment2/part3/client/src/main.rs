@@ -134,6 +134,7 @@ fn main() {
 
     // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
+    let mut buf: v4l2_buffer = query_buffer(media_fd);
 
     match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
         Ok(_) => {
