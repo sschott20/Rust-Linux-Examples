@@ -10,6 +10,7 @@ use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
 
+use memmap::Mmap;
 use memmap::MmapOptions;
 mod setup;
 use setup::*;
@@ -98,8 +99,9 @@ fn main() {
     //         .map(&file)
     //         .unwrap()
     // };
-    let mmap = unsafe { MmapOptions::new().map(&file).unwrap() };
-    
+    let mmap = unsafe { Mmap::map(&file).expect("failed to map the file") };
+    // let mmap = unsafe { MmapOptions::new().map(&file).unwrap(). };
+    // let mut mut_mmap = mmap.make_mut().unwrap();
 
     ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 
