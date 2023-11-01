@@ -138,7 +138,7 @@ fn main() {
     let mut buf: v4l2_buffer = query_buffer(media_fd);
     let mut stream_on = stream_on(media_fd);
 
-    let mut buffer = unsafe {
+    let mut buffer: memmap::MmapMut = unsafe {
         memmap::MmapOptions::new()
             .len(buf.length as usize)
             .map_mut(&file)
@@ -162,6 +162,8 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
+
     println!("buf.bytesused = {}", buf.bytesused);
+    println!("buffer: {:?}", buffer);
     println!("Client exit [OK]");
 }
