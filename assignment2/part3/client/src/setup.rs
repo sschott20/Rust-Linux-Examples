@@ -15,12 +15,12 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
     match unsafe { vidioc_querycap(media_fd, &mut info_capability) } {
         Ok(_) => {
             println!("get info querycap [OK]");
-            println!("driver: {:?}", str::from_utf8(&info_capability.driver));
-            println!("card: {:?}", str::from_utf8(&info_capability.card));
-            println!("bus_info: {:?}", str::from_utf8(&info_capability.bus_info));
-            println!("version: {:?}", info_capability.version);
-            println!("capabilities: {:x}", info_capability.capabilities);
-            println!("device_caps: {:?}", info_capability.device_caps);
+            // println!("driver: {:?}", str::from_utf8(&info_capability.driver));
+            // println!("card: {:?}", str::from_utf8(&info_capability.card));
+            // println!("bus_info: {:?}", str::from_utf8(&info_capability.bus_info));
+            // println!("version: {:?}", info_capability.version);
+            // println!("capabilities: {:x}", info_capability.capabilities);
+            // println!("device_caps: {:?}", info_capability.device_caps);
         }
         Err(e) => {
             println!("get info querycap [FAILED]: {:?}", e);
@@ -87,15 +87,12 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
             println!("set vidio_s_fmt [OK]");
             match unsafe { vidio_g_fmt(media_fd, &mut format) } {
                 Ok(_) => {
-                    println!("get vidio_g_fmt [OK]");
                     println!("Image format:");
                     println!("width: {:?}", unsafe { format.fmt.pix.width });
                     println!("height: {:?}", unsafe { format.fmt.pix.height });
                     println!("pixelformat: {:x}", unsafe { format.fmt.pix.pixelformat });
-                    println!("field: {:?}", unsafe { format.fmt.pix.field });
                     println!("bytesperline: {:?}", unsafe { format.fmt.pix.bytesperline });
                     println!("sizeimage: {:?}", unsafe { format.fmt.pix.sizeimage });
-                    println!("colorspace: {:?}", unsafe { format.fmt.pix.colorspace });
                 }
                 Err(e) => {
                     println!("get vidio_g_fmt [FAILED]: {:?}", e);
