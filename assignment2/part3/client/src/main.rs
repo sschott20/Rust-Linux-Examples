@@ -31,6 +31,10 @@ use std::{
 };
 
 fn main() {
+    let mut server = Server {
+        stream: TcpStream::connect("127.0.0.1:54321").unwrap(),
+    };
+
     let mut f = File::options()
         .write(true)
         .read(true)
@@ -65,17 +69,19 @@ fn main() {
             break;
         }
         client.read();
-
+        // let m: [u8] = client.buffer[0..client.buf.bytesused as usize];
         let name = format!("output{}.yuv", i);
-        let mut output: File = OpenOptions::new()
-            .write(true)
-            .read(true)
-            .create(true)
-            .open(name)
-            .unwrap();
+
+        // let mut output: File = OpenOptions::new()
+        //     .write(true)
+        //     .read(true)
+        //     .create(true)
+        //     .open(name)
+        //     .unwrap();
         client.qbuf();
-        output
-            .write(&client.buffer[0..client.buf.bytesused as usize])
-            .unwrap();
+        server.send(client.buffer);
+        // output
+        //     .write(&client.buffer[0..client.buf.bytesused as usize])
+        //     .unwrap();
     }
 }
