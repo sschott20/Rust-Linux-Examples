@@ -82,8 +82,9 @@ fn main() {
         //         .unwrap();
         // println!("testm : {:?}", testm);
         // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
-        opencv::highgui::imshow("test", &mut testm).expect("imshow [error]");
-
+        loop {
+            opencv::highgui::imshow("test", &mut testm).expect("imshow [error]");
+        }
         // let _ = s.send(&client.buffer);
 
         client.qbuf();
