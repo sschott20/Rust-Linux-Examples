@@ -157,8 +157,7 @@ fn main() {
         .open("output.yuv")
         .unwrap();
 
-    buffer.seek(SeekFrom::Start(0)).unwrap();
-    output.write(&buffer[0..buf.length as usize]).unwrap();
+    output.write(&buffer[0..buf.bytesused as usize]).unwrap();
 
     match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
         Ok(_) => {
