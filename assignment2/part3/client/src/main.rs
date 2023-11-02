@@ -156,17 +156,17 @@ fn main() {
         println!("buf.bytesused: {:?}", buf.bytesused);
 
         if i >= 10 {
-            let mut output: File = OpenOptions::new()
-                .write(true)
-                .create(true)
-                .open("output.yuv")
-                .unwrap();
-
-            output
-                .write_all(&buffer[0..buf.bytesused as usize])
-                .unwrap();
             break;
         }
+        let mut output: File = OpenOptions::new()
+            .write(true)
+            .create(true)
+            .open("output.yuv")
+            .unwrap();
+
+        output
+            .write_all(&buffer[0..buf.bytesused as usize])
+            .unwrap();
         i = i + 1;
         let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
         buf.type_ = 1;
