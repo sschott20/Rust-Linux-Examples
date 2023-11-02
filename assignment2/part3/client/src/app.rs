@@ -144,7 +144,7 @@ impl App {
         println!("select [OK]");
 
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
-        match unsafe { vidioc_dqbuf(self.media_fd, &mut buf) } {
+        match unsafe { vidioc_dqbuf(self.media_fd, &mut self.buf) } {
             Ok(_) => {
                 println!("dqbuf [OK]");
             }
@@ -153,6 +153,6 @@ impl App {
             }
         }
 
-        println!("bytesused: {:?}", buf.bytesused);
+        println!("bytesused: {:?}", self.buf.bytesused);
     }
 }
