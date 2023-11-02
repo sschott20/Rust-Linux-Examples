@@ -72,7 +72,8 @@ fn main() {
         }
         client.read();
         let mut b: Vec<u8> = vec![0; client.buf.bytesused as usize];
-        b.copy_from_slice(&client.buffer);
+        // b.copy_from_slice(&client.buffer);
+        println!("size: {:?}", b.len());
 
         let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
         opencv::highgui::imshow("test", &mut mat);
