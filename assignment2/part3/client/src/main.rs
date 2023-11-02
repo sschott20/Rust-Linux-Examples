@@ -72,12 +72,12 @@ fn main() {
         }
         client.read();
         let m: [u8] = client.buffer[0..client.buf.bytesused as usize];
-        let v : Vec<u8> = m.to_vec();
-        
-        let mut mat = opencv::imgcodecs::imdecode(&v, opencv::imgcodecs::IMREAD_COLOR).unwrap();
+        let v: Vec<u8> = m.to_vec();
+
+        let mut mat = opencv::imgcodecs::imdecode(&v);
+        opencv::highgui::imshow("test", &mut mat);
         // let _ = s.send(&client.buffer);
 
-        client
-            .qbuf();
+        client.qbuf();
     }
 }
