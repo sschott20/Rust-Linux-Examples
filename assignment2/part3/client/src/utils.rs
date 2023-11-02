@@ -85,30 +85,6 @@ pub fn draw_keypoints(img: &mut Mat, keypoints: &[f32], threshold: f32) {
 
 #![allow(dead_code)]
 
-//! https://www.kernel.org/doc/html/v4.17/media/uapi/v4l/pixfmt-yuyv.html
-//!
-//! V4L2_PIX_FMT_YUYV — Packed format with ½ horizontal chroma resolution, also known as YUV 4:2:2
-//! Description
-//!
-//! In this format each four bytes is two pixels. Each four bytes is two Y's, a Cb and a Cr. Each Y goes to one of the pixels, and the Cb and Cr belong to both pixels. As you can see, the Cr and Cb components have half the horizontal resolution of the Y component. V4L2_PIX_FMT_YUYV is known in the Windows environment as YUY2.
-//!
-//! Example 2.19. V4L2_PIX_FMT_YUYV 4 × 4 pixel image
-//!
-//! Byte Order. Each cell is one byte.
-//! start + 0:	Y'00	Cb00	Y'01	Cr00	Y'02	Cb01	Y'03	Cr01
-//! start + 8:	Y'10	Cb10	Y'11	Cr10	Y'12	Cb11	Y'13	Cr11
-//! start + 16:	Y'20	Cb20	Y'21	Cr20	Y'22	Cb21	Y'23	Cr21
-//! start + 24:	Y'30	Cb30	Y'31	Cr30	Y'32	Cb31	Y'33	Cr31
-//!
-//! Color Sample Location.
-//!     0	 	1	 	2	 	3
-//! 0	Y	C	Y	 	Y	C	Y
-//! 1	Y	C	Y	 	Y	C	Y
-//! 2	Y	C	Y	 	Y	C	Y
-//! 3	Y	C	Y	 	Y	C	Y
-
-// use core_simd::f32x4;
-// use std::simd::f32x4;
 use rayon::prelude::*;
 
 /// Copies an input buffer of format YUYV422 to the output buffer
