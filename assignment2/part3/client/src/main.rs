@@ -67,7 +67,7 @@ fn main() {
     let mut i = 0;
     loop {
         i = i + 1;
-        if i > 5 {
+        if i > 5000{
             break;
         }
         client.read();
@@ -84,7 +84,7 @@ fn main() {
         // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
 
         opencv::highgui::imshow("test", &mut testm).expect("imshow [error]");
-        let key = wait_key(1).unwrap();
+        let key = wait_key(10).unwrap();
         if key > 0 && key != 255 {
             break;
         }
