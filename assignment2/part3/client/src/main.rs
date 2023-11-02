@@ -40,7 +40,7 @@ fn main() {
             .unwrap(),
         buffer: unsafe {
             memmap::MmapOptions::new()
-                .len(client.buf.length as usize)
+                .len(462848)
                 .map_mut(&file)
                 .unwrap()
         },
