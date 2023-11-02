@@ -151,15 +151,15 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
+
     let mut output: File = OpenOptions::new()
         .write(true)
+        .read(true)
         .create(true)
         .open("output.yuv")
         .unwrap();
 
-    output
-        .write_all(&buffer[0..buf.bytesused as usize])
-        .unwrap();
+    output.write(&buffer).unwrap();
 
     match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
         Ok(_) => {
