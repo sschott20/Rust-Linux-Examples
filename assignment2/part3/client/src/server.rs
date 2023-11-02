@@ -14,7 +14,7 @@ struct Server {
 }
 
 impl Server {
-    fn send(&mut self, img_buffer: [u8]) -> Mat {
+    fn send(&mut self, img_buffer: &[u8]) -> Mat {
         // let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
         // let mut buffer: Vector<u8> = Vec::new().into();
 
