@@ -149,7 +149,7 @@ fn main() {
             println!("dqbuf [FAILED]: {:?}", e);
         }
     }
-
+    println!("bytesused: {:?}", buf.bytesused);
     let mut output: File = OpenOptions::new()
         .write(true)
         .read(true)
