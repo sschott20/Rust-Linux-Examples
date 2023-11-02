@@ -69,14 +69,14 @@ static int xioctl(int fh, int request, void *arg)
 
 static void process_image(const void *p, int size)
 {
-    FILE *fptr = fopen("out.raw", "a");
+    FILE *fptr = fopen("out.raw", "ab");
 
     // if (out_buf)
     fwrite(p, size, 1, fptr);
+    fflust(fptr);
     fflush(stderr);
     fprintf(stderr, ".");
     fflush(stdout);
-    printf("size: %d\\n", size);
     fclose(fptr);
 }
 
@@ -216,9 +216,10 @@ static void mainloop(void)
 
             if (read_frame())
                 break;
-            break;
+
             /* EAGAIN - continue select loop. */
         }
+        break;
     }
 }
 
