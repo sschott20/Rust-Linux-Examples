@@ -45,7 +45,7 @@ fn main() {
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
     };
-    client.init(3);
+    client.start_device(3);
 
     // let mut buffer: memmap::MmapMut = ;
     client.read();

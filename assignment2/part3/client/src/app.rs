@@ -125,7 +125,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn init(fd: i32) {
+    pub fn start_device(fd: i32) {
         println!("camera fd = {}", fd);
 
         let mut format: v4l2_format = setup_vidio(fd);
