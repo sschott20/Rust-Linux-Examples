@@ -533,6 +533,7 @@ static void init_device(void)
         fmt.fmt.pix.width = 640;
         fmt.fmt.pix.height = 360;
         fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
+
         fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
         if (-1 == xioctl(fd, VIDIOC_S_FMT, &fmt))
@@ -697,8 +698,12 @@ int main(int argc, char **argv)
             usage(stderr, argc, argv);
             exit(EXIT_FAILURE);
         }
+        
     }
+    printf("Using format: 640x360 %x\\n", V4L2_PIX_FMT_YUYV);
 
+    // 47504A4D
+    // 56595559
     open_device();
     init_device();
     start_capturing();

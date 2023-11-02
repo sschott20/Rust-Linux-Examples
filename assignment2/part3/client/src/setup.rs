@@ -66,7 +66,7 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
     match unsafe { vidio_g_fmt(media_fd, &mut format) } {
         Ok(_) => {
             println!("get vidio_g_fmt [OK]");
-            println!("pixelformat: {:?}", unsafe { format.fmt.pix.pixelformat });
+            println!("pixelformat: {:x}", unsafe { format.fmt.pix.pixelformat });
         }
         Err(e) => {
             println!("get vidio_g_fmt [FAILED]: {:?}", e);
@@ -75,8 +75,13 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
 
     // #define VIDIOC_S_FMT		_IOWR('V',  5, struct v4l2_format)
     ioctl_readwrite!(vidio_s_fmt, VIDIOC_MAGIC, 5, v4l2_format);
-
+    format = unsafe { std::mem::zeroed() };
+    format.type_ = 1;
+    format.fmt.pix.width = 640;
+    format.fmt.pix.height = 360;
     format.fmt.pix.pixelformat = 0x56595559;
+
+    // 47504A4D
     match unsafe { vidio_s_fmt(media_fd, &mut format) } {
         Ok(_) => {
             println!("set vidio_s_fmt [OK]");
@@ -86,7 +91,7 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
                     println!("Image format:");
                     println!("width: {:?}", unsafe { format.fmt.pix.width });
                     println!("height: {:?}", unsafe { format.fmt.pix.height });
-                    println!("pixelformat: {:?}", unsafe { format.fmt.pix.pixelformat });
+                    println!("pixelformat: {:x}", unsafe { format.fmt.pix.pixelformat });
                     println!("field: {:?}", unsafe { format.fmt.pix.field });
                     println!("bytesperline: {:?}", unsafe { format.fmt.pix.bytesperline });
                     println!("sizeimage: {:?}", unsafe { format.fmt.pix.sizeimage });
