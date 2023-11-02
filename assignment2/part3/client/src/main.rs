@@ -31,21 +31,24 @@ use std::{
 };
 
 fn main() {
-    let mut fd = file.as_raw_fd();
+    let mut f = File::options()
+    .write(true)
+    .read(true)
+    .open("/dev/video2")
+    .unwrap()
+
+    let mut fd = f.as_raw_fd();
+
     let mut client: App = App {
-        file: File::options()
-            .write(true)
-            .read(true)
-            .open("/dev/video2")
-            .unwrap(),
+        file: f,
         buffer: unsafe {
             memmap::MmapOptions::new()
-                .len(client.buf.length as usize)
+                .len(462848)
                 .map_mut(&file)
                 .unwrap()
         },
         buf : unsafe{std::mem::zeroed()}
-        media_fd: 3,
+        media_fd: fd,
     };
     client.init(3);
 
