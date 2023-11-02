@@ -137,7 +137,7 @@ impl App {
         let mut format: v4l2_format = setup_vidio(fd);
         let mut reqbuff: v4l2_requestbuffers = request_buffer(fd);
         let mut buf: v4l2_buffer = query_buffer(fd);
-        qbuf(self.media_fd);
+        qbuf(fd);
         let mut stream_on = stream_on(fd);
 
         let mut buffer: memmap::MmapMut = unsafe {
