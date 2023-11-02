@@ -79,7 +79,9 @@ fn main() {
         //     Mat::new_rows_cols_with_default(480, 640, Vec3b::typ(), opencv::core::Scalar::all(0.0))
         //         .unwrap();
         // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
-        opencv::highgui::imshow("test", &mut testm).unwrap();
+        loop {
+            opencv::highgui::imshow("test", &mut testm).unwrap();
+        }
         // let _ = s.send(&client.buffer);
 
         client.qbuf();
