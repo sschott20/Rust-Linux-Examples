@@ -74,7 +74,7 @@ fn main() {
         let mut b : Vec<u8> = vec![0; client.buf.bytesused as usize];
         b.copy_from_slice(&client.buffer);
    
-        let mut mat = opencv::imgcodecs::imdecode(&b);
+        let mut mat = opencv::imgcodecs::imdecode(&b, -1);
         opencv::highgui::imshow("test", &mut mat);
         // let _ = s.send(&client.buffer);
 
