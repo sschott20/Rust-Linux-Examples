@@ -67,7 +67,7 @@ fn main() {
     let mut i = 0;
     loop {
         i = i + 1;
-        if i > 500 {
+        if i > 5 {
             break;
         }
         client.read();
@@ -80,11 +80,7 @@ fn main() {
         //     .create(true)
         //     .open(name)
         //     .unwrap();
-        let img_vec: Vec<u8> = client.buffer[0..client.buf.bytesused as usize].to_vec();
 
-        let img = opencv::imgcodecs::imdecode(&opencv::types::VectorOfu8::from_iter(img_vec), -1)
-            .unwrap();
-        let _ = opencv::highgui::imshow("test", &img);
 
         // let _ = s.send(&client.buffer);
 
