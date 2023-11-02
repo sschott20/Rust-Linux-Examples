@@ -38,9 +38,14 @@ fn main() {
         .unwrap();
 
     let mut fd = f.as_raw_fd();
+    let mut ftmp = File::options()
+        .write(true)
+        .read(true)
+        .open("capture.c")
+        .unwrap();
 
     let mut client: App = App {
-        buffer: Default::default(),
+        buffer: memmap::Mmap::map(&ftmp).unwrap(),
         file: f,
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
