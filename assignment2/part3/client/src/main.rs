@@ -40,7 +40,7 @@ fn main() {
     let mut fd = f.as_raw_fd();
 
     let mut client: App = App {
-        buffer: memmap::MmapMut::new(),
+        buffer: unsafe { std::mem::zeroed() },
         file: f,
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
@@ -69,7 +69,7 @@ fn main() {
             .unwrap();
         client.qbuf();
         output
-            .write(&client.buffer.unwrap()[0..client.buf.bytesused as usize])
+            .write(&client.buffer[0..client.buf.bytesused as usize])
             .unwrap();
     }
 }
