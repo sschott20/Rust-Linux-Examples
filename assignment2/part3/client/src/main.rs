@@ -155,7 +155,7 @@ fn main() {
         }
         println!("buf.bytesused: {:?}", buf.bytesused);
 
-        if i >= 0 {
+        if i >= 10 {
             let mut output: File = OpenOptions::new()
                 .write(true)
                 .create(true)
@@ -172,15 +172,14 @@ fn main() {
         buf.type_ = 1;
         buf.memory = 1;
         buf.index = 0;
-    
+
         match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
             Ok(_) => {
-                println!("qbuf [OK]");
+                // println!("qbuf [OK]");
             }
             Err(e) => {
                 println!("qbuf [FAILED]: {:?}", e);
             }
         }
-
     }
 }
