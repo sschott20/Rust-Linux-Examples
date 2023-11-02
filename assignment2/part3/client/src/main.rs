@@ -75,8 +75,11 @@ fn main() {
         // b.copy_from_slice(&client.buffer);
         println!("size: {:?}", b.len());
 
+        let mut testm: Mat =
+            Mat::new_rows_cols_with_default(480, 640, Vec3b::typ(), opencv::core::Scalar::all(0.0))
+                .unwrap();
         // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
-        // opencv::highgui::imshow("test", &mut mat);
+        opencv::highgui::imshow("test", &mut tesm);
         // let _ = s.send(&client.buffer);
 
         client.qbuf();
