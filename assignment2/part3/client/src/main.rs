@@ -6,6 +6,7 @@ use std::{thread, time};
 use nix;
 use nix::ioctl_read;
 use nix::ioctl_readwrite;
+use nix::ioctl_write_int;
 use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
@@ -86,7 +87,7 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
 }
 fn stream_on(media_fd: i32) {
     // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
-    ioctl_write_ptr!(vidioc_streamon, VIDIOC_MAGIC, 18, i32);
+    ioctl_write_int!(vidioc_streamon, VIDIOC_MAGIC, 18);
     let buf_type = 1;
     match unsafe { vidioc_streamon(media_fd, &1) } {
         Ok(_) => {
