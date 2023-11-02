@@ -24,7 +24,7 @@ impl Server {
         // self.stream.rewind().unwrap();
 
         self.stream.write_all(&img_buffer).unwrap();
-        println!("buffer send size: {}", buffer.len());
+        println!("buffer send size: {}", img_buffer.len());
 
         // let mut buffer: Vec<u8> = vec![0; 110646];
         // self.stream.read_exact(&mut buffer).unwrap();
