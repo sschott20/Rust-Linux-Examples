@@ -138,49 +138,35 @@ fn main() {
 
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
-    let mut i = 0;
-    loop {
-        let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
-        println!("select [OK]");
+    let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
+    println!("select [OK]");
 
-        // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
+    // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
 
-        // match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
-        //     Ok(_) => {
-        //         println!("dqbuf [OK]");
-        //     }
-        //     Err(e) => {
-        //         println!("dqbuf [FAILED]: {:?}", e);
-        //     }
-        // }
-        // println!("buf.bytesused: {:?}", buf.bytesused);
-        let mut output: File = OpenOptions::new()
-            .write(true)
-            .create(true)
-            .open("output.yuv")
-            .unwrap();
-
-        output
-            .write_all(&buffer[0..buf.bytesused as usize])
-            .unwrap();
-
-        if i >= 0 {
-            break;
+    match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+        Ok(_) => {
+            println!("dqbuf [OK]");
         }
+        Err(e) => {
+            println!("dqbuf [FAILED]: {:?}", e);
+        }
+    }
+    let mut output: File = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .open("output.yuv")
+        .unwrap();
 
-        i = i + 1;
-        let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
-        buf.type_ = 1;
-        buf.memory = 1;
-        buf.index = 0;
+    output
+        .write_all(&buffer[0..buf.bytesused as usize])
+        .unwrap();
 
-        match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
-            Ok(_) => {
-                // println!("qbuf [OK]");
-            }
-            Err(e) => {
-                println!("qbuf [FAILED]: {:?}", e);
-            }
+    match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
+        Ok(_) => {
+            // println!("qbuf [OK]");
+        }
+        Err(e) => {
+            println!("qbuf [FAILED]: {:?}", e);
         }
     }
 }
