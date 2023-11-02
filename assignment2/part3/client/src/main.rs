@@ -66,17 +66,18 @@ fn main() {
     };
     let mut i = 0;
     loop {
-        i = i + 1;
         if i > 0 {
             break;
         }
+        i = i + 1;
+
         client.read();
         let mut tmp = File::options()
             .write(true)
             .read(true)
             .open("tmp.jpg")
             .unwrap();
-        
+
         tmp.write_all(&client.buffer).unwrap();
         // let mut mat: Mat = Mat::default();
         // let mut b: Vec<u8> = vec![0; 462848];
