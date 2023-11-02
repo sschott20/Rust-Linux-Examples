@@ -136,7 +136,9 @@ impl App {
         let mut stream_on = stream_on(fd);
         let _ = qbuf(fd);
     }
-
+    pub fn qbuf(&mut self) {
+        let _ = qbuf(self.media_fd);
+    }
     pub fn read(&mut self) {
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);

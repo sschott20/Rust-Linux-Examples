@@ -54,18 +54,24 @@ fn main() {
                 .unwrap(),
         )
     };
+    let mut i = 0;
+    loop {
+        i = i + 1;
+        if i > 5 {
+            break;
+        }
+        client.read();
 
-    // let mut buffer: memmap::MmapMut = ;
-    client.read();
-
-    let mut output: File = OpenOptions::new()
-        .write(true)
-        .read(true)
-        .create(true)
-        .open("output.yuv")
-        .unwrap();
-
-    output
-        .write(&client.buffer.unwrap()[0..client.buf.bytesused as usize])
-        .unwrap();
+        let name = format!("output{}.yuv", i);
+        let mut output: File = OpenOptions::new()
+            .write(true)
+            .read(true)
+            .create(true)
+            .open(name)
+            .unwrap();
+        client.qbuf();
+        output
+            .write(&client.buffer.unwrap()[0..client.buf.bytesused as usize])
+            .unwrap();
+    }
 }
