@@ -66,6 +66,7 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
     match unsafe { vidio_g_fmt(media_fd, &mut format) } {
         Ok(_) => {
             println!("get vidio_g_fmt [OK]");
+            println!("pixelformat: {:?}", unsafe { format.fmt.pix.pixelformat });
         }
         Err(e) => {
             println!("get vidio_g_fmt [FAILED]: {:?}", e);
