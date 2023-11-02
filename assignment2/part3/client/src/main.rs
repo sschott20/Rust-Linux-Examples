@@ -28,10 +28,11 @@ use std::{
 
 const VIDIOC_MAGIC: u8 = b'V';
 
+ioctl_readwrite!(vidioc_qbuf, VIDIOC_MAGIC, 15, v4l2_buffer);
+
 ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 ioctl_readwrite!(vidioc_reqbufs, VIDIOC_MAGIC, 8, v4l2_requestbuffers);
 ioctl_readwrite!(vidioc_querybuf, VIDIOC_MAGIC, 9, v4l2_buffer);
-ioctl_readwrite!(vidioc_qbuf, VIDIOC_MAGIC, 15, v4l2_buffer);
 
 fn request_buffer(media_fd: i32) -> v4l2_requestbuffers {
     // #define VIDIOC_REQBUFS          _IOWR('V',  8, struct v4l2_requestbuffers)
@@ -150,7 +151,11 @@ fn main() {
             .unwrap()
     };
     let mut i = 0;
-
+    // loop {
+    //     i = i + 1;
+    //     if (i > 10) {
+    //         break;
+    //     }
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
 
