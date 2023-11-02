@@ -140,14 +140,13 @@ impl App {
         qbuf(fd);
         let mut stream_on = stream_on(fd);
 
-        let mut buffer: memmap::MmapMut = unsafe {
-            memmap::MmapOptions::new()
-                .len(buf.length as usize)
-                .map_mut(&file)
-                .unwrap()
-        };
-        App {
-            buffer: buffer,
+]        App {
+            buffer: unsafe {
+                memmap::MmapOptions::new()
+                    .len(buf.length as usize)
+                    .map_mut(&file)
+                    .unwrap()
+            };,
             buf: buf,
             media_fd: fd,
         }
