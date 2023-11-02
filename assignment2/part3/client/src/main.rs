@@ -29,7 +29,6 @@ use std::{
 const VIDIOC_MAGIC: u8 = b'V';
 
 ioctl_readwrite!(vidioc_qbuf, VIDIOC_MAGIC, 15, v4l2_buffer);
-
 ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
 ioctl_readwrite!(vidioc_reqbufs, VIDIOC_MAGIC, 8, v4l2_requestbuffers);
 ioctl_readwrite!(vidioc_querybuf, VIDIOC_MAGIC, 9, v4l2_buffer);
@@ -86,6 +85,18 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     buf
 }
 fn stream_on(media_fd: i32) {
+    // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
+    ioctl_write_ptr!(vidioc_streamon, VIDIOC_MAGIC, 18, i32);
+    let buf_type = 1;
+    match unsafe { vidioc_streamon(media_fd, &1) } {
+        Ok(_) => {
+            println!("streamon [OK]");
+            // println!("")
+        }
+        Err(e) => {
+            println!("streamon [FAILED]: {:?}", e);
+        }
+    }
     // #define VIDIOC_QBUF _IOWR('V', 15, struct v4l2_buffer)
     let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
     buf.type_ = 1;
@@ -98,19 +109,6 @@ fn stream_on(media_fd: i32) {
         }
         Err(e) => {
             println!("qbuf [FAILED]: {:?}", e);
-        }
-    }
-
-    // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
-    ioctl_write_ptr!(vidioc_streamon, VIDIOC_MAGIC, 18, i32);
-    let buf_type = 1;
-    match unsafe { vidioc_streamon(media_fd, &1) } {
-        Ok(_) => {
-            println!("streamon [OK]");
-            // println!("")
-        }
-        Err(e) => {
-            println!("streamon [FAILED]: {:?}", e);
         }
     }
 }
@@ -156,7 +154,7 @@ fn main() {
         .write(true)
         .read(true)
         .create(true)
-        .open("output.yuv")
+        .open("output.raw")
         .unwrap();
 
     output.write_all(&buffer).unwrap();
