@@ -81,7 +81,7 @@ fn main() {
             .unwrap();
 
         // let mut inbuf = [0; 462848];
-        let mut inbuf = &client.buffer[0..client.buf.bytesused as usize];
+        let mut inbuf = &client.buffer[2048..client.buf.bytesused as usize];
         let mut outbuf = [0; 462848];
         let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
