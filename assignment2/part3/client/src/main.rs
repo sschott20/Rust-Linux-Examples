@@ -51,5 +51,5 @@ fn main() {
         .open("output.yuv")
         .unwrap();
 
-    output.write(&buffer[0..buf.bytesused as usize]).unwrap();
+    output.write(&buffer[0..client.buf.bytesused as usize]).unwrap();
 }
