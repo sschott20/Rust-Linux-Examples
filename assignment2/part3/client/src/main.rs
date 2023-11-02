@@ -44,7 +44,7 @@ fn main() {
         buffer: unsafe {
             memmap::MmapOptions::new()
                 .len(462848)
-                .map_mut(&file)
+                .map_mut(&f)
                 .unwrap()
         },
         buf: unsafe { std::mem::zeroed() },
