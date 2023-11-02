@@ -339,7 +339,7 @@ static void init_mmap(void)
 
     CLEAR(req);
 
-    req.count = 1;
+    req.count = 4;
     req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     req.memory = V4L2_MEMORY_MMAP;
 
@@ -405,7 +405,7 @@ static void init_userp(unsigned int buffer_size)
 
     CLEAR(req);
 
-    req.count = 1;
+    req.count = 4;
     req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     req.memory = V4L2_MEMORY_USERPTR;
 
