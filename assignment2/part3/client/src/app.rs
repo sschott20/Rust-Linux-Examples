@@ -132,9 +132,9 @@ impl App {
 
         let mut format: v4l2_format = setup_vidio(fd);
         let mut reqbuff: v4l2_requestbuffers = request_buffer(fd);
-        self.buf: v4l2_buffer = query_buffer(fd);
+        self.buf = query_buffer(fd);
         let mut stream_on = stream_on(fd);
-        let _  = qbuf(fd);
+        let _ = qbuf(fd);
     }
 
     pub fn read(&mut self) {
