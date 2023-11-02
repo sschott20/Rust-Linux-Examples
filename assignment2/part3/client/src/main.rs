@@ -33,10 +33,6 @@ use std::{
 };
 
 fn main() {
-    let mut s = Server {
-        stream: TcpStream::connect("127.0.0.1:54321").expect("failed to connect"),
-    };
-
     let mut f = File::options()
         .write(true)
         .read(true)
@@ -63,6 +59,10 @@ fn main() {
             .len(client.buf.length as usize)
             .map_mut(&client.file)
             .unwrap()
+    };
+
+    let mut s = Server {
+        stream: TcpStream::connect("127.0.0.1:54321").expect("failed to connect"),
     };
     let mut i = 0;
     loop {
