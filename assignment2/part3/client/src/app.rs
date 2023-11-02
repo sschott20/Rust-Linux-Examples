@@ -146,7 +146,7 @@ impl App {
                     .len(buf.length as usize)
                     .map_mut(&file)
                     .unwrap()
-            };,
+            },
             buf: buf,
             media_fd: fd,
         }
