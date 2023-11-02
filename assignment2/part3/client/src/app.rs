@@ -118,7 +118,6 @@ fn qbuf(media_fd: i32) {
 }
 
 pub struct App {
-    file: File,
     buffer: memmap::MmapMut,
     buf: v4l2_buffer,
     media_fd: i32,
@@ -136,7 +135,6 @@ impl App {
         let mut stream_on = stream_on(fd);
 
         App {
-            file: file,
             buffer: unsafe {
                 memmap::MmapOptions::new()
                     .len(buf.length as usize)

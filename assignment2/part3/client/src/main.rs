@@ -29,12 +29,11 @@ use std::{
 };
 
 fn main() {
-    let mut f: File = File::options()
-    .write(true)
-    .read(true)
-    .open("/dev/video2")
-    .unwrap();
-
+    let mut f = File::options()
+        .write(true)
+        .read(true)
+        .open("/dev/video2")
+        .unwrap();
     let mut client: App = App::new(f);
     client.read();
 }
