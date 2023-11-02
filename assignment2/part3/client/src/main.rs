@@ -2,6 +2,7 @@
 #![allow(unused_imports)]
 #![allow(unused_variables)]
 use std::{thread, time};
+mod utils;
 
 use nix;
 use nix::ioctl_read;
