@@ -93,7 +93,7 @@ fn main() {
         // b.copy_from_slice(&client.buffer);
         // println!("first 100 of b: {:?}", &b[0..100]);
         let _ = opencv::imgcodecs::imdecode_to(
-            &opencv::types::VectorOfu8::from_slice(&outbuf),
+            &opencv::types::VectorOfu8::from_iter(&v),
             -1,
             &mut mat,
         );
