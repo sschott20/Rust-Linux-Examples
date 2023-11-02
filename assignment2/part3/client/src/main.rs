@@ -191,5 +191,4 @@ fn main() {
     output
         .write_all(&buffer[0..buf.bytesused as usize])
         .unwrap();
-    break;
 }
