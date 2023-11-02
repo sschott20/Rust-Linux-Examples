@@ -154,10 +154,11 @@ fn main() {
         .write(true)
         .read(true)
         .create(true)
-        .open("output.raw")
+        .open("output.yuv")
         .unwrap();
 
-    output.write_all(&buffer[0..buf.length as usize]).unwrap();
+    buffer.seek(SeekFrom::Start(0)).unwrap();
+    output.write(&buffer[0..buf.length as usize]).unwrap();
 
     match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
         Ok(_) => {
@@ -167,6 +168,4 @@ fn main() {
             println!("qbuf [FAILED]: {:?}", e);
         }
     }
-
-
 }
