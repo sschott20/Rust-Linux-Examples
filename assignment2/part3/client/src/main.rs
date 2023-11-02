@@ -46,6 +46,12 @@ fn main() {
         media_fd: fd,
     };
     client.start_device(3);
+    client.buffer = unsafe {
+        memmap::MmapOptions::new()
+            .len(buf.length as usize)
+            .map_mut(&file)
+            .unwrap()
+    };
 
     // let mut buffer: memmap::MmapMut = ;
     client.read();
@@ -58,6 +64,6 @@ fn main() {
         .unwrap();
 
     output
-        .write(&client.buffer[0..client.buf.bytesused as usize])
+        .write(&client.buffer.unwrap()[0..client.buf.bytesused as usize])
         .unwrap();
 }
