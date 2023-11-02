@@ -3,22 +3,18 @@
 use opencv::core::{flip, Mat, Vec3b, Vector};
 use opencv::{highgui::*, imgcodecs, prelude::*, videoio};
 
-mod utils;
-use std::{thread, time::Duration};
-use utils::*;
-
+use crate::utils::*;
 use std::io::prelude::*;
 use std::io::{Read, Write};
 use std::net::TcpStream;
-
-
+use std::{thread, time::Duration};
 
 struct Server {
     stream: TcpStream,
 }
 
 impl Server {
-    fn send(&mut self, img_buffer : [u8] ) -> Mat {
+    fn send(&mut self, img_buffer: [u8]) -> Mat {
         // let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
         // let mut buffer: Vector<u8> = Vec::new().into();
 

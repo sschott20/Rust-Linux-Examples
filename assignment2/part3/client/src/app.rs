@@ -10,6 +10,7 @@ use nix::ioctl_write_ptr;
 use opencv::core::{flip, Vec3b};
 use opencv::videoio::*;
 use opencv::{highgui::*, prelude::*, videoio};
+mod utils;
 
 use memmap::Mmap;
 use memmap::MmapOptions;
