@@ -97,7 +97,6 @@ fn stream_on(media_fd: i32) {
             println!("streamon [FAILED]: {:?}", e);
         }
     }
-    // #define VIDIOC_QBUF _IOWR('V', 15, struct v4l2_buffer)
 }
 
 fn qbuf(media_fd: i32) {
@@ -105,6 +104,8 @@ fn qbuf(media_fd: i32) {
     buf.type_ = 1;
     buf.memory = 1;
     buf.index = 0;
+
+    // #define VIDIOC_QBUF _IOWR('V', 15, struct v4l2_buffer)
 
     match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
         Ok(_) => {
@@ -136,6 +137,7 @@ impl App {
         let mut format: v4l2_format = setup_vidio(fd);
         let mut reqbuff: v4l2_requestbuffers = request_buffer(fd);
         let mut buf: v4l2_buffer = query_buffer(fd);
+        qbuf(self.media_fd);
         let mut stream_on = stream_on(fd);
 
         let mut buffer: memmap::MmapMut = unsafe {
