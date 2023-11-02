@@ -7,3 +7,5 @@ ffmpeg -f v4l2              \
        -i /dev/video0       \
        -pix_fmt yuyv422     \
        -f v4l2 /dev/video2  
+
+v4l2-ctl --list-devices

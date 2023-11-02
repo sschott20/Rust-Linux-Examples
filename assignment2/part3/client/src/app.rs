@@ -158,7 +158,7 @@ impl App {
         readfds.insert(self.media_fd);
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
         println!("select [OK]");
-
+        println!("media_fd {}", self.media_fd);
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
         match unsafe { vidioc_dqbuf(self.media_fd, &mut self.buf) } {
             Ok(_) => {
