@@ -40,8 +40,8 @@ fn main() {
     let mut fd = f.as_raw_fd();
 
     let mut client: App = App {
-        file: f,
         buffer: unsafe { memmap::MmapOptions::new().len(462848).map_mut(&f).unwrap() },
+        file: f,
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
     };
