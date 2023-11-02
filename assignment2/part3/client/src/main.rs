@@ -75,7 +75,8 @@ fn main() {
         let mut tmp = File::options()
             .write(true)
             .read(true)
-            .open("tmp.jpg")
+            .create(true)
+            .open("tmp.yuv")
             .unwrap();
 
         tmp.write_all(&client.buffer).unwrap();
