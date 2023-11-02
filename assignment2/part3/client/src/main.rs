@@ -86,7 +86,7 @@ fn main() {
         let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
         // turn converted into Vec<u8>
-        let v: Vec<u8> = converted.try_into();
+        let v: Vec<u8> = converted.try_into().unwrap();
         // tmp.write_all(&client.buffer).unwrap();
         let mut mat: Mat = Mat::default();
         // let mut b: Vec<u8> = vec![0; 462848];
