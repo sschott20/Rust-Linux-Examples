@@ -76,6 +76,7 @@ static void process_image(const void *p, int size)
     fflush(stderr);
     fprintf(stderr, ".");
     fflush(stdout);
+    fclose(fptr);
 }
 
 static int read_frame(void)
@@ -214,7 +215,7 @@ static void mainloop(void)
 
             if (read_frame())
                 break;
-            exit(0);
+            break;
             /* EAGAIN - continue select loop. */
         }
     }
