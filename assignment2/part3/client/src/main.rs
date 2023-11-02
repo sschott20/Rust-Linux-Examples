@@ -32,9 +32,9 @@ use std::{
     io::{Seek, SeekFrom, Write},
 };
 
-fn main() {
-    let mut server = Server {
-        stream: TcpStream::connect("127.0.0.1:54321").unwrap(),
+fn main() {``
+    let mut s = Server {
+        stream: TcpStream::connect("127.0.0.1:54321").expect("failed to connect"),
     };
 
     let mut f = File::options()
