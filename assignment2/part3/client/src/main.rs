@@ -10,7 +10,7 @@ use nix::ioctl_readwrite;
 use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
-use opencv::core::{flip, Vec3b};
+use opencv::core::{flip, Mat, Vec3b};
 use opencv::videoio::*;
 use opencv::{highgui::*, prelude::*, videoio};
 use std::net::TcpStream;
@@ -71,22 +71,13 @@ fn main() {
             break;
         }
         client.read();
-        // let m: [u8] = client.buffer[0..client.buf.bytesused as usize];
-        let name = format!("output{}.yuv", i);
-
-        // let mut output: File = OpenOptions::new()
-        //     .write(true)
-        //     .read(true)
-        //     .create(true)
-        //     .open(name)
-        //     .unwrap();
-
-
+        let m: [u8] = client.buffer[0..client.buf.bytesused as usize];
+        let v : Vec<u8> = m.to_vec();
+        
+        let mut mat = opencv::imgcodecs::imdecode(&v, opencv::imgcodecs::IMREAD_COLOR).unwrap();
         // let _ = s.send(&client.buffer);
 
-        client.qbuf();
-        // output
-        //     .write(&client.buffer[0..client.buf.bytesused as usize])
-        //     .unwrap();
+        client
+            .qbuf();
     }
 }
