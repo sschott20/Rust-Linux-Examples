@@ -150,12 +150,7 @@ fn main() {
             .map_mut(&file)
             .unwrap()
     };
-    let mut i = 0;
-    // loop {
-    //     i = i + 1;
-    //     if (i > 10) {
-    //         break;
-    //     }
+
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
 
@@ -170,15 +165,6 @@ fn main() {
         }
         Err(e) => {
             println!("dqbuf [FAILED]: {:?}", e);
-        }
-    }
-
-    match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
-        Ok(_) => {
-            println!("qbuf [OK]");
-        }
-        Err(e) => {
-            println!("qbuf [FAILED]: {:?}", e);
         }
     }
 
