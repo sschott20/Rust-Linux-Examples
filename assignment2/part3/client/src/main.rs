@@ -31,6 +31,7 @@ use std::{
     fs::OpenOptions,
     io::{Seek, SeekFrom, Write},
 };
+use utils::*;
 
 fn main() {
     let mut f = File::options()
