@@ -40,7 +40,7 @@ fn main() {
     let mut fd = f.as_raw_fd();
 
     let mut client: App = App {
-        buffer: None,
+        buffer: Default::default(),
         file: f,
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
