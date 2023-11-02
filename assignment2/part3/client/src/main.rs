@@ -80,9 +80,9 @@ fn main() {
             .open("tmp.yuv")
             .unwrap();
 
-        let mut inbuf = [0; 462848];
+        // let mut inbuf = [0; 462848];
+        let mut inbuf = &client.buffer[0..client.buf.bytesused as usize]
         let mut outbuf = [0; 462848];
-        inbuf = (&client.buffer[0..client.buf.bytesused as usize]);
         let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
         // tmp.write_all(&client.buffer).unwrap();
