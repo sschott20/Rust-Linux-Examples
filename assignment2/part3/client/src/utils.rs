@@ -108,7 +108,8 @@ pub fn draw_keypoints(img: &mut Mat, keypoints: &[f32], threshold: f32) {
 //! 3	Y	C	Y	 	Y	C	Y
 
 // use core_simd::f32x4;
-use std::simd::f32x4;
+// use std::simd::f32x4;
+use packed_simd::f32x4;
 use rayon::prelude::*;
 
 /// Copies an input buffer of format YUYV422 to the output buffer
