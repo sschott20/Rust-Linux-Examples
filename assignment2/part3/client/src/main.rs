@@ -13,6 +13,7 @@ use bindings::*;
 use opencv::core::{flip, Vec3b};
 use opencv::videoio::*;
 use opencv::{highgui::*, prelude::*, videoio};
+use std::net::TcpStream;
 
 use memmap::Mmap;
 use memmap::MmapOptions;
