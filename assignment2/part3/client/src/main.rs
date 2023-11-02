@@ -75,8 +75,8 @@ fn main() {
         // b.copy_from_slice(&client.buffer);
         println!("size: {:?}", b.len());
 
-        let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
-        opencv::highgui::imshow("test", &mut mat);
+        // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
+        // opencv::highgui::imshow("test", &mut mat);
         // let _ = s.send(&client.buffer);
 
         client.qbuf();
