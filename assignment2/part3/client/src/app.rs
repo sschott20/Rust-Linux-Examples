@@ -134,7 +134,7 @@ impl App {
             .open("/dev/video2")
             .unwrap();
 
-        fd = file.as_raw_fd();
+        let fd = file.as_raw_fd();
         println!("camera fd = {}", fd);
 
         let mut format: v4l2_format = setup_vidio(fd);
