@@ -116,7 +116,7 @@ fn main() {
     let mut file = File::options()
         .write(true)
         .read(true)
-        .open("/dev/video0")
+        .open("/dev/video2")
         .unwrap();
 
     let mut media_fd = file.as_raw_fd();
