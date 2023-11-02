@@ -531,7 +531,7 @@ static void init_device(void)
     if (force_format)
     {
         fmt.fmt.pix.width = 640;
-        fmt.fmt.pix.height = 480;
+        fmt.fmt.pix.height = 360;
         fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
         fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
