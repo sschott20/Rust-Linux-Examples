@@ -154,10 +154,6 @@ fn main() {
         //     }
         // }
         // println!("buf.bytesused: {:?}", buf.bytesused);
-
-        if i >= 10 {
-            break;
-        }
         let mut output: File = OpenOptions::new()
             .write(true)
             .create(true)
@@ -167,6 +163,10 @@ fn main() {
         output
             .write_all(&buffer[0..buf.bytesused as usize])
             .unwrap();
+
+        if i >= 0 {
+            break;
+        }
 
         i = i + 1;
         let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
