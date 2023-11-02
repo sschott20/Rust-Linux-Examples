@@ -15,10 +15,12 @@ use opencv::{highgui::*, prelude::*, videoio};
 
 use memmap::Mmap;
 use memmap::MmapOptions;
+mod server;
 mod setup;
 use nix::sys::ioctl;
 use nix::sys::select;
 use nix::sys::select::FdSet;
+use server::*;
 use setup::*;
 mod app;
 use app::*;
@@ -29,20 +31,24 @@ use std::{
 };
 
 fn main() {
-    let mut file: File = File::options()
-        .write(true)
-        .read(true)
-        .open("/dev/video2")
-        .unwrap();
     let mut fd = file.as_raw_fd();
-    let mut client: App = App::new(fd);
-
-    let mut buffer: memmap::MmapMut = unsafe {
-        memmap::MmapOptions::new()
-            .len(client.buf.length as usize)
-            .map_mut(&file)
-            .unwrap()
+    let mut client: App = App {
+        file: File::options()
+            .write(true)
+            .read(true)
+            .open("/dev/video2")
+            .unwrap(),
+        buffer: unsafe {
+            memmap::MmapOptions::new()
+                .len(client.buf.length as usize)
+                .map_mut(&file)
+                .unwrap()
+        },
+        media_fd: 3,
     };
+    client.init(3);
+
+    // let mut buffer: memmap::MmapMut = ;
     client.read();
 
     let mut output: File = OpenOptions::new()
@@ -52,5 +58,7 @@ fn main() {
         .open("output.yuv")
         .unwrap();
 
-    output.write(&buffer[0..client.buf.bytesused as usize]).unwrap();
+    output
+        .write(&buffer[0..client.buf.bytesused as usize])
+        .unwrap();
 }

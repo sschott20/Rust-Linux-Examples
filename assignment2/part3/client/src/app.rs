@@ -118,13 +118,13 @@ fn qbuf(media_fd: i32) {
 }
 
 pub struct App {
-    // buffer: memmap::MmapMut,
-    pub buf: v4l2_buffer,
+    pub buffer: memmap::MmapMut,
+    pub file: File,
     pub media_fd: i32,
 }
 
 impl App {
-    pub fn new(fd: i32) -> App {
+    pub fn init(fd: i32) {
         println!("camera fd = {}", fd);
 
         let mut format: v4l2_format = setup_vidio(fd);
@@ -132,21 +132,22 @@ impl App {
         let mut buf: v4l2_buffer = query_buffer(fd);
         qbuf(fd);
         let mut stream_on = stream_on(fd);
-
-        App {
-            buf: buf,
-            media_fd: fd,
-        }
     }
 
-    pub fn read(&mut self, ) {
+    pub fn read(&mut self) {
+        let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
+        buf.type_ = 1;
+        buf.memory = 1;
+        buf.index = 0;
+
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
         println!("select [OK]");
         println!("media_fd {}", self.media_fd);
+
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
-        match unsafe { vidioc_dqbuf(self.media_fd, &mut self.buf) } {
+        match unsafe { vidioc_dqbuf(self.media_fd, &mut buf) } {
             Ok(_) => {
                 println!("dqbuf [OK]");
             }
@@ -155,16 +156,6 @@ impl App {
             }
         }
 
-        println!("bytesused: {:?}", self.buf.bytesused);
-
-        // let mut frame = Mat::default();
-        // self.cam
-        //     .read(&mut frame)
-        //     .expect("VideoCapture: read [FAILED]");
-        // // resize the image as a square, size is
-        // let mut flipped = Mat::default();
-        // flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
-        // let resized_img = resize_with_padding(&flipped, [192, 192]);
-        // resized_img
+        println!("bytesused: {:?}", buf.bytesused);
     }
 }
