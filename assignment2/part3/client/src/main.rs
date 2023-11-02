@@ -151,18 +151,6 @@ fn main() {
     };
     let mut i = 0;
     loop {
-        i = i + 1;
-        if (i > 10) {
-            let mut output: File = OpenOptions::new()
-                .write(true)
-                .create(true)
-                .open("output.yuv422")
-                .unwrap();
-            output
-                .write_all(&buffer[0..buf.bytesused as usize])
-                .unwrap();
-            break;
-        }
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(media_fd);
 
@@ -193,6 +181,18 @@ fn main() {
             Err(e) => {
                 println!("qbuf [FAILED]: {:?}", e);
             }
+        }
+        i = i + 1;
+        if i > 10 {
+            let mut output: File = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open("output.yuv422")
+                .unwrap();
+            output
+                .write_all(&buffer[0..buf.bytesused as usize])
+                .unwrap();
+            break;
         }
     }
 }
