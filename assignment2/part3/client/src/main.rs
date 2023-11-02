@@ -41,12 +41,7 @@ fn main() {
 
     let mut client: App = App {
         file: f,
-        buffer: unsafe {
-            memmap::MmapOptions::new()
-                .len(462848)
-                .map_mut(&f)
-                .unwrap()
-        },
+        buffer: unsafe { memmap::MmapOptions::new().len(462848).map_mut(&f).unwrap() },
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
     };
@@ -63,6 +58,6 @@ fn main() {
         .unwrap();
 
     output
-        .write(&buffer[0..client.buf.bytesused as usize])
+        .write(&client.buffer[0..client.buf.bytesused as usize])
         .unwrap();
 }
