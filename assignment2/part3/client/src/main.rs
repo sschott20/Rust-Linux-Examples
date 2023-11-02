@@ -71,10 +71,10 @@ fn main() {
             break;
         }
         client.read();
-        let m: [u8] = client.buffer[0..client.buf.bytesused as usize];
-        let v: Vec<u8> = m.to_vec();
-
-        let mut mat = opencv::imgcodecs::imdecode(&v);
+        let mut b : Vec<u8> = vec![0; client.buf.bytesused as usize];
+        b.copy_from_slice(&client.buffer);
+   
+        let mut mat = opencv::imgcodecs::imdecode(&b);
         opencv::highgui::imshow("test", &mut mat);
         // let _ = s.send(&client.buffer);
 
