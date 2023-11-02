@@ -73,7 +73,7 @@ fn main() {
         client.read();
 
         let mut mat: Mat = Mat::default();
-        let mut b: Vec<u8> = vec![0; 460800];
+        let mut b: Vec<u8> = vec![0; 462848];
         b.copy_from_slice(&client.buffer);
         println!("first 100 of b: {:?}", &b[0..100]);
         let _ =
