@@ -9,12 +9,12 @@ use std::io::{Read, Write};
 use std::net::TcpStream;
 use std::{thread, time::Duration};
 
-struct Server {
+pub struct Server {
     stream: TcpStream,
 }
 
 impl Server {
-    fn send(&mut self, img_buffer: &[u8]) -> Mat {
+    pub fn send(&mut self, img_buffer: &[u8]) -> Mat {
         // let mut stream = TcpStream::connect("127.0.0.1:54321").unwrap();
         // let mut buffer: Vector<u8> = Vec::new().into();
 
@@ -40,28 +40,5 @@ impl Server {
         // .unwrap();
         // let flipped = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
         // flipped
-    }
-}
-fn main() {
-    let mut server = Server {
-        stream: TcpStream::connect("127.0.0.1:54321").unwrap(),
-    };
-
-    let mut app = App {
-        cam: videoio::VideoCapture::new(0, videoio::CAP_ANY).unwrap(),
-    };
-
-    app.init();
-
-    loop {
-        let mut frame = app.read();
-        let mut flipped = server.send(frame);
-
-        imshow("MoveNet", &flipped).expect("imshow [ERROR]");
-
-        let key = wait_key(1).unwrap();
-        if key > 0 && key != 255 {
-            break;
-        }
     }
 }
