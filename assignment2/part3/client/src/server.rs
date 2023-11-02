@@ -10,7 +10,7 @@ use std::net::TcpStream;
 use std::{thread, time::Duration};
 
 pub struct Server {
-    stream: TcpStream,
+    pub stream: TcpStream,
 }
 
 impl Server {
