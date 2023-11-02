@@ -1,4 +1,4 @@
-// use opencv::core::{flip, Mat, Vec3b, Vector};
+use opencv::core::{flip, Mat, Vec3b, Vector};
 // use opencv::prelude::*;
 
 // mod utils;
@@ -6,6 +6,7 @@ use std::io::{Read, Write};
 
 use std::net::TcpListener;
 use std::net::TcpStream;
+use std::result;
 // use tflitec::interpreter::{Interpreter, Options};
 // use tflitec::model::Model;
 // use utils::*;
@@ -14,9 +15,9 @@ struct Server {
     stream: TcpStream,
 }
 impl Server {
-    fn recieve(&mut self) {
+    fn recieve(&mut self) -> Mat {
         // let mut buffer: Vec<u8> = vec![0; 110646];
-        let mut buffer: Vec<u8> = vec![0; 1];
+        let mut buffer: Vec<u8> = vec![0; 462848];
         self.stream.read_exact(&mut buffer).unwrap();
         println!("buffer recieve size: {:?}", buffer.len());
     }

@@ -80,7 +80,9 @@ fn main() {
         //     .create(true)
         //     .open(name)
         //     .unwrap();
-        let _ = s.send(&client.buffer);
+        opencv::highgui::imshow("test", &client.buffer);
+
+        // let _ = s.send(&client.buffer);
 
         client.qbuf();
         // output
