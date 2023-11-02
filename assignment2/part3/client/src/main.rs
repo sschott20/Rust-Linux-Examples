@@ -173,12 +173,6 @@ fn main() {
         }
     }
 
-    // println!(
-    //     "first {} ",
-    //     buf.bytesused,
-    //     // &buffer[0..buf.bytesused as usize]
-    // );
-
     match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("qbuf [OK]");
@@ -191,8 +185,9 @@ fn main() {
     let mut output: File = OpenOptions::new()
         .write(true)
         .create(true)
-        .open("output.yuv422")
+        .open("output.yuv")
         .unwrap();
+
     output
         .write_all(&buffer[0..buf.bytesused as usize])
         .unwrap();
