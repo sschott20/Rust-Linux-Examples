@@ -47,10 +47,12 @@ fn main() {
     };
     client.start_device(3);
     client.buffer = unsafe {
-        memmap::MmapOptions::new()
-            .len(buf.length as usize)
-            .map_mut(&file)
-            .unwrap()
+        Some(
+            memmap::MmapOptions::new()
+                .len(client.buf.length as usize)
+                .map_mut(&client.file)
+                .unwrap(),
+        )
     };
 
     // let mut buffer: memmap::MmapMut = ;
