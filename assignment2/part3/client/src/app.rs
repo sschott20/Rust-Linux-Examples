@@ -120,7 +120,7 @@ fn qbuf(media_fd: i32) -> v4l2_buffer {
 }
 
 pub struct App {
-    pub buffer: memmap::MmapMut,
+    pub buffer: Option<memmap::MmapMut>,
     pub file: File,
     pub media_fd: i32,
     pub buf: v4l2_buffer,
@@ -143,7 +143,6 @@ impl App {
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
         println!("select [OK]");
 
-        
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
         match unsafe { vidioc_dqbuf(self.media_fd, &mut self.buf) } {
             Ok(_) => {

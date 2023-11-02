@@ -9,3 +9,6 @@ ffmpeg -f v4l2              \
        -f v4l2 /dev/video2  
 
 v4l2-ctl --list-devices
+
+
+ffmpeg -s 640x360 -pix_fmt uyvy422 -i output.yuv test.jpg
