@@ -79,7 +79,12 @@ fn main() {
             .open("tmp.yuv")
             .unwrap();
 
-        tmp.write_all(&client.buffer).unwrap();
+        let mut inbuf: [u8] = [0; 462848];
+        let mut outbuf: [u8] = [0; 462848];
+        inbuf = client.buffer;
+        let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
+
+        // tmp.write_all(&client.buffer).unwrap();
         // let mut mat: Mat = Mat::default();
         // let mut b: Vec<u8> = vec![0; 462848];
         // b.copy_from_slice(&client.buffer);
