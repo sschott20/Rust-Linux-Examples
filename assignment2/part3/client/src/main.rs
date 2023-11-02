@@ -67,19 +67,19 @@ fn main() {
     let mut i = 0;
     loop {
         i = i + 1;
-        if i > 5000{
+        if i > 5000 {
             break;
         }
         client.read();
         let mut b: Vec<u8> = vec![0; client.buf.bytesused as usize];
         // b.copy_from_slice(&client.buffer);
         println!("size: {:?}", b.len());
-        let mut testm = opencv::imgcodecs::imread("resource/download.jpg", -1).unwrap();
+        // let mut testm = opencv::imgcodecs::imread("resource/download.jpg", -1).unwrap();
 
         // println!("size: {:?}", testm.size().unwrap());
-        // let mut testm: Mat =
-        //     Mat::new_rows_cols_with_default(480, 640, Vec3b::typ(), opencv::core::Scalar::all(0.0))
-        //         .unwrap();
+        let mut testm: Mat =
+            Mat::new_rows_cols_with_default(480, 640, Vec3b::typ(), opencv::core::Scalar::all(0.0))
+                .unwrap();
         // println!("testm : {:?}", testm);
         // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
 
