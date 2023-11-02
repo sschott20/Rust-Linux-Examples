@@ -79,8 +79,8 @@ fn main() {
             .open("tmp.yuv")
             .unwrap();
 
-        let mut inbuf: [u8] = [0; 462848];
-        let mut outbuf: [u8] = [0; 462848];
+        let mut inbuf  = [0; 462848];
+        let mut outbuf = [0; 462848];
         inbuf = client.buffer;
         let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
