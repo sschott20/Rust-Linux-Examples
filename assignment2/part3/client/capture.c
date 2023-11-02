@@ -73,7 +73,7 @@ static void process_image(const void *p, int size)
 
     // if (out_buf)
     fwrite(p, size, 1, fptr);
-    fflust(fptr);
+    fflush(fptr);
     fflush(stderr);
     fprintf(stderr, ".");
     fflush(stdout);
