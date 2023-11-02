@@ -140,7 +140,7 @@ impl App {
         qbuf(fd);
         let mut stream_on = stream_on(fd);
 
-]        App {
+        App {
             buffer: unsafe {
                 memmap::MmapOptions::new()
                     .len(buf.length as usize)
