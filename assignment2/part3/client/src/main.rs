@@ -153,7 +153,7 @@ fn main() {
                 println!("dqbuf [FAILED]: {:?}", e);
             }
         }
-        print("buf.bytesused: {:?}", buf.bytesused);
+        println!("buf.bytesused: {:?}", buf.bytesused);
 
         if i >= 0 {
             let mut output: File = OpenOptions::new()
