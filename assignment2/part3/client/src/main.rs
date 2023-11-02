@@ -80,8 +80,11 @@ fn main() {
         //     .create(true)
         //     .open(name)
         //     .unwrap();
-        let img_vec: Vec<u8> = client.buffer[0..client.buf.bytesused as usize].to_vec();
-        opencv::highgui::imshow("test", &img_vec);
+
+        let img =
+            opencv::imgcodecs::imdecode(&opencv::types::VectorOfu8::from_iter(buffer), -1).unwrap();
+        // let img_vec: Vec<u8> = client.buffer[0..client.buf.bytesused as usize].to_vec();
+        opencv::highgui::imshow("test", img);
 
         // let _ = s.send(&client.buffer);
 
