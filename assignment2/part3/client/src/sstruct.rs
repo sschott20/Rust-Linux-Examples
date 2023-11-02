@@ -12,30 +12,7 @@ use std::io::prelude::*;
 use std::io::{Read, Write};
 use std::net::TcpStream;
 
-struct App {
-    cam: videoio::VideoCapture,
-}
 
-impl App {
-    fn init(&mut self) {
-        self.cam
-            .set(CAP_PROP_FPS, 30.0)
-            .expect("Set camera FPS [FAILED]");
-        videoio::VideoCapture::is_opened(&self.cam).expect("Open camera [FAILED]");
-    }
-
-    fn read(&mut self) -> Mat {
-        let mut frame = Mat::default();
-        self.cam
-            .read(&mut frame)
-            .expect("VideoCapture: read [FAILED]");
-        // resize the image as a square, size is
-        let mut flipped = Mat::default();
-        flip(&frame, &mut flipped, 1).expect("flip [FAILED]");
-        let resized_img = resize_with_padding(&flipped, [192, 192]);
-        resized_img
-    }
-}
 
 struct Server {
     stream: TcpStream,
