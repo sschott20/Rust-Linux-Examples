@@ -138,7 +138,7 @@ impl App {
         let mut buf: v4l2_buffer = query_buffer(fd);
         let mut stream_on = stream_on(fd);
 
-        buffer = unsafe {
+        let mut buffer: memmap::MmapMut = unsafe {
             memmap::MmapOptions::new()
                 .len(buf.length as usize)
                 .map_mut(&file)
