@@ -33,9 +33,9 @@ use std::{
 };
 
 fn main() {
-    // let mut server = Server {
-    //     stream: TcpStream::connect("127.0.0.1:54321").unwrap(),
-    // };
+    let mut server = Server {
+        stream: TcpStream::connect("127.0.0.1:54321").unwrap(),
+    };
 
     let mut f = File::options()
         .write(true)
