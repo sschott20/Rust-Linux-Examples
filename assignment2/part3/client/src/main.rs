@@ -34,7 +34,8 @@ fn main() {
         .read(true)
         .open("/dev/video2")
         .unwrap();
-    let mut client: App = App::new(&file);
+    let mut fd = file.as_raw_fd();
+    let mut client: App = App::new(fd);
 
     let mut buffer: memmap::MmapMut = unsafe {
         memmap::MmapOptions::new()

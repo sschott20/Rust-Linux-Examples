@@ -124,8 +124,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(file: File) -> App {
-        let fd = file.as_raw_fd();
+    pub fn new(fd) -> App {
         println!("camera fd = {}", fd);
 
         let mut format: v4l2_format = setup_vidio(fd);
