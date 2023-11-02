@@ -17,8 +17,8 @@ use nix::sys::ioctl;
 use nix::sys::select;
 use nix::sys::select::FdSet;
 
-use crate::setup::*;
 use crate::bindings::*;
+use crate::setup::*;
 
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 use std::{
@@ -98,10 +98,9 @@ fn stream_on(media_fd: i32) {
         }
     }
     // #define VIDIOC_QBUF _IOWR('V', 15, struct v4l2_buffer)
-
 }
 
-fn qbuf(media_fd: i32){
+fn qbuf(media_fd: i32) {
     let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
     buf.type_ = 1;
     buf.memory = 1;
@@ -121,7 +120,6 @@ pub struct App {
     buffer: memmap::MmapMut,
     buf: v4l2_buffer,
     media_fd: i32,
-    
 }
 
 impl App {
@@ -137,7 +135,7 @@ impl App {
 
         let mut format: v4l2_format = setup_vidio(fd);
         let mut reqbuff: v4l2_requestbuffers = request_buffer(fd);
-        buf: v4l2_buffer = query_buffer(fd);
+        let mut buf: v4l2_buffer = query_buffer(fd);
         let mut stream_on = stream_on(fd);
 
         buffer = unsafe {
@@ -151,19 +149,15 @@ impl App {
             buf: buf,
             media_fd: fd,
         }
-
-        
     }
 
     pub fn read(&mut self) {
         qbuf(self.media_fd);
-        
+
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
         println!("select [OK]");
-
-   
 
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
         match unsafe { vidioc_dqbuf(self.media_fd, &mut self.buf) } {
@@ -176,10 +170,6 @@ impl App {
         }
 
         println!("bytesused: {:?}", self.buf.bytesused);
-
-
- 
-
 
         // let mut frame = Mat::default();
         // self.cam
