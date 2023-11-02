@@ -82,7 +82,7 @@ fn main() {
 
         let mut inbuf  = [0; 462848];
         let mut outbuf = [0; 462848];
-        inbuf = client.buffer;
+        inbuf = copy_from_slice(&client.buffer);
         let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
         // tmp.write_all(&client.buffer).unwrap();

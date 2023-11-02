@@ -83,8 +83,6 @@ pub fn draw_keypoints(img: &mut Mat, keypoints: &[f32], threshold: f32) {
 }
 
 
-#![allow(dead_code)]
-
 use rayon::prelude::*;
 
 /// Copies an input buffer of format YUYV422 to the output buffer
