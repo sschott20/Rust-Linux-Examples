@@ -74,7 +74,7 @@ fn main() {
         let mut b: Vec<u8> = vec![0; client.buf.bytesused as usize];
         // b.copy_from_slice(&client.buffer);
         println!("size: {:?}", b.len());
-        let mut testm = opensv::imgcodecs::imread("download.jpg", 1).unwrap();
+        let mut testm = opencv::imgcodecs::imread("download.jpg", 1).unwrap();
         // let mut testm: Mat =
         //     Mat::new_rows_cols_with_default(480, 640, Vec3b::typ(), opencv::core::Scalar::all(0.0))
         //         .unwrap();
