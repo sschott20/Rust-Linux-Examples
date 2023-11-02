@@ -150,7 +150,7 @@ fn main() {
             .unwrap()
     };
     let mut i = 0;
-    loop {
+    {
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(media_fd);
 
