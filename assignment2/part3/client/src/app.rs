@@ -15,13 +15,13 @@ use opencv::{highgui::*, prelude::*, videoio};
 
 use memmap::Mmap;
 use memmap::MmapOptions;
-mod setup;
 use nix::sys::ioctl;
 use nix::sys::select;
 use nix::sys::select::FdSet;
-use setup::*;
-mod app;
-use app::*;
+
+use crate::setup::*;
+use crate::bindings::*;
+
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 use std::{
     fs::OpenOptions,
@@ -127,7 +127,7 @@ pub struct App {
 }
 
 impl App {
-    fn new() -> App {
+    pub fn new() -> App {
         let mut file = File::options()
             .write(true)
             .read(true)
@@ -157,8 +157,8 @@ impl App {
         
     }
 
-    fn read(&mut self) {
-        qbuf(media_fd);
+    pub fn read(&mut self) {
+        qbuf(self.media_fd);
         
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);
@@ -177,7 +177,7 @@ impl App {
             }
         }
 
-        println!("bytesused: {:?}", buf.bytesused);
+        println!("bytesused: {:?}", self.buf.bytesused);
 
 
  
