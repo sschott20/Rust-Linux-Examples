@@ -45,7 +45,7 @@ fn main() {
         .unwrap();
 
     let mut client: App = App {
-        buffer: memmap::Mmap::map(&ftmp).unwrap(),
+        buffer: memmap::MmapOptions::new().len(1).map_mut(&ftmp).unwrap(),
         file: f,
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
