@@ -76,7 +76,8 @@ fn main() {
         let mut b: Vec<u8> = vec![0; 460800];
         b.copy_from_slice(&client.buffer);
         println!("first 100 of b: {:?}", &b[0..100]);
-        let _ = opencv::imgcodecs::imgdecode_to(&opencv::types::VectorOfu8::from_vec(b), -1, &mut mat    )
+        let _ =
+            opencv::imgcodecs::imgdecode_to(&opencv::types::VectorOfu8::from_vec(b), -1, &mut mat);
         opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
         let key = wait_key(10).unwrap();
         if key > 0 && key != 255 {
