@@ -71,7 +71,7 @@ fn main() {
             break;
         }
         client.read();
-        let mut b: Vec<u8> = vec![0; client.buf.bytesused as usize];
+        // let mut b: Vec<u8> = vec![0; client.buf.bytesused as usize];
         // b.copy_from_slice(&client.buffer);
         // println!("size: {:?}", b.len());
         // let mut testm = opencv::imgcodecs::imread("resource/download.jpg", -1).unwrap();
@@ -81,9 +81,11 @@ fn main() {
         //     Mat::new_rows_cols_with_default(360, 640, Vec3b::typ(), opencv::core::Scalar::all(0.0))
         //         .unwrap();
         // println!("testm : {:?}", testm);
-        let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
+        let mut mat: Mat =
+            opencv::imgcodecs::imdecode(&opencv::types::VectorOfu8::from_iter(&client.buffer), -1)
+                .unwrap();
 
-        opencv::highgui::imshow("test", &mut testm).expect("imshow [error]");
+        opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
         let key = wait_key(10).unwrap();
         if key > 0 && key != 255 {
             break;
