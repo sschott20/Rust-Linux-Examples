@@ -84,7 +84,7 @@ fn main() {
 
         let img = opencv::imgcodecs::imdecode(&opencv::types::VectorOfu8::from_iter(img_vec), -1)
             .unwrap();
-        opencv::highgui::imshow("test", img);
+        opencv::highgui::imshow("test", &img);
 
         // let _ = s.send(&client.buffer);
 
