@@ -58,21 +58,6 @@ fn request_buffer(media_fd: i32) -> v4l2_requestbuffers {
     reqbufs
 }
 
-// pub struct v4l2_buffer {
-//     pub index: __u32,
-//     pub type_: __u32,
-//     pub bytesused: __u32,
-//     pub flags: __u32,
-//     pub field: __u32,
-//     pub timestamp: timeval,
-//     pub timecode: v4l2_timecode,
-//     pub sequence: __u32,
-//     pub memory: __u32,
-//     pub m: v4l2_buffer__bindgen_ty_1,
-//     pub length: __u32,
-//     pub reserved2: __u32,
-//     pub __bindgen_anon_1: v4l2_buffer__bindgen_ty_2,
-// }
 fn query_buffer(media_fd: i32) -> v4l2_buffer {
     // #define VIDIOC_QUERYBUF _IOWR('V', 9, struct v4l2_buffer)
     let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
@@ -153,28 +138,48 @@ fn main() {
 
     let mut readfds: FdSet = FdSet::new();
     readfds.insert(media_fd);
+    let mut i = 0;
+    loop {
+        let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
+        println!("select [OK]");
 
-    let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
-    println!("select [OK]");
+        // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
 
-    // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
-
-    match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
-        Ok(_) => {
-            println!("dqbuf [OK]");
+        match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+            Ok(_) => {
+                println!("dqbuf [OK]");
+            }
+            Err(e) => {
+                println!("dqbuf [FAILED]: {:?}", e);
+            }
         }
-        Err(e) => {
-            println!("dqbuf [FAILED]: {:?}", e);
+
+        if i > 10 {
+            let mut output: File = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open("output.yuv")
+                .unwrap();
+
+            output
+                .write_all(&buffer[0..buf.bytesused as usize])
+                .unwrap();
+            break;
         }
+        i = i + 1;
+        let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
+        buf.type_ = 1;
+        buf.memory = 1;
+        buf.index = 0;
+    
+        match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
+            Ok(_) => {
+                println!("qbuf [OK]");
+            }
+            Err(e) => {
+                println!("qbuf [FAILED]: {:?}", e);
+            }
+        }
+
     }
-
-    let mut output: File = OpenOptions::new()
-        .write(true)
-        .create(true)
-        .open("output.yuv")
-        .unwrap();
-
-    output
-        .write_all(&buffer[0..buf.bytesused as usize])
-        .unwrap();
 }
