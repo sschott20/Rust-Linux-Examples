@@ -145,15 +145,15 @@ fn main() {
 
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
 
-        match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
-            Ok(_) => {
-                println!("dqbuf [OK]");
-            }
-            Err(e) => {
-                println!("dqbuf [FAILED]: {:?}", e);
-            }
-        }
-        println!("buf.bytesused: {:?}", buf.bytesused);
+        // match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+        //     Ok(_) => {
+        //         println!("dqbuf [OK]");
+        //     }
+        //     Err(e) => {
+        //         println!("dqbuf [FAILED]: {:?}", e);
+        //     }
+        // }
+        // println!("buf.bytesused: {:?}", buf.bytesused);
 
         if i >= 10 {
             break;
@@ -167,6 +167,7 @@ fn main() {
         output
             .write_all(&buffer[0..buf.bytesused as usize])
             .unwrap();
+
         i = i + 1;
         let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
         buf.type_ = 1;
