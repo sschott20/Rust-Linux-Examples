@@ -80,7 +80,7 @@ fn main() {
         //     .open(name)
         //     .unwrap();
         client.qbuf();
-        server.send(client.buffer);
+        let _ = server.send(client.buffer);
         // output
         //     .write(&client.buffer[0..client.buf.bytesused as usize])
         //     .unwrap();
