@@ -153,6 +153,14 @@ fn main() {
     loop {
         i = i + 1;
         if (i > 10) {
+            let mut output: File = OpenOptions::new()
+                .write(true)
+                .create(true)
+                .open("output.yuv422")
+                .unwrap();
+            output
+                .write_all(&buffer[0..buf.bytesused as usize])
+                .unwrap();
             break;
         }
         let mut readfds: FdSet = FdSet::new();
@@ -187,12 +195,4 @@ fn main() {
             }
         }
     }
-    let mut output: File = OpenOptions::new()
-        .write(true)
-        .create(true)
-        .open("output.yuv422")
-        .unwrap();
-    output
-        .write_all(&buffer[0..buf.bytesused as usize])
-        .unwrap();
 }
