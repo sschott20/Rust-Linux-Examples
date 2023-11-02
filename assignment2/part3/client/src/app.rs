@@ -154,8 +154,6 @@ impl App {
     }
 
     pub fn read(&mut self) {
-        qbuf(self.media_fd);
-
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
