@@ -134,13 +134,13 @@ impl App {
             .open("/dev/video2")
             .unwrap();
 
-        media_fd = file.as_raw_fd();
-        println!("camera fd = {}", media_fd);
+        fd = file.as_raw_fd();
+        println!("camera fd = {}", fd);
 
-        let mut format: v4l2_format = setup_vidio(media_fd);
-        let mut reqbuff: v4l2_requestbuffers = request_buffer(media_fd);
-        buf: v4l2_buffer = query_buffer(media_fd);
-        let mut stream_on = stream_on(media_fd);
+        let mut format: v4l2_format = setup_vidio(fd);
+        let mut reqbuff: v4l2_requestbuffers = request_buffer(fd);
+        buf: v4l2_buffer = query_buffer(fd);
+        let mut stream_on = stream_on(fd);
 
         buffer = unsafe {
             memmap::MmapOptions::new()
@@ -151,7 +151,7 @@ impl App {
         App {
             buffer: buffer,
             buf: buf,
-            media_fd: media_fd,
+            media_fd: fd,
         }
 
         
