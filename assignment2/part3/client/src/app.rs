@@ -99,7 +99,7 @@ fn stream_on(media_fd: i32) {
     }
 }
 
-fn qbuf(media_fd: i32) {
+fn qbuf(media_fd: i32) -> v4l2_buffer {
     let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
     buf.type_ = 1;
     buf.memory = 1;
@@ -115,6 +115,8 @@ fn qbuf(media_fd: i32) {
             println!("qbuf [FAILED]: {:?}", e);
         }
     }
+
+    buf
 }
 
 pub struct App {
@@ -131,21 +133,15 @@ impl App {
         let mut format: v4l2_format = setup_vidio(fd);
         let mut reqbuff: v4l2_requestbuffers = request_buffer(fd);
         let mut buf: v4l2_buffer = query_buffer(fd);
-        qbuf(fd);
+        self.buf = qbuf(fd);
         let mut stream_on = stream_on(fd);
     }
 
     pub fn read(&mut self) {
-        let mut buf: v4l2_buffer = unsafe { std::mem::zeroed() };
-        buf.type_ = 1;
-        buf.memory = 1;
-        buf.index = 0;
-
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
         println!("select [OK]");
-        println!("media_fd {}", self.media_fd);
 
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
         match unsafe { vidioc_dqbuf(self.media_fd, &mut buf) } {
