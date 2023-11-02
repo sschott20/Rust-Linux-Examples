@@ -32,10 +32,10 @@ use std::{
 
 fn main() {
     let mut f = File::options()
-    .write(true)
-    .read(true)
-    .open("/dev/video2")
-    .unwrap()
+        .write(true)
+        .read(true)
+        .open("/dev/video2")
+        .unwrap();
 
     let mut fd = f.as_raw_fd();
 
@@ -47,7 +47,7 @@ fn main() {
                 .map_mut(&file)
                 .unwrap()
         },
-        buf : unsafe{std::mem::zeroed()}
+        buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
     };
     client.init(3);
