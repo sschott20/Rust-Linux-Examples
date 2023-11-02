@@ -87,7 +87,6 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
             println!("set vidio_s_fmt [OK]");
             match unsafe { vidio_g_fmt(media_fd, &mut format) } {
                 Ok(_) => {
-                    println!("get vidio_g_fmt [OK]");
                     println!("Image format:");
                     println!("width: {:?}", unsafe { format.fmt.pix.width });
                     println!("height: {:?}", unsafe { format.fmt.pix.height });
@@ -95,7 +94,6 @@ pub fn setup_vidio(media_fd: i32) -> v4l2_format {
                     println!("field: {:?}", unsafe { format.fmt.pix.field });
                     println!("bytesperline: {:?}", unsafe { format.fmt.pix.bytesperline });
                     println!("sizeimage: {:?}", unsafe { format.fmt.pix.sizeimage });
-                    println!("colorspace: {:?}", unsafe { format.fmt.pix.colorspace });
                 }
                 Err(e) => {
                     println!("get vidio_g_fmt [FAILED]: {:?}", e);
