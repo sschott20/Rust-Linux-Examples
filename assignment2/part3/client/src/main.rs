@@ -153,8 +153,9 @@ fn main() {
                 println!("dqbuf [FAILED]: {:?}", e);
             }
         }
+        print("buf.bytesused: {:?}", buf.bytesused);
 
-        if i > 2 {
+        if i >= 0 {
             let mut output: File = OpenOptions::new()
                 .write(true)
                 .create(true)
