@@ -71,9 +71,13 @@ fn main() {
             break;
         }
         client.read();
-        let mut file = File::create("test.yuv").unwrap();
-
-        file.write_all(&client.buffer).unwrap();
+        let mut tmp = File::options()
+            .write(true)
+            .read(true)
+            .open("tmp.jpg")
+            .unwrap();
+        
+        tmp.write_all(&client.buffer).unwrap();
         // let mut mat: Mat = Mat::default();
         // let mut b: Vec<u8> = vec![0; 462848];
         // b.copy_from_slice(&client.buffer);
