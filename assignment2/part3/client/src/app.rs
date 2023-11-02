@@ -143,6 +143,9 @@ impl App {
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
         println!("select [OK]");
 
+        self.buf = unsafe { std::mem::zeroed() };
+        self.buf.type_ = 1;
+        self.buf.memory = 1;
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
         match unsafe { vidioc_dqbuf(self.media_fd, &mut self.buf) } {
             Ok(_) => {
