@@ -79,7 +79,7 @@ fn main() {
         // println!("size: {:?}", testm.size().unwrap());
         let mut testm: Mat =
             Mat::new_rows_cols_with_default(480, 640, Vec3b::typ(), opencv::core::Scalar::all(0.0))
-        //         .unwrap();
+                .unwrap();
         println!("testm : {:?}", testm);
         // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
         opencv::highgui::imshow("test", &mut testm).expect("imshow [error]");
