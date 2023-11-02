@@ -74,7 +74,7 @@ fn main() {
         let mut b: Vec<u8> = vec![0; client.buf.bytesused as usize];
         // b.copy_from_slice(&client.buffer);
         println!("size: {:?}", b.len());
-        let mut testm = opencv::imgcodecs::imread("resource/download.jpg", 1).unwrap();
+        let mut testm = opencv::imgcodecs::imread("resource/download.jpg", -1).unwrap();
 
         // println!("size: {:?}", testm.size().unwrap());
         // let mut testm: Mat =
@@ -82,8 +82,11 @@ fn main() {
         //         .unwrap();
         // println!("testm : {:?}", testm);
         // let mut mat: Mat = opencv::imgcodecs::imdecode(&b, -1).unwrap();
-        loop {
-            opencv::highgui::imshow("test", &mut testm).expect("imshow [error]");
+
+        opencv::highgui::imshow("test", &mut testm).expect("imshow [error]");
+        let key = wait_key(1).unwrap();
+        if key > 0 && key != 255 {
+            break;
         }
         // let _ = s.send(&client.buffer);
 
