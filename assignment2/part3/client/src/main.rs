@@ -40,10 +40,11 @@ fn main() {
             .unwrap(),
         buffer: unsafe {
             memmap::MmapOptions::new()
-                .len(462848)
+                .len(client.buf.length as usize)
                 .map_mut(&file)
                 .unwrap()
         },
+        buf : unsafe{std::mem::zeroed()}
         media_fd: 3,
     };
     client.init(3);

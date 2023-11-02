@@ -121,6 +121,7 @@ pub struct App {
     pub buffer: memmap::MmapMut,
     pub file: File,
     pub media_fd: i32,
+    pub buf: v4l2_buffer,
 }
 
 impl App {
