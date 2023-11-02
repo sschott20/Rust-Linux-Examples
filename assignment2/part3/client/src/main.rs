@@ -147,35 +147,51 @@ fn main() {
             .map_mut(&file)
             .unwrap()
     };
-
-    let mut readfds: FdSet = FdSet::new();
-    readfds.insert(media_fd);
-
-    let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
-    println!("select [OK]");
-
-    // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
-    ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
-
-    match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
-        Ok(_) => {
-            println!("dqbuf [OK]");
+    let mut i = 0;
+    loop {
+        i = i + 1;
+        if (i > 10) {
+            break;
         }
-        Err(e) => {
-            println!("dqbuf [FAILED]: {:?}", e);
+        let mut readfds: FdSet = FdSet::new();
+        readfds.insert(media_fd);
+
+        let _ = select::select(media_fd + 1, &mut readfds, None, None, None);
+        println!("select [OK]");
+
+        // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
+        ioctl_readwrite!(vidioc_dqbuf, VIDIOC_MAGIC, 17, v4l2_buffer);
+
+        match unsafe { vidioc_dqbuf(media_fd, &mut buf) } {
+            Ok(_) => {
+                println!("dqbuf [OK]");
+            }
+            Err(e) => {
+                println!("dqbuf [FAILED]: {:?}", e);
+            }
+        }
+
+        // println!(
+        //     "first {} ",
+        //     buf.bytesused,
+        //     // &buffer[0..buf.bytesused as usize]
+        // );
+
+        match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
+            Ok(_) => {
+                println!("qbuf [OK]");
+            }
+            Err(e) => {
+                println!("qbuf [FAILED]: {:?}", e);
+            }
         }
     }
-
-    // println!(
-    //     "first {} ",
-    //     buf.bytesused,
-    //     // &buffer[0..buf.bytesused as usize]
-    // );
-
     let mut output: File = OpenOptions::new()
         .write(true)
         .create(true)
-        .open("output.yuv")
+        .open("output.yuv422")
         .unwrap();
-    output.write_all(&buffer[0..buf.bytesused as usize]).unwrap();
+    output
+        .write_all(&buffer[0..buf.bytesused as usize])
+        .unwrap();
 }
