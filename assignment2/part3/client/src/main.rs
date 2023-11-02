@@ -154,7 +154,7 @@ fn main() {
             }
         }
 
-        if i > 10 {
+        if i > 2 {
             let mut output: File = OpenOptions::new()
                 .write(true)
                 .create(true)
