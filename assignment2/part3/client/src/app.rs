@@ -119,8 +119,8 @@ fn qbuf(media_fd: i32) {
 
 pub struct App {
     // buffer: memmap::MmapMut,
-    buf: v4l2_buffer,
-    media_fd: i32,
+    pub buf: v4l2_buffer,
+    pub media_fd: i32,
 }
 
 impl App {
