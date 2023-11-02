@@ -80,7 +80,7 @@ fn main() {
         //     .create(true)
         //     .open(name)
         //     .unwrap();
-        // let _ = server.send(&client.buffer);
+        let _ = server.send(&client.buffer);
 
         client.qbuf();
         // output
