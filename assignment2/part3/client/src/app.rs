@@ -135,18 +135,12 @@ impl App {
         let mut stream_on = stream_on(fd);
 
         App {
-            buffer: unsafe {
-                memmap::MmapOptions::new()
-                    .len(buf.length as usize)
-                    .map_mut(&file)
-                    .unwrap()
-            },
             buf: buf,
             media_fd: fd,
         }
     }
 
-    pub fn read(&mut self) {
+    pub fn read(&mut self, ) {
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);

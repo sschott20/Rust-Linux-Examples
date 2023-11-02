@@ -29,11 +29,28 @@ use std::{
 };
 
 fn main() {
-    let mut f = File::options()
+    let mut file: File = File::options()
         .write(true)
         .read(true)
         .open("/dev/video2")
         .unwrap();
     let mut client: App = App::new(f);
+
+    let mut buffer: memmap::MmapMut =  unsafe {
+        memmap::MmapOptions::new()
+            .len(client.buf.length as usize)
+            .map_mut(&file)
+            .unwrap()
+    },
     client.read();
+
+    let mut output: File = OpenOptions::new()
+        .write(true)
+        .read(true)
+        .create(true)
+        .open("output.yuv")
+        .unwrap();
+
+    output.write(&buffer[0..buf.bytesused as usize]).unwrap();
+    
 }
