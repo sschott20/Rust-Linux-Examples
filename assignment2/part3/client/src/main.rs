@@ -40,12 +40,13 @@ fn main() {
     let mut fd = f.as_raw_fd();
 
     let mut client: App = App {
-        buffer: unsafe { std::mem::zeroed() },
+        buffer: None,
         file: f,
         buf: unsafe { std::mem::zeroed() },
         media_fd: fd,
     };
     client.start_device(3);
+
     client.buffer = unsafe {
         memmap::MmapOptions::new()
             .len(client.buf.length as usize)
