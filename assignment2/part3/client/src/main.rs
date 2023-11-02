@@ -32,7 +32,7 @@ use std::{
     io::{Seek, SeekFrom, Write},
 };
 
-fn main() {``
+fn main() {
     let mut s = Server {
         stream: TcpStream::connect("127.0.0.1:54321").expect("failed to connect"),
     };
