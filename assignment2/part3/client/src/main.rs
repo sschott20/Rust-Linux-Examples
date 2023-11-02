@@ -159,7 +159,7 @@ fn main() {
         .open("output.yuv")
         .unwrap();
 
-    output.write(&buffer).unwrap();
+    output.write_all(&buffer).unwrap();
 
     match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
         Ok(_) => {
