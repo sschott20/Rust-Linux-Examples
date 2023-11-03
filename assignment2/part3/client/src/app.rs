@@ -47,7 +47,7 @@ fn request_buffer(media_fd: i32) -> v4l2_requestbuffers {
 
     match unsafe { vidioc_reqbufs(media_fd, &mut reqbufs) } {
         Ok(_) => {
-            println!("reqbufs [OK]");
+            // println!("reqbufs [OK]");
         }
         Err(e) => {
             println!("reqbufs [FAILED]: {:?}", e);
@@ -66,17 +66,17 @@ fn query_buffer(media_fd: i32) -> v4l2_buffer {
     match unsafe { vidioc_querybuf(media_fd, &mut buf) } {
         Ok(_) => {
             println!("querybuf [OK]");
-            println!("index: {:?}", buf.index);
-            println!("type_: {:?}", buf.type_);
-            println!("bytesused: {:?}", buf.bytesused);
-            println!("flags: {:?}", buf.flags);
-            println!("field: {:?}", buf.field);
-            println!("timestamp: {:?}", buf.timestamp);
-            println!("timecode: {:?}", buf.timecode);
-            println!("sequence: {:?}", buf.sequence);
-            println!("memory: {:?}", buf.memory);
+            // println!("index: {:?}", buf.index);
+            // println!("type_: {:?}", buf.type_);
+            // println!("bytesused: {:?}", buf.bytesused);
+            // println!("flags: {:?}", buf.flags);
+            // println!("field: {:?}", buf.field);
+            // println!("timestamp: {:?}", buf.timestamp);
+            // println!("timecode: {:?}", buf.timecode);
+            // println!("sequence: {:?}", buf.sequence);
+            // println!("memory: {:?}", buf.memory);
             println!("length: {:?}", buf.length);
-            println!("reserved2: {:?}", buf.reserved2);
+            // println!("reserved2: {:?}", buf.reserved2);
         }
         Err(e) => {
             println!("querybuf [FAILED]: {:?}", e);
@@ -90,7 +90,7 @@ fn stream_on(media_fd: i32) {
     let buf_type = 1;
     match unsafe { vidioc_streamon(media_fd, &1) } {
         Ok(_) => {
-            println!("streamon [OK]");
+            // println!("streamon [OK]");
             // println!("")
         }
         Err(e) => {
@@ -109,7 +109,7 @@ fn qbuf(media_fd: i32) -> v4l2_buffer {
 
     match unsafe { vidioc_qbuf(media_fd, &mut buf) } {
         Ok(_) => {
-            println!("qbuf [OK]");
+            // println!("qbuf [OK]");
         }
         Err(e) => {
             println!("qbuf [FAILED]: {:?}", e);
@@ -143,18 +143,18 @@ impl App {
         let mut readfds: FdSet = FdSet::new();
         readfds.insert(self.media_fd);
         let _ = select::select(self.media_fd + 1, &mut readfds, None, None, None);
-        println!("select [OK]");
+        // println!("select [OK]");
 
         // #define VIDIOC_DQBUF _IOWR('V', 17, struct v4l2_buffer)
         match unsafe { vidioc_dqbuf(self.media_fd, &mut self.buf) } {
             Ok(_) => {
-                println!("dqbuf [OK]");
+                // println!("dqbuf [OK]");
             }
             Err(e) => {
                 println!("dqbuf [FAILED]: {:?}", e);
             }
         }
 
-        println!("bytesused: {:?}", self.buf.bytesused);
+        // println!("bytesused: {:?}", self.buf.bytesused);
     }
 }
