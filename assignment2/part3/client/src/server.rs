@@ -26,19 +26,19 @@ impl Server {
         self.stream.write_all(&img_buffer).unwrap();
         println!("buffer send size: {}", img_buffer.len());
 
-        // let mut buffer: Vec<u8> = vec![0; 110646];
-        // self.stream.read_exact(&mut buffer).unwrap();
-        // // println!("buffer recieve size: {}", buffer.len());
+        let mut buffer: Vec<u8> = vec![0; 110646];
+        self.stream.read_exact(&mut buffer).unwrap();
+        // println!("buffer recieve size: {}", buffer.len());
 
         let mut flipped = Mat::default();
+
+        opencv::imgcodecs::imdecode_to(
+            &opencv::types::VectorOfu8::from_iter(buffer),
+            -1,
+            &mut flipped,
+        )
+        .unwrap();
+        let flipped = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
         flipped
-        // opencv::imgcodecs::imdecode_to(
-        //     &opencv::types::VectorOfu8::from_iter(buffer),
-        //     -1,
-        //     &mut flipped,
-        // )
-        // .unwrap();
-        // let flipped = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
-        // flipped
     }
 }

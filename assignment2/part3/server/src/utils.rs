@@ -122,7 +122,8 @@ fn ycbcr_to_rgb(y: u8, cb: u8, cr: u8) -> (u8, u8, u8) {
     let g = (y as f32 - 0.395 * (cb as f32 - 128.0) - 0.581 * (cr as f32 - 128.0)).round();
     let b: f32 = (y as f32 + 2.032 * (cb as f32 - 128.0)).round();
 
-    (clamp(r), clamp(g), clamp(b))
+    // (clamp(r), clamp(g), clamp(b))
+    (clamp(b), clamp(g), clamp(r))
 }
 
 #[inline]

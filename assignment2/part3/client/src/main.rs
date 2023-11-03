@@ -67,47 +67,26 @@ fn main() {
     };
     let mut i = 0;
     loop {
-        if i > 0 {
+        if i > 5000 {
             break;
         }
         i = i + 1;
 
         client.read();
-        let mut tmp = File::options()
-            .write(true)
-            .read(true)
-            .create(true)
-            .open("tmp.yuv")
-            .unwrap();
-
-   
-
-        // let mut output: File = OpenOptions::new()
+        // let mut tmp = File::options()
         //     .write(true)
         //     .read(true)
         //     .create(true)
-        //     .open("output.rgb")
+        //     .open("tmp.yuv")
         //     .unwrap();
 
-        // output.write_all(&outbuf).unwrap();
-        // // turn converted into Vec<u8>
-        // let v: Vec<u8> = outbuf.to_vec();
-        // println!("first 100 as hex of v: {:?}", &v[0..100]);
-        // println!("v.len(): {:?}", v.len());
-        // let mut mat: Mat = Mat::default();
+        let frame: Mat = s.send(&client.buffer);
+        imshow("MoveNet", &flipped).expect("imshow [ERROR]");
 
-        // let _ =
-        //     opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
-        // println!("mat.rows(): {:?}", mat.rows());
-        // println!("mat.cols(): {:?}", mat.cols());
-        // println!("mat : {:?}", mat);
-
-        // opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
-        // let key = wait_key(10000).unwrap();
-        // if key > 0 && key != 255 {
-        //     break;
-        // }
-        let _ = s.send(&client.buffer);
+        let key = wait_key(1000).unwrap();
+        if key > 0 && key != 255 {
+            break;
+        }
 
         client.qbuf();
     }
