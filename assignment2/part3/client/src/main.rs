@@ -81,7 +81,7 @@ fn main() {
         //     .unwrap();
 
         let frame: Mat = s.send(&client.buffer);
-        imshow("MoveNet", &flipped).expect("imshow [ERROR]");
+        imshow("MoveNet", &frame).expect("imshow [ERROR]");
 
         let key = wait_key(1000).unwrap();
         if key > 0 && key != 255 {
