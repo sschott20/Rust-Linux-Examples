@@ -20,7 +20,7 @@ impl Server {
     fn recieve(&mut self) {
         // let mut buffer: Vec<u8> = vec![0; 110646];
         let mut buffer: Vec<u8> = vec![0; 460800];
-        self.stream.read_exact(&mut buffer).unwrap();
+        self.stream.read(&mut buffer).unwrap();
 
         let mut outbuf = [0; 462848 * 2];
 
