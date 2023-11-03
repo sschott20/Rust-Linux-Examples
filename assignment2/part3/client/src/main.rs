@@ -85,20 +85,28 @@ fn main() {
         let mut outbuf = [0; 462848];
         let _ = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
+        let mut output: File = OpenOptions::new()
+            .write(true)
+            .read(true)
+            .create(true)
+            .open("output.rgb")
+            .unwrap();
+
+        output.write(&outbuf).unwrap();
         // turn converted into Vec<u8>
-        let v: Vec<u8> = outbuf.to_vec();
-        println!("first 100 as hex of v: {:?}", &v[0..100]);
+        // let v: Vec<u8> = outbuf.to_vec();
+        // println!("first 100 as hex of v: {:?}", &v[0..100]);
 
-        let mut mat: Mat = Mat::default();
+        // let mut mat: Mat = Mat::default();
 
-        let _ =
-            opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
+        // let _ =
+        //     opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
 
-        opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
-        let key = wait_key(10).unwrap();
-        if key > 0 && key != 255 {
-            break;
-        }
+        // opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
+        // let key = wait_key(10).unwrap();
+        // if key > 0 && key != 255 {
+        //     break;
+        // }
         // let _ = s.send(&client.buffer);
 
         client.qbuf();
