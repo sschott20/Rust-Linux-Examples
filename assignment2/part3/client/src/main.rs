@@ -67,7 +67,7 @@ fn main() {
     };
     let mut i = 0;
     loop {
-        if i > 5000 {
+        if i > 10000 {
             break;
         }
         i = i + 1;
@@ -76,7 +76,7 @@ fn main() {
 
         let frame: Mat = s.send(&client.buffer);
         imshow("MoveNet", &frame).expect("imshow [ERROR]");
-        let key = wait_key(1000).unwrap();
+        let key = wait_key(1).unwrap();
         if key > 0 && key != 255 {
             break;
         }

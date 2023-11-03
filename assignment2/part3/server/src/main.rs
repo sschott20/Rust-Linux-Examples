@@ -68,9 +68,7 @@ impl Server {
         frameb.set_rows(360);
         frameb.set_cols(640);
 
-        println!("framer: {:?}", framer);
-        println!("frameg: {:?}", frameg);
-        println!("frameb: {:?}", frameb);
+
         let mut channels: Vector<Mat> = Vector::new();
         channels.push(framer);
         channels.push(frameg);
@@ -79,7 +77,7 @@ impl Server {
         let _ = opencv::core::merge(&channels, &mut frame).unwrap();
 
 
-        println!("frame: {:?}", frame);
+        // println!("frame: {:?}", frame);
 
         frame
     }
