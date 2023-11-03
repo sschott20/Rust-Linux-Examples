@@ -82,7 +82,6 @@ pub fn draw_keypoints(img: &mut Mat, keypoints: &[f32], threshold: f32) {
     }
 }
 
-
 use rayon::prelude::*;
 
 /// Copies an input buffer of format YUYV422 to the output buffer
@@ -119,10 +118,9 @@ pub fn yuv422_to_rgb32(in_buf: &[u8], out_buf: &mut [u8]) {
 
 #[inline]
 fn ycbcr_to_rgb(y: u8, cb: u8, cr: u8) -> (u8, u8, u8) {
-
-    let r = (y as f32 + 1.13983 * (cr as f32)).round();
-    let g = (y as f32 - 0.395 * (cb as f32) - 0.581 * (cr as f32)).round();
-    let b : f32 = (y as f32 + 2.032 * (cb as f32)).round();
+    let r = (y as f32 + 1.13983 * (cr as f32 - 128.0)).round();
+    let g = (y as f32 - 0.395 * (cb as f32 - 128.0) - 0.581 * (cr as f32 - 128.0)).round();
+    let b: f32 = (y as f32 + 2.032 * (cb as f32 - 128.0)).round();
 
     (clamp(r), clamp(g), clamp(b))
 }

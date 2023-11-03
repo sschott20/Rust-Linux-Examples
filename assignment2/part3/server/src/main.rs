@@ -1,3 +1,6 @@
+#![allow(unused_mut)]
+#![allow(unused_imports)]
+#![allow(unused_variables)]
 use opencv::core::{flip, Mat, Vec3b, Vector};
 // use opencv::prelude::*;
 
@@ -9,6 +12,11 @@ use std::net::TcpListener;
 use std::net::TcpStream;
 use std::result;
 
+use std::{fs::File, os::unix::prelude::AsRawFd, str};
+use std::{
+    fs::OpenOptions,
+    io::{Seek, SeekFrom},
+};
 // use tflitec::interpreter::{Interpreter, Options};
 // use tflitec::model::Model;
 // use utils::*;
@@ -19,14 +27,24 @@ struct Server {
 impl Server {
     fn recieve(&mut self) {
         // let mut buffer: Vec<u8> = vec![0; 110646];
-        let mut buffer: Vec<u8> = vec![0; 460800];
-        self.stream.read(&mut buffer).unwrap();
+        println!("recieve");
+        let mut buffer: Vec<u8> = vec![0; 462848];
+        self.stream.read_exact(&mut buffer).unwrap();
 
         let mut outbuf = [0; 462848 * 2];
 
         let _ = yuv422_to_rgb32(&buffer, &mut outbuf);
 
-        let mut frame = Mat::from_slice(&outbuf).unwrap();
+        // let mut f = File::options()
+        //     .write(true)
+        //     .read(true)
+        //     .create(true)
+        //     .open("test.rgb")
+        //     .unwrap();
+
+        // f.write_all(&outbuf).unwrap();
+        let mut frame = Mat::default();
+        let _ = opencv::imgcodecs::imdecode_to(&Vector::from_slice(&outbuf), -1, &mut frame);
         let _ = opencv::imgcodecs::imwrite("test.jpg", &frame, &Vector::new());
     }
 }
@@ -80,6 +98,7 @@ fn main() {
 
                 loop {
                     let _ = server.recieve();
+                    break;
                     // let mut frame = app.dnn(frame);
                     // server.send(frame);
                 }
