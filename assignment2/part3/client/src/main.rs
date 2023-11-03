@@ -81,8 +81,8 @@ fn main() {
             .unwrap();
 
         // let mut inbuf = [0; 462848];
-        let mut inbuf = &client.buffer[2048..client.buf.bytesused as usize];
-        let mut outbuf = [0; 462848];
+        let mut inbuf: [u8; 460800] = &client.buffer[2048..client.buf.bytesused as usize];
+        let mut outbuf = [0; 460800];
         let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
         // turn converted into Vec<u8>
