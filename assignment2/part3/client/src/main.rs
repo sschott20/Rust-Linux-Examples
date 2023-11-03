@@ -82,7 +82,7 @@ fn main() {
 
         // let mut inbuf = [0; 462848];
         let mut inbuf = &client.buffer[0..client.buf.bytesused as usize];
-        let mut outbuf = [0; 462848];
+        let mut outbuf = [0; 462848 * 2];
         let _ = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
         let mut output: File = OpenOptions::new()
