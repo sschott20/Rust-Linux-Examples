@@ -85,32 +85,32 @@ fn main() {
 
         let _ = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
-        let mut output: File = OpenOptions::new()
-            .write(true)
-            .read(true)
-            .create(true)
-            .open("output.rgb")
-            .unwrap();
+        // let mut output: File = OpenOptions::new()
+        //     .write(true)
+        //     .read(true)
+        //     .create(true)
+        //     .open("output.rgb")
+        //     .unwrap();
 
-        output.write_all(&outbuf).unwrap();
-        // turn converted into Vec<u8>
-        let v: Vec<u8> = outbuf.to_vec();
-        println!("first 100 as hex of v: {:?}", &v[0..100]);
-        println!("v.len(): {:?}", v.len());
-        let mut mat: Mat = Mat::default();
+        // output.write_all(&outbuf).unwrap();
+        // // turn converted into Vec<u8>
+        // let v: Vec<u8> = outbuf.to_vec();
+        // println!("first 100 as hex of v: {:?}", &v[0..100]);
+        // println!("v.len(): {:?}", v.len());
+        // let mut mat: Mat = Mat::default();
 
-        let _ =
-            opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
-        println!("mat.rows(): {:?}", mat.rows());
-        println!("mat.cols(): {:?}", mat.cols());
-        println!("mat : {:?}", mat);
+        // let _ =
+        //     opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
+        // println!("mat.rows(): {:?}", mat.rows());
+        // println!("mat.cols(): {:?}", mat.cols());
+        // println!("mat : {:?}", mat);
 
-        opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
-        let key = wait_key(10000).unwrap();
-        if key > 0 && key != 255 {
-            break;
-        }
-        // let _ = s.send(&client.buffer);
+        // opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
+        // let key = wait_key(10000).unwrap();
+        // if key > 0 && key != 255 {
+        //     break;
+        // }
+        let _ = s.send(&client.buffer);
 
         client.qbuf();
     }

@@ -15,11 +15,13 @@ struct Server {
     stream: TcpStream,
 }
 impl Server {
-    fn recieve(&mut self) -> Mat {
+    fn recieve(&mut self) {
         // let mut buffer: Vec<u8> = vec![0; 110646];
         let mut buffer: Vec<u8> = vec![0; 462848];
         self.stream.read_exact(&mut buffer).unwrap();
-        println!("buffer recieve size: {:?}", buffer.len());
+
+        let mut frame = Mat::from_slice(&buffer).unwrap();
+        let _ = opencv::imgcodecs::imwrite("test.jpg", &frame, &Vector::new());
     }
 }
 // struct App<'a> {

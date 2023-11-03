@@ -86,7 +86,6 @@ pub fn draw_keypoints(img: &mut Mat, keypoints: &[f32], threshold: f32) {
 use rayon::prelude::*;
 
 /// Copies an input buffer of format YUYV422 to the output buffer
-/// in the format of RGB24
 #[inline]
 pub fn yuv422_to_rgb32(in_buf: &[u8], out_buf: &mut [u8]) {
     debug_assert!(out_buf.len() == in_buf.len() * 2);
