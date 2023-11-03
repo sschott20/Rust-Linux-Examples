@@ -101,6 +101,9 @@ fn main() {
 
         let _ =
             opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
+        println!("mat.rows(): {:?}", mat.rows());
+        println!("mat.cols(): {:?}", mat.cols());
+        println!("mat : {:?}", mat);
 
         opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
         let key = wait_key(10000).unwrap();
