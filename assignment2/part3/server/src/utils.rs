@@ -81,3 +81,57 @@ pub fn draw_keypoints(img: &mut Mat, keypoints: &[f32], threshold: f32) {
         }
     }
 }
+
+use rayon::prelude::*;
+
+/// Copies an input buffer of format YUYV422 to the output buffer
+#[inline]
+pub fn yuv422_to_rgb32(in_buf: &[u8], out_buf: &mut [u8]) {
+    debug_assert!(out_buf.len() == in_buf.len() * 2);
+
+    in_buf
+        .par_chunks_exact(4) // FIXME: use par_array_chunks() when stabalized (https://github.com/rayon-rs/rayon/pull/789)
+        .zip(out_buf.par_chunks_exact_mut(8))
+        .for_each(|(ch, out)| {
+            let y1 = ch[0];
+            let y2 = ch[2];
+            let cb = ch[1];
+            let cr = ch[3];
+
+            let (r, g, b) = ycbcr_to_rgb(y1, cb, cr);
+
+            out[0] = b;
+            out[1] = g;
+            out[2] = r;
+            // out[3] = 0;
+
+            let (r, g, b) = ycbcr_to_rgb(y2, cb, cr);
+
+            out[4] = b;
+            out[5] = g;
+            out[6] = r;
+            // out[7] = 0;
+        });
+}
+
+// COLOR CONVERSION: https://stackoverflow.com/questions/28079010/rgb-to-ycbcr-using-simd-vectors-lose-some-data
+
+#[inline]
+fn ycbcr_to_rgb(y: u8, cb: u8, cr: u8) -> (u8, u8, u8) {
+    let r = (y as f32 + 1.13983 * (cr as f32)).round();
+    let g = (y as f32 - 0.395 * (cb as f32) - 0.581 * (cr as f32)).round();
+    let b: f32 = (y as f32 + 2.032 * (cb as f32)).round();
+
+    (clamp(r), clamp(g), clamp(b))
+}
+
+#[inline]
+fn clamp(val: f32) -> u8 {
+    if val < 0.0 {
+        0
+    } else if val > 255.0 {
+        255
+    } else {
+        val.round() as u8
+    }
+}

@@ -1,12 +1,14 @@
 use opencv::core::{flip, Mat, Vec3b, Vector};
 // use opencv::prelude::*;
 
-// mod utils;
+mod utils;
 use std::io::{Read, Write};
+use utils::*;
 
 use std::net::TcpListener;
 use std::net::TcpStream;
 use std::result;
+
 // use tflitec::interpreter::{Interpreter, Options};
 // use tflitec::model::Model;
 // use utils::*;
@@ -20,7 +22,11 @@ impl Server {
         let mut buffer: Vec<u8> = vec![0; 462848];
         self.stream.read_exact(&mut buffer).unwrap();
 
-        let mut frame = Mat::from_slice(&buffer).unwrap();
+        let mut outbuf = [0; 462848 * 2];
+
+        let _ = yuv422_to_rgb32(&buffer, &mut outbuf);
+
+        let mut frame = Mat::from_slice(&outbuf).unwrap();
         let _ = opencv::imgcodecs::imwrite("test.jpg", &frame, &Vector::new());
     }
 }
