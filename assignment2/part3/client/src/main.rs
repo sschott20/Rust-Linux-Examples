@@ -83,20 +83,16 @@ fn main() {
         // let mut inbuf = [0; 462848];
         let mut inbuf = &client.buffer[2048..client.buf.bytesused as usize];
         let mut outbuf = [0; 462848];
-        let converted = yuv422_to_rgb32(&inbuf, &mut outbuf);
+        let _ = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
         // turn converted into Vec<u8>
         let v: Vec<u8> = outbuf.to_vec();
-        // tmp.write_all(&client.buffer).unwrap();
+        println!("first 100 as hex of v: {:?}", &v[0..100]);
+
         let mut mat: Mat = Mat::default();
-        // let mut b: Vec<u8> = vec![0; 462848];
-        // b.copy_from_slice(&client.buffer);
-        // println!("first 100 of b: {:?}", &b[0..100]);
-        let _ = opencv::imgcodecs::imdecode_to(
-            &opencv::types::VectorOfu8::from_iter(v),
-            -1,
-            &mut mat,
-        );
+
+        let _ =
+            opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
 
         opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
         let key = wait_key(10).unwrap();
