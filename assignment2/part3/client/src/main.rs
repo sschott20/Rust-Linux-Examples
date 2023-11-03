@@ -92,7 +92,7 @@ fn main() {
             .open("output.rgb")
             .unwrap();
 
-        output.write(&outbuf).unwrap();
+        output.write_all(&outbuf).unwrap();
         // turn converted into Vec<u8>
         // let v: Vec<u8> = outbuf.to_vec();
         // println!("first 100 as hex of v: {:?}", &v[0..100]);
