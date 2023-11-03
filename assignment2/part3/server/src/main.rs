@@ -31,10 +31,11 @@ impl Server {
         let mut buffer: Vec<u8> = vec![0; 462848];
         self.stream.read_exact(&mut buffer).unwrap();
 
-        let mut outbuf = [0; 462848 * 2];
+        let mut outbuf: Vec<u8> = vec![0; 462848 * 2];
 
         let _ = yuv422_to_rgb32(&buffer, &mut outbuf);
 
+        // println!("v: {:?}", outbuf);
         // let mut f = File::options()
         //     .write(true)
         //     .read(true)
@@ -44,8 +45,15 @@ impl Server {
 
         // f.write_all(&outbuf).unwrap();
         let mut frame = Mat::default();
-        let _ = opencv::imgcodecs::imdecode_to(&Vector::from_slice(&outbuf), -1, &mut frame);
-        let _ = opencv::imgcodecs::imwrite("test.jpg", &frame, &Vector::new());
+
+        opencv::imgcodecs::imdecode_to(
+            &opencv::types::VectorOfu8::from_iter(outbuf),
+            1,
+            &mut frame,
+        )
+        .unwrap();
+        println!("frame: {:?}", frame.size().unwrap());
+        opencv::imgcodecs::imwrite("test.jpg", &frame, &Vector::new()).unwrap();
     }
 }
 // struct App<'a> {
