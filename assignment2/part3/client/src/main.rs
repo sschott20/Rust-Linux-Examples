@@ -73,16 +73,9 @@ fn main() {
         i = i + 1;
 
         client.read();
-        // let mut tmp = File::options()
-        //     .write(true)
-        //     .read(true)
-        //     .create(true)
-        //     .open("tmp.yuv")
-        //     .unwrap();
 
         let frame: Mat = s.send(&client.buffer);
         imshow("MoveNet", &frame).expect("imshow [ERROR]");
-
         let key = wait_key(1000).unwrap();
         if key > 0 && key != 255 {
             break;

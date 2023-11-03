@@ -38,16 +38,49 @@ impl Server {
 
         let mut frame: Mat = Mat::default();
 
-        frame = Mat::from_slice(&outbuf).unwrap();
+        let mut red: Vec<u8> = Vec::new();
+        let mut green: Vec<u8> = Vec::new();
+        let mut blue: Vec<u8> = Vec::new();
 
-        // frame.set_channels(3);
-        // frame.set_cols(640);
+        // iterate through outbuf and set frame values
+        for (i, v) in outbuf.iter().enumerate() {
+            // println!("v: {}", v);
+            if i % 4 == 0 {
+                blue.push(*v);
+            }
+            if i % 4 == 1 {
+                green.push(*v);
+            }
+            if i % 4 == 2 {
+                red.push(*v);
+            }
+        }
 
-        frame.set_dims(2);
-        frame.set_rows(360);
-        frame.set_cols(640);
-        frame.set_flags(opencv::core::CV_8UC3);
+        let mut framer: Mat = Mat::from_slice(&red).unwrap();
+        framer.set_rows(360);
+        framer.set_cols(640);
+
+        let mut frameg: Mat = Mat::from_slice(&green).unwrap();
+        frameg.set_rows(360);
+        frameg.set_cols(640);
+
+        let mut frameb: Mat = Mat::from_slice(&blue).unwrap();
+        frameb.set_rows(360);
+        frameb.set_cols(640);
+
+        println!("framer: {:?}", framer);
+        println!("frameg: {:?}", frameg);
+        println!("frameb: {:?}", frameb);
+        let mut channels: Vector<Mat> = Vector::new();
+        channels.push(framer);
+        channels.push(frameg);
+        channels.push(frameb);
+
+        let _ = opencv::core::merge(&channels, &mut frame).unwrap();
+
+
         println!("frame: {:?}", frame);
+
         frame
     }
     fn send(&mut self, frame: Mat) {
@@ -55,6 +88,7 @@ impl Server {
         let _ = opencv::imgcodecs::imencode(".bmp", &frame, &mut buffer, &Vector::new());
 
         let buffer: Vec<u8> = buffer.to_vec();
+        println!("buffer send size: {}", buffer.len());
         self.stream.write_all(&buffer).unwrap();
     }
 }
@@ -114,7 +148,7 @@ fn main() {
 
                     server.send(frame);
                 }
-                break;
+                // break;
             }
             Err(e) => {
                 println!("Error accepting connection: {}", e);
