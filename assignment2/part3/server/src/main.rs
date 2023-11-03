@@ -28,7 +28,7 @@ struct Server {
 impl Server {
     fn recieve(&mut self) -> Mat {
         // let mut buffer: Vec<u8> = vec![0; 110646];
-        println!("recieve");
+        // println!("recieve");
         let mut buffer: Vec<u8> = vec![0; 462848];
         self.stream.read_exact(&mut buffer).unwrap();
 
