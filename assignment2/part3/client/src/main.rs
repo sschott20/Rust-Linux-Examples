@@ -41,10 +41,13 @@ fn main() {
         .unwrap();
 
     let mut fd = f.as_raw_fd();
+
+    // im sorry for this one and I hate borrow rules so much
     let mut ftmp = File::options()
         .write(true)
         .read(true)
-        .open("capture.c")
+        .create(true)
+        .open("tmp")
         .unwrap();
 
     let mut client: App = App {
@@ -83,4 +86,6 @@ fn main() {
 
         client.qbuf();
     }
+
+    std::fs::remove_file("tmp");
 }
