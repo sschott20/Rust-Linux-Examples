@@ -85,14 +85,14 @@ fn main() {
         let mut outbuf = [0; 462848 * 2];
         let _ = yuv422_to_rgb32(&inbuf, &mut outbuf);
 
-        let mut output: File = OpenOptions::new()
-            .write(true)
-            .read(true)
-            .create(true)
-            .open("output.rgb")
-            .unwrap();
+        // let mut output: File = OpenOptions::new()
+        //     .write(true)
+        //     .read(true)
+        //     .create(true)
+        //     .open("output.rgb")
+        //     .unwrap();
 
-        output.write_all(&outbuf).unwrap();
+        // output.write_all(&outbuf).unwrap();
         // turn converted into Vec<u8>
         let v: Vec<u8> = outbuf.to_vec();
         // println!("first 100 as hex of v: {:?}", &v[0..100]);
