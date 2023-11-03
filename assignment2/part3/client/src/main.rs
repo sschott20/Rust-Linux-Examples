@@ -95,18 +95,18 @@ fn main() {
         output.write_all(&outbuf).unwrap();
         // turn converted into Vec<u8>
         let v: Vec<u8> = outbuf.to_vec();
-        println!("first 100 as hex of v: {:?}", &v[0..100]);
-        println!("v.len(): {:?}", v.len());
-        // let mut mat: Mat = Mat::default();
+        // println!("first 100 as hex of v: {:?}", &v[0..100]);
+        // println!("v.len(): {:?}", v.len());
+        let mut mat: Mat = Mat::default();
 
-        // let _ =
-        //     opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
+        let _ =
+            opencv::imgcodecs::imdecode_to(&opencv::types::VectorOfu8::from_iter(v), -1, &mut mat);
 
-        // opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
-        // let key = wait_key(10).unwrap();
-        // if key > 0 && key != 255 {
-        //     break;
-        // }
+        opencv::highgui::imshow("test", &mut mat).expect("imshow [error]");
+        let key = wait_key(10000).unwrap();
+        if key > 0 && key != 255 {
+            break;
+        }
         // let _ = s.send(&client.buffer);
 
         client.qbuf();
