@@ -95,7 +95,7 @@ fn main() -> io::Result<()> {
 
     let buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
     let buffer_ptr = buffer.as_ptr() as usize;
-
+    buffer[0] = 1;
     let pfn = get_pfn(buffer_ptr)?;
     println!("PFN: {}", pfn);
 
