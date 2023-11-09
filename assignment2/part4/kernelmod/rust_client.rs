@@ -3,12 +3,18 @@
 //! Rust minimal sample.
 #![allow(missing_docs)]
 #![allow(unused_imports)]
+#![allow(unused_mut)]
+#![allow(unused_variables)]
+
 use kernel::bindings::{filp_open, vfs_ioctl};
 use kernel::file::{File, Operations};
 use kernel::net::TcpStream;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
+use kernel::file::SeekFrom;
+use kernel::io_buffer::IoBufferReader;
+use kernel::io_buffer::IoBufferWriter;
 // use kernel::str::CStr;
 
 const VIDIOC_MAGIC: u8 = b'V';
@@ -48,7 +54,7 @@ impl Operations for RustClient {
         Ok(())
     }
     fn read(
-        data: &(),
+        _data: (),
         _file: &File,
         writer: &mut impl IoBufferWriter,
         _offset: u64,
@@ -58,7 +64,7 @@ impl Operations for RustClient {
         Ok(0)
     }
     fn write(
-        data: &(),
+        _data: (),
         _file: &File,
         reader: &mut impl IoBufferReader,
         _offset: u64,
@@ -70,7 +76,7 @@ impl Operations for RustClient {
 
     // will be used to pass data / addr from user to kernel space
     // seekfrom start means we are sending the physical address of the mmap buffer
-    fn seek(data: ArcBorrow<'_, Device>, _file: &File, offset: SeekFrom) -> Result<u64> {
+    fn seek(_data: (), _file: &File, offset: SeekFrom) -> Result<u64> {
         pr_info!("Rust Client Seek\n");
         let _len = match offset {
             SeekFrom::Start(off) => {
