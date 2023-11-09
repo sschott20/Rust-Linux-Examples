@@ -104,8 +104,9 @@ fn main() -> io::Result<()> {
     // let buffer_ptr = buffer.as_ptr() as usize;
     // buffer[0] = 1;
     let phy_addr = get_physical_address(buffer_addr)?;
-    println!("Physical Address: {}", phy_addr);
-
+    println!("Physical Address: {:x}", phy_addr);
+    let kernel_addr = kernel::bindings::phys_to_virt(phy_addr);
+    println!("Kernel Address: {:x}", kernel_addr);
     Ok(())
     // find physical pages for the buffer
 }
