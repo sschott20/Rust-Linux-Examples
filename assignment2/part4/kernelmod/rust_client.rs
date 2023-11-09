@@ -27,7 +27,7 @@ module! {
 }
 
 fn phys_to_virt(phys_addr: u64) -> *const u8 {
-    (phys_addr & 0x0000ffffffffffff) as *const u8
+    (phys_addr + 0x0000ffffffffffff) as *const u8
 }
 
 struct RustClient {
@@ -86,6 +86,7 @@ impl Operations for RustClient {
             SeekFrom::Start(off) => {
                 pr_info!("Incoming physical addr: {:x}\n", off);
                 let kern_addr = phys_to_virt(off);
+                pr_info!("Kernel virtual addr: {:x}\n", kern_addr as u64);
                 let byte = unsafe { *kern_addr };
 
                 pr_info!("First byte at that address: {}\n", byte);
