@@ -5,6 +5,7 @@
 #![allow(unused_imports)]
 use kernel::bindings::{filp_open, vfs_ioctl};
 use kernel::file::{File, Operations};
+use kernel::net::TcpStream;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
@@ -38,6 +39,9 @@ impl Operations for RustClient {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 0, 0)
         };
+        let addr = kernel::net::Ipv4Addr::new(127, 0, 0, 1);
+        // let stream = TcpStream::connect("127.0.0.1:54321").unwrap();
+
         // ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
         // let _ = unsafe { vfs_ioctl(file, VIDIOC_MAGIC as u32, 0) };
 
