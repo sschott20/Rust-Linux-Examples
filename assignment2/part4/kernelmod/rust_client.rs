@@ -26,11 +26,10 @@ module! {
     license: "GPL",
 }
 
-const PHYS_OFFSET: u64 = 0;
 const PAGE_OFFSET: u64 = 0xffff_8000_0000_0000; // example for x86_64, typically high half
 
 fn pfn_to_virt(pfn: u64) -> u64 {
-    (pfn << 12) as u64
+    ((pfn << 12) + PAGE_OFFSET) as u64
 }
 
 struct RustClient {
