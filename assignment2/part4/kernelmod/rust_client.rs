@@ -10,6 +10,8 @@ use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
 // use kernel::str::CStr;
 
+const VIDIOC_MAGIC: u8 = b'V';
+
 module! {
     type: RustClient,
     name: "rust_client",
@@ -32,10 +34,12 @@ impl kernel::Module for RustClient {
 impl Operations for RustClient {
     fn open(_context: &(), _file: &File) -> Result {
         pr_info!("RustClient was opened\n");
-        unsafe {
+        let mut file = unsafe {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
-            let _file = filp_open(c_str.as_ptr() as *const i8, 0, 0);
-        }
+            filp_open(c_str.as_ptr() as *const i8, 0, 0)
+        };
+        // ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
+        let _ = unsafe { vfs_ioctl(file, VIDIOC_MAGIC as u32, 0) };
 
         Ok(())
     }

@@ -5,8 +5,6 @@ use std::{thread, time};
 mod utils;
 
 use nix;
-use nix::ioctl_read;
-use nix::ioctl_readwrite;
 use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
