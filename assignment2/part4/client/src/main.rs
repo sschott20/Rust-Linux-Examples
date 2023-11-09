@@ -98,12 +98,12 @@ fn main() -> io::Result<()> {
             .map_mut(&client.file)?
     };
 
-    // let buffer_addr = client.buffer.as_ptr() as usize;
+    let buffer_addr = client.buffer.as_ptr() as usize;
 
-    let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
-    let buffer_ptr = buffer.as_ptr() as usize;
-    buffer[0] = 1;
-    let phy_addr = get_physical_address(buffer_ptr)?;
+    // let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
+    // let buffer_ptr = buffer.as_ptr() as usize;
+    // buffer[0] = 1;
+    let phy_addr = get_physical_address(buffer_addr)?;
     println!("Physical Address: {}", phy_addr);
 
     Ok(())
