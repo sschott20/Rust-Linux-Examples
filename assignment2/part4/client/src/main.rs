@@ -33,7 +33,7 @@ use utils::*;
 
 fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     println!("Virtual address: {}", virtual_address);
-    let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE)
+    let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE) or page_size::get()
     let pagemap_entry_size = std::mem::size_of::<u64>();
 
     // Calculate the offset in the pagemap file for the corresponding virtual address
@@ -50,9 +50,16 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     let mut entry = [0; 8];
     pagemap_file.read_exact(&mut entry)?;
 
-    // Extract the PFN (Page Frame Number) from the entry
-    let pfn_mask: u64 = ((1 << 55) - 1) & !((1 << 8) - 1); // PFN mask without flags
-    let pfn = u64::from_ne_bytes(entry) & pfn_mask;
+    // Convert to u64 and check if the page is present
+    let entry_val = u64::from_ne_bytes(entry);
+    let is_present = (entry_val >> 63) & 1 == 1;
+
+    // Mask out the flags and shift to get the PFN if present
+    let pfn = if is_present {
+        Some(entry_val & ((1 << 55) - 1))
+    } else {
+        None
+    };
 
     Ok(pfn)
 }
