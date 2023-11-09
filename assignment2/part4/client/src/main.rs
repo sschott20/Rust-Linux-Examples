@@ -22,6 +22,7 @@ use nix::sys::select;
 use nix::sys::select::FdSet;
 use server::*;
 use setup::*;
+use std::io::{self, prelude::*, SeekFrom};
 mod app;
 use app::*;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
@@ -82,7 +83,7 @@ fn main() -> io::Result<()> {
             .map_mut(&client.file)?
     };
 
-    let buffer_addr = buffer.as_ptr() as usize;
+    let buffer_addr = client.buffer.as_ptr() as usize;
     let pfn = get_pfn(buffer_addr)?;
     println!("PFN: {}", pfn);
 
