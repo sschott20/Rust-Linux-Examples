@@ -92,8 +92,13 @@ fn main() -> io::Result<()> {
             .map_mut(&client.file)?
     };
 
-    let buffer_addr = client.buffer.as_ptr() as usize;
-    let pfn = get_pfn(buffer_addr)?;
+    
+    // let buffer_addr = client.buffer.as_ptr() as usize;
+
+    let buffer: Vec<u8> = vec![0; page_size]; // This is your buffer
+    let buffer_ptr = buffer.as_ptr() as usize;
+
+    let pfn = get_pfn(buffer_ptr)?;
     println!("PFN: {}", pfn);
 
     Ok(())
