@@ -32,6 +32,7 @@ use std::{
 use utils::*;
 
 fn get_pfn(virtual_address: usize) -> io::Result<u64> {
+    println!("Virtual address: {}", virtual_address);
     let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE)
     let pagemap_entry_size = std::mem::size_of::<u64>();
 
