@@ -39,7 +39,7 @@ impl Operations for RustClient {
             filp_open(c_str.as_ptr() as *const i8, 0, 0)
         };
         // ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
-        let _ = unsafe { vfs_ioctl(file, VIDIOC_MAGIC as u32, 0) };
+        // let _ = unsafe { vfs_ioctl(file, VIDIOC_MAGIC as u32, 0) };
 
         Ok(())
     }
