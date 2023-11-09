@@ -31,7 +31,7 @@ use std::{
 };
 use utils::*;
 
-fn get_pfn(virtual_address: usize) -> Result<u64> {
+fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE)
     let pagemap_entry_size = std::mem::size_of::<u64>();
 
@@ -56,7 +56,7 @@ fn get_pfn(virtual_address: usize) -> Result<u64> {
     Ok(pfn)
 }
 
-fn main() -> Result<()> {
+fn main() -> io::Result<()> {
     let mut f = File::options().write(true).read(true).open("/dev/video0")?;
 
     let mut fd = f.as_raw_fd();
