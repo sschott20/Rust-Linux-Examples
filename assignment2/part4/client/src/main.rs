@@ -24,7 +24,6 @@ use server::*;
 use setup::*;
 mod app;
 use app::*;
-use pagemap::{PageMap, PageMapError};
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 use std::{
     fs::OpenOptions,
@@ -92,10 +91,9 @@ fn main() -> io::Result<()> {
             .map_mut(&client.file)?
     };
 
-    
     // let buffer_addr = client.buffer.as_ptr() as usize;
 
-    let buffer: Vec<u8> = vec![0; page_size]; // This is your buffer
+    let buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
     let buffer_ptr = buffer.as_ptr() as usize;
 
     let pfn = get_pfn(buffer_ptr)?;
