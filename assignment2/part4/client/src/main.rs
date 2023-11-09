@@ -31,7 +31,7 @@ use std::{
 };
 use utils::*;
 
-fn get_pfn(virtual_address: usize) -> Option<u64> {
+fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     println!("Virtual address: {}", virtual_address);
     let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE) or page_size::get()
     let pagemap_entry_size = std::mem::size_of::<u64>();
@@ -56,12 +56,12 @@ fn get_pfn(virtual_address: usize) -> Option<u64> {
 
     // Mask out the flags and shift to get the PFN if present
     let pfn = if is_present {
-        Some(entry_val & ((1 << 55) - 1))
+        entry_val & ((1 << 55) - 1)
     } else {
-        None
+        12345
     };
 
-    pfn
+    Ok(pfn)
 }
 
 fn main() -> io::Result<()> {
@@ -91,7 +91,7 @@ fn main() -> io::Result<()> {
     };
 
     let buffer_addr = client.buffer.as_ptr() as usize;
-    let pfn = get_pfn(buffer_addr);
+    let pfn = get_pfn(buffer_addr)?;
     println!("PFN: {}", pfn);
 
     Ok(())
