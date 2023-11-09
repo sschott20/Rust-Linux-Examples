@@ -7,23 +7,27 @@
 #![allow(unused_variables)]
 
 use kernel::bindings::{filp_open, vfs_ioctl};
+use kernel::file::SeekFrom;
 use kernel::file::{File, Operations};
+use kernel::io_buffer::IoBufferReader;
+use kernel::io_buffer::IoBufferWriter;
 use kernel::net::TcpStream;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
-use kernel::file::SeekFrom;
-use kernel::io_buffer::IoBufferReader;
-use kernel::io_buffer::IoBufferWriter;
 // use kernel::str::CStr;
 
-const VIDIOC_MAGIC: u8 = b'V';
+// const VIDIOC_MAGIC: u8 = b'V';
 
 module! {
     type: RustClient,
     name: "rust_client",
     author: "Alex Schott",
     license: "GPL",
+}
+
+fn phys_to_virt(phys_addr: u64) -> *const u8 {
+    (phys_addr & 0x0000ffffffffffff) as *const u8
 }
 
 struct RustClient {
@@ -45,7 +49,7 @@ impl Operations for RustClient {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 0, 0)
         };
-        let addr = kernel::net::Ipv4Addr::new(127, 0, 0, 1);
+        // let addr = kernel::net::Ipv4Addr::new(127, 0, 0, 1);
         // let stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
         // ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
@@ -81,6 +85,11 @@ impl Operations for RustClient {
         let _len = match offset {
             SeekFrom::Start(off) => {
                 pr_info!("Incoming physical addr: {:x}\n", off);
+                let kern_addr = phys_to_virt(off);
+                let byte = unsafe { *kern_addr };
+
+                pr_info!("First byte at that address: {}\n", byte);
+                // pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
             }
             _ => {
                 return Err(EINVAL);
