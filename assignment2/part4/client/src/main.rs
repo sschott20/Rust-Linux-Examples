@@ -98,7 +98,10 @@ fn main() -> io::Result<()> {
             .map_mut(&client.file)?
     };
 
-    let buffer_addr = client.buffer.as_ptr() as usize;
+    let buffer: Vec<u8> = vec![0; page_size]; // This is your buffer
+    let buffer_addr = buffer.as_ptr() as usize;
+
+    // let buffer_addr = client.buffer.as_ptr() as usize;
 
     let phy_addr = get_physical_address(buffer_addr)?;
     println!("Physical Address: {:x}", phy_addr);
@@ -110,7 +113,7 @@ fn main() -> io::Result<()> {
         .open("/dev/rust_client")?;
     // seek to the physical address
     f.seek(SeekFrom::Start(phy_addr))?;
-    
+
     // now need to send that physical address to the kernel module
 
     // let kernel_addr = ::bindings::phys_to_virt(phy_addr);

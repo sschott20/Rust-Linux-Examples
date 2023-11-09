@@ -26,8 +26,14 @@ module! {
     license: "GPL",
 }
 
+const PHYS_OFFSET: u64 = 0;
+const PAGE_OFFSET: u64 = 0xffff_8000_0000_0000; // example for x86_64, typically high half
+
 fn phys_to_virt(phys_addr: u64) -> u64 {
-    phys_addr + 0x0000ffffffffffff
+    if phys_addr < PHYS_OFFSET {
+        panic!("Physical address is below PHYS_OFFSET, invalid conversion.");
+    }
+    phys_addr - PHYS_OFFSET + PAGE_OFFSET
 }
 
 struct RustClient {
