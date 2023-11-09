@@ -91,7 +91,7 @@ fn main() -> io::Result<()> {
     };
 
     let buffer_addr = client.buffer.as_ptr() as usize;
-    let pfn = get_pfn(buffer_addr)?;
+    let pfn = get_pfn(buffer_addr);
     println!("PFN: {}", pfn);
 
     Ok(())
