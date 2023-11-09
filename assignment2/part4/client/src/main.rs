@@ -61,7 +61,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
         None
     };
 
-    Ok(pfn)
+    pfn
 }
 
 fn main() -> io::Result<()> {
