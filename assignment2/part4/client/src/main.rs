@@ -33,7 +33,7 @@ use std::{
 };
 use utils::*;
 
-fn get_physical_address(virtual_address: usize) -> io::Result<u64> {
+fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     println!("Virtual address: {}", virtual_address);
     let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE) or page_size::get()
     let pagemap_entry_size = std::mem::size_of::<u64>();
@@ -104,8 +104,8 @@ fn main() -> io::Result<()> {
 
     // let buffer_addr = client.buffer.as_ptr() as usize;
 
-    let phy_addr = get_physical_address(buffer_addr)?;
-    println!("Physical Address: {:x}", phy_addr);
+    let pfn = get_pfn(buffer_addr)?;
+    println!("PFN: {:x}", pfn);
 
     // open /dev/rust_client
     let mut f = File::options()
@@ -113,7 +113,7 @@ fn main() -> io::Result<()> {
         .read(true)
         .open("/dev/rust_client")?;
     // seek to the physical address
-    f.seek(SeekFrom::Start(phy_addr))?;
+    f.seek(SeekFrom::Start(pfn))?;
 
     // now need to send that physical address to the kernel module
 

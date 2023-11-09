@@ -29,11 +29,8 @@ module! {
 const PHYS_OFFSET: u64 = 0;
 const PAGE_OFFSET: u64 = 0xffff_8000_0000_0000; // example for x86_64, typically high half
 
-fn phys_to_virt(phys_addr: u64) -> u64 {
-    if phys_addr < PHYS_OFFSET {
-        panic!("Physical address is below PHYS_OFFSET, invalid conversion.");
-    }
-    phys_addr - PHYS_OFFSET + PAGE_OFFSET
+fn pfn_to_virt(pfn: u64) -> u64 {
+    (pfn << 12) as u64
 }
 
 struct RustClient {
@@ -89,9 +86,9 @@ impl Operations for RustClient {
     fn seek(_data: (), _file: &File, offset: SeekFrom) -> Result<u64> {
         pr_info!("Rust Client Seek\n");
         let _len = match offset {
-            SeekFrom::Start(off) => {
-                pr_info!("Incoming physical addr: {:x}\n", off);
-                let kern_addr = phys_to_virt(off);
+            SeekFrom::Start(pfn) => {
+                pr_info!("Incoming pfn: {}\n", pfn);
+                let kern_addr = pfn_to_virt(pfn);
                 pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
                 let byte = unsafe { *(kern_addr as *const u8) };
                 pr_info!("First byte at that address: {}\n", byte);
