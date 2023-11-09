@@ -12,6 +12,7 @@ use kernel::file::{File, Operations};
 use kernel::io_buffer::IoBufferReader;
 use kernel::io_buffer::IoBufferWriter;
 use kernel::net::TcpStream;
+use kernel::prelude::Vec;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
@@ -89,6 +90,21 @@ impl Operations for RustClient {
                 pr_info!("Incoming pfn: {}\n", pfn);
                 let kern_addr = pfn_to_virt(pfn);
                 pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
+
+                // let mut buffer = vec![1, 2, 3];
+                let mut buffer = Vec::new();
+                let _ = buffer.try_push(69);
+                let buffer_addr = buffer.as_ptr() as usize;
+                pr_info!("Buffer virtual addr: {:x}\n", buffer_addr);
+                unsafe {
+                    pr_info!(
+                        "Buffer virtual addr value: {}\n",
+                        *(buffer_addr as *const u8)
+                    )
+                };
+
+                pr_info!("Buffer virtual addr binary: {:b}\n", buffer_addr);
+
                 let byte = unsafe { *(kern_addr as *const u8) };
                 pr_info!("First byte at that address: {}\n", byte);
                 // pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
