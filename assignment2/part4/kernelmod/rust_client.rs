@@ -47,6 +47,42 @@ impl Operations for RustClient {
 
         Ok(())
     }
+    fn read(
+        data: &(),
+        _file: &File,
+        writer: &mut impl IoBufferWriter,
+        _offset: u64,
+    ) -> Result<usize> {
+        pr_info!("RustClient Read\n");
+
+        Ok(0)
+    }
+    fn write(
+        data: &(),
+        _file: &File,
+        reader: &mut impl IoBufferReader,
+        _offset: u64,
+    ) -> Result<usize> {
+        pr_info!("RustClient Write\n",);
+
+        Ok(0)
+    }
+
+    // will be used to pass data / addr from user to kernel space
+    // seekfrom start means we are sending the physical address of the mmap buffer
+    fn seek(data: ArcBorrow<'_, Device>, _file: &File, offset: SeekFrom) -> Result<u64> {
+        pr_info!("Rust Client Seek\n");
+        let _len = match offset {
+            SeekFrom::Start(off) => {
+                pr_info!("Incoming physical addr: {:x}\n", off);
+            }
+            _ => {
+                return Err(EINVAL);
+            }
+        };
+
+        Ok(0)
+    }
 }
 impl Drop for RustClient {
     fn drop(&mut self) {
