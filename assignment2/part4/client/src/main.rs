@@ -5,6 +5,8 @@ use std::{thread, time};
 mod utils;
 
 use nix;
+use nix::unistd::Uid;
+
 use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
@@ -31,7 +33,7 @@ use std::{
 };
 use utils::*;
 
-fn get_pfn(virtual_address: usize) -> io::Result<u64> {
+fn get_physical_address(virtual_address: usize) -> io::Result<u64> {
     println!("Virtual address: {}", virtual_address);
     let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE) or page_size::get()
     let pagemap_entry_size = std::mem::size_of::<u64>();
@@ -43,7 +45,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 
     // Open the pagemap file for the current process
     let mut pagemap_file = File::open("/proc/self/pagemap")?;
-    
+
     // Seek to the corresponding entry in the pagemap file
     pagemap_file.seek(SeekFrom::Start(pagemap_offset as u64))?;
 
@@ -68,6 +70,9 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 }
 
 fn main() -> io::Result<()> {
+    if !Uid::effective().is_root() {
+        panic!("You must run this executable with root permissions");
+    }
     let mut f = File::options().write(true).read(true).open("/dev/video0")?;
 
     let mut fd = f.as_raw_fd();
@@ -98,8 +103,8 @@ fn main() -> io::Result<()> {
     let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
     let buffer_ptr = buffer.as_ptr() as usize;
     buffer[0] = 1;
-    let pfn = get_pfn(buffer_ptr)?;
-    println!("PFN: {}", pfn);
+    let phy_addr = get_physical_address(buffer_ptr)?;
+    println!("Physical Address: {}", phy_addr);
 
     Ok(())
     // find physical pages for the buffer
