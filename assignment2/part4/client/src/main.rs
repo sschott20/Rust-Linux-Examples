@@ -52,6 +52,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 
     // Convert to u64 and check if the page is present
     let entry_val = u64::from_ne_bytes(entry);
+    println!("Entry: {}", entry_val);
     let is_present = (entry_val >> 63) & 1 == 1;
 
     // Mask out the flags and shift to get the PFN if present
