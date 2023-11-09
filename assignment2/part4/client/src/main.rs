@@ -37,8 +37,8 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     let pagemap_entry_size = std::mem::size_of::<u64>();
 
     // Calculate the offset in the pagemap file for the corresponding virtual address
-    let page_number = virtual_address / page_size;
-    let pagemap_offset = page_number * pagemap_entry_size;
+    let pagemap_offset = virtual_address / page_size * pagemap_entry_size;
+    println!("Vaddr: {}, Offset: {}", virtual_address, pagemap_offset);
 
     // Open the pagemap file for the current process
     let mut pagemap_file = File::open("/proc/self/pagemap")?;
@@ -59,7 +59,8 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     let pfn = if is_present {
         entry_val & ((1 << 55) - 1)
     } else {
-        12345
+        println!("Page not present");
+        -1
     };
 
     Ok(pfn)
