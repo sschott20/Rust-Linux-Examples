@@ -22,13 +22,12 @@ use nix::sys::select;
 use nix::sys::select::FdSet;
 use server::*;
 use setup::*;
-use std::io::{self, prelude::*, SeekFrom};
 mod app;
 use app::*;
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 use std::{
     fs::OpenOptions,
-    io::{Seek, SeekFrom, Write},
+    io::{self, prelude::*, Seek, SeekFrom, Write},
 };
 use utils::*;
 
@@ -87,5 +86,6 @@ fn main() -> io::Result<()> {
     let pfn = get_pfn(buffer_addr)?;
     println!("PFN: {}", pfn);
 
+    Ok(())
     // find physical pages for the buffer
 }
