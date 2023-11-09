@@ -24,6 +24,7 @@ use server::*;
 use setup::*;
 mod app;
 use app::*;
+use pagemap::{PageMap, PageMapError};
 use std::{fs::File, os::unix::prelude::AsRawFd, str};
 use std::{
     fs::OpenOptions,
