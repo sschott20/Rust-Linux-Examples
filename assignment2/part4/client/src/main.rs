@@ -42,7 +42,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 
     // Open the pagemap file for the current process
     let mut pagemap_file = File::open("/proc/self/pagemap")?;
-
+    
     // Seek to the corresponding entry in the pagemap file
     pagemap_file.seek(SeekFrom::Start(pagemap_offset as u64))?;
 
@@ -60,7 +60,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
         entry_val & ((1 << 55) - 1)
     } else {
         println!("Page not present");
-        -1
+        0
     };
 
     Ok(pfn)
