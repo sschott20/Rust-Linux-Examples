@@ -38,7 +38,8 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 
     // Calculate the offset in the pagemap file for the corresponding virtual address
     let pagemap_offset = virtual_address / page_size * pagemap_entry_size;
-    println!("Vaddr: {}, Offset: {}", virtual_address, pagemap_offset);
+    // to format as hex use {}
+    println!("Vaddr: {:x}, Offset: {:x}", virtual_address, pagemap_offset);
 
     // Open the pagemap file for the current process
     let mut pagemap_file = File::open("/proc/self/pagemap")?;
