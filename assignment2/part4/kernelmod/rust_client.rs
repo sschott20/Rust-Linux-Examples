@@ -23,62 +23,15 @@ use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
 mod bindings;
 use bindings::*;
-const VIDIOC_MAGIC: u8 = b'V';
 
-const VIDIOC_QUERYCAP: u32 = 1080579584;
-// pub type __u8 = core::ffi::cchar;
-// pub type __u32 = core::ffi::c_uint;
-
-// #[repr(C)]
-// #[derive(Copy, Clone)]
-// pub struct v4l2_pix_format {
-//     pub width: __u32,
-//     pub height: __u32,
-//     pub pixelformat: __u32,
-//     pub field: __u32,
-//     pub bytesperline: __u32,
-//     pub sizeimage: __u32,
-//     pub colorspace: __u32,
-//     pub priv_: __u32,
-//     pub flags: __u32,
-//     pub __bindgen_anon_1: v4l2_pix_format__bindgen_ty_1,
-//     pub quantization: __u32,
-//     pub xfer_func: __u32,
-// }
-
-// #[repr(C)]
-// #[derive(Copy, Clone)]
-// pub union v4l2_format__bindgen_ty_1 {
-//     pub pix: v4l2_pix_format,
-//     pub pix_mp: v4l2_pix_format_mplane,
-//     pub win: v4l2_window,
-//     pub vbi: v4l2_vbi_format,
-//     pub sliced: v4l2_sliced_vbi_format,
-//     pub sdr: v4l2_sdr_format,
-//     pub meta: v4l2_meta_format,
-//     pub raw_data: [__u8; 200usize],
-// }
-
-// #[repr(C)]
-// #[derive(Copy, Clone)]
-// pub struct v4l2_format {
-//     pub type_: __u32,
-//     pub fmt: v4l2_format__bindgen_ty_1,
-// }
-
-// #[repr(C)]
-// #[derive(Debug, Copy, Clone, PartialEq, Eq)]
-// pub struct v4l2_capability {
-//     pub driver: [__u8; 16usize],
-//     pub card: [__u8; 32usize],
-//     pub bus_info: [__u8; 32usize],
-//     pub version: __u32,
-//     pub capabilities: __u32,
-//     pub device_caps: __u32,
-//     pub reserved: [__u32; 3usize],
-// }
-
+// #define VIDIOC_QUERYCAP   _IOR('V',  0, struct v4l2_capability)
+// #define VIDIOC_G_INPUT    _IOR('V', 38, int)
+// #define VIDIOC_ENUMINPUT	_IOWR('V', 26, struct v4l2_input)
+// #define VIDIOC_G_FMT		_IOWR('V',  4, struct v4l2_format)
 // #define VIDIOC_S_FMT		_IOWR('V',  5, struct v4l2_format)
+
+const VIDIOC_MAGIC: u8 = b'V';
+const VIDIOC_QUERYCAP: u32 = 1080579584;
 
 module! {
     type: RustClient,
@@ -163,7 +116,7 @@ impl Operations for RustClient {
             core::str::from_utf8(&info_capability.driver)
         );
 
-        Ok(10)
+        Ok(1)
     }
 
     // will be used to pass data / addr from user to kernel space
