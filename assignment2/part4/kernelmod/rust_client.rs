@@ -104,19 +104,13 @@ impl Operations for RustClient {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video0\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 2, 0)
         };
-        let _ = unsafe {
-            vfs_ioctl(
-                filp,
-                40685600,
-                &mut info_capability as *mut _ as u64,
-            )
-        };
+        let _ = unsafe { vfs_ioctl(filp, 40685600, &mut info_capability as *mut _ as u64) };
         pr_info!(
             "driver: {:?}\n",
             core::str::from_utf8(&info_capability.driver)
         );
 
-        Ok(0)
+        Ok(1)
     }
 
     // will be used to pass data / addr from user to kernel space
