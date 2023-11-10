@@ -12,10 +12,12 @@ use kernel::file::{File, Operations};
 use kernel::io_buffer::IoBufferReader;
 use kernel::io_buffer::IoBufferWriter;
 use kernel::net::TcpStream;
+use kernel::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use kernel::prelude::Vec;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
+
 // use kernel::str::CStr;
 
 // const VIDIOC_MAGIC: u8 = b'V';
@@ -52,7 +54,16 @@ impl Operations for RustClient {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 0, 0)
         };
-        // let addr = kernel::net::Ipv4Addr::new(127, 0, 0, 1);
+        // let mut stream = TcpStream::connect()
+        let addr = Ipv4Addr::new(127, 0, 0, 1);
+        let sok: SocketAddr = SocketAddr::V4(SocketAddrV4::new(addr, 54321));
+        let namespace = kernel::net::init_ns();
+        let lo_cstr = CStr::from_bytes_with_nul(b"lo\0").unwrap();
+
+        namespace.dev_get_by_name(lo_cstr).unwrap();
+        let listener = kernel::net::TcpListener::try_new(&namespace, &sok).unwrap();
+        let mut stream = listener.accept(true).unwrap();
+        
         // let stream = TcpStream::connect("127.0.0.1:54321").unwrap();
 
         // ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
@@ -96,15 +107,7 @@ impl Operations for RustClient {
                 let _ = buffer.try_push(69);
                 let buffer_addr = buffer.as_ptr() as usize;
                 pr_info!("Buffer virtual addr: {:x}\n", buffer_addr);
-                unsafe {
-                    pr_info!(
-                        "Buffer virtual addr value: {}\n",
-                        *(buffer_addr as *const u8)
-                    )
-                };
-
-                pr_info!("Buffer virtual addr binary: {:b}\n", buffer_addr);
-
+                unsafe { pr_info!("Buffer value: {}\n", *(buffer_addr as *const u8)) };
                 let byte = unsafe { *(kern_addr as *const u8) };
                 pr_info!("First byte at that address: {}\n", byte);
                 // pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
