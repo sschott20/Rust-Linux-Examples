@@ -21,17 +21,64 @@ use kernel::prelude::Vec;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
+mod bindings;
+use bindings::*;
 const VIDIOC_MAGIC: u8 = b'V';
 
-pub struct v4l2_capability {
-    pub driver: [u8; 16usize],
-    pub card: [u8; 32usize],
-    pub bus_info: [u8; 32usize],
-    pub version: u32,
-    pub capabilities: u32,
-    pub device_caps: u32,
-    pub reserved: [u32; 3usize],
-}
+const VIDIOC_QUERYCAP: u32 = 1080579584;
+// pub type __u8 = core::ffi::cchar;
+// pub type __u32 = core::ffi::c_uint;
+
+// #[repr(C)]
+// #[derive(Copy, Clone)]
+// pub struct v4l2_pix_format {
+//     pub width: __u32,
+//     pub height: __u32,
+//     pub pixelformat: __u32,
+//     pub field: __u32,
+//     pub bytesperline: __u32,
+//     pub sizeimage: __u32,
+//     pub colorspace: __u32,
+//     pub priv_: __u32,
+//     pub flags: __u32,
+//     pub __bindgen_anon_1: v4l2_pix_format__bindgen_ty_1,
+//     pub quantization: __u32,
+//     pub xfer_func: __u32,
+// }
+
+// #[repr(C)]
+// #[derive(Copy, Clone)]
+// pub union v4l2_format__bindgen_ty_1 {
+//     pub pix: v4l2_pix_format,
+//     pub pix_mp: v4l2_pix_format_mplane,
+//     pub win: v4l2_window,
+//     pub vbi: v4l2_vbi_format,
+//     pub sliced: v4l2_sliced_vbi_format,
+//     pub sdr: v4l2_sdr_format,
+//     pub meta: v4l2_meta_format,
+//     pub raw_data: [__u8; 200usize],
+// }
+
+// #[repr(C)]
+// #[derive(Copy, Clone)]
+// pub struct v4l2_format {
+//     pub type_: __u32,
+//     pub fmt: v4l2_format__bindgen_ty_1,
+// }
+
+// #[repr(C)]
+// #[derive(Debug, Copy, Clone, PartialEq, Eq)]
+// pub struct v4l2_capability {
+//     pub driver: [__u8; 16usize],
+//     pub card: [__u8; 32usize],
+//     pub bus_info: [__u8; 32usize],
+//     pub version: __u32,
+//     pub capabilities: __u32,
+//     pub device_caps: __u32,
+//     pub reserved: [__u32; 3usize],
+// }
+
+// #define VIDIOC_S_FMT		_IOWR('V',  5, struct v4l2_format)
 
 module! {
     type: RustClient,
@@ -54,6 +101,12 @@ impl kernel::Module for RustClient {
     fn init(_name: &'static CStr, _module: &'static ThisModule) -> Result<Self> {
         pr_info!("rust_client init (init)\n");
         let reg = miscdev::Registration::new_pinned(fmt!("rust_client"), ())?;
+
+        pr_info!(
+            "sizeof v4l2_capability: {}\n",
+            core::mem::size_of::<v4l2_capability>()
+        );
+        pr_info!("sizeof : {}\n", core::mem::size_of::<v4l2_format>());
         Ok(RustClient { _dev: reg })
     }
 }
@@ -88,7 +141,7 @@ impl Operations for RustClient {
         // let listener = kernel::net::TcpListener::try_new(&namespace, &sok).unwrap();
         // let mut stream = listener.accept(true).unwrap();
 
-        Ok(0)
+        Ok(10)
     }
     fn write(
         _data: (),
@@ -104,13 +157,13 @@ impl Operations for RustClient {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video0\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 2, 0)
         };
-        let _ = unsafe { vfs_ioctl(filp, 40685600, &mut info_capability as *mut _ as u64) };
+        let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
         pr_info!(
             "driver: {:?}\n",
             core::str::from_utf8(&info_capability.driver)
         );
 
-        Ok(1)
+        Ok(10)
     }
 
     // will be used to pass data / addr from user to kernel space
@@ -137,7 +190,7 @@ impl Operations for RustClient {
             }
         };
 
-        Ok(0)
+        Ok(10)
     }
 }
 impl Drop for RustClient {
