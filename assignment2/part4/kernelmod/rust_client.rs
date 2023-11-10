@@ -5,7 +5,11 @@
 #![allow(unused_imports)]
 #![allow(unused_mut)]
 #![allow(unused_variables)]
+#![allow(non_camel_case_types)]
+#![allow(non_upper_case_globals)]
+#![allow(non_snake_case)]
 
+use core::mem::zeroed;
 use kernel::bindings::{filp_open, vfs_ioctl};
 use kernel::file::SeekFrom;
 use kernel::file::{File, Operations};
@@ -17,10 +21,17 @@ use kernel::prelude::Vec;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
+const VIDIOC_MAGIC: u8 = b'V';
 
-// use kernel::str::CStr;
-
-// const VIDIOC_MAGIC: u8 = b'V';
+pub struct v4l2_capability {
+    pub driver: [u8; 16usize],
+    pub card: [u8; 32usize],
+    pub bus_info: [u8; 32usize],
+    pub version: u32,
+    pub capabilities: u32,
+    pub device_caps: u32,
+    pub reserved: [u32; 3usize],
+}
 
 module! {
     type: RustClient,
@@ -50,22 +61,8 @@ impl kernel::Module for RustClient {
 impl Operations for RustClient {
     fn open(_context: &(), _file: &File) -> Result {
         pr_info!("RustClient was opened\n");
-        let mut file = unsafe {
-            let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
-            filp_open(c_str.as_ptr() as *const i8, 0, 0)
-        };
-        // let mut stream = TcpStream::connect()
-        let addr = Ipv4Addr::new(127, 0, 0, 1);
-        let sok: SocketAddr = SocketAddr::V4(SocketAddrV4::new(addr, 54321));
-        let namespace = kernel::net::init_ns();
-        let lo_cstr = CStr::from_bytes_with_nul(b"lo\0").unwrap();
 
-        namespace.dev_get_by_name(lo_cstr).unwrap();
-        let listener = kernel::net::TcpListener::try_new(&namespace, &sok).unwrap();
-        let mut stream = listener.accept(true).unwrap();
-        
         // let stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-
         // ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
         // let _ = unsafe { vfs_ioctl(file, VIDIOC_MAGIC as u32, 0) };
 
@@ -78,6 +75,18 @@ impl Operations for RustClient {
         _offset: u64,
     ) -> Result<usize> {
         pr_info!("RustClient Read\n");
+        // let mut file = unsafe {
+        //     let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
+        //     filp_open(c_str.as_ptr() as *const i8, 0, 0)
+        // };
+        // // let mut stream = TcpStream::connect()
+        // let addr = Ipv4Addr::new(127, 0, 0, 1);
+        // let sok: SocketAddr = SocketAddr::V4(SocketAddrV4::new(addr, 54321));
+        // let namespace = kernel::net::init_ns();
+        // let lo_cstr = CStr::from_bytes_with_nul(b"lo\0").unwrap();
+        // namespace.dev_get_by_name(lo_cstr).unwrap();
+        // let listener = kernel::net::TcpListener::try_new(&namespace, &sok).unwrap();
+        // let mut stream = listener.accept(true).unwrap();
 
         Ok(0)
     }
@@ -87,7 +96,25 @@ impl Operations for RustClient {
         reader: &mut impl IoBufferReader,
         _offset: u64,
     ) -> Result<usize> {
-        pr_info!("RustClient Write\n",);
+        pr_info!("RustClient Write\n");
+
+        let mut info_capability: v4l2_capability = unsafe { zeroed() };
+
+        let mut filp = unsafe {
+            let c_str = CStr::from_bytes_with_nul(b"/dev/video0\0").unwrap();
+            filp_open(c_str.as_ptr() as *const i8, 2, 0)
+        };
+        let _ = unsafe {
+            vfs_ioctl(
+                filp,
+                40685600,
+                &mut info_capability as *mut _ as u64,
+            )
+        };
+        pr_info!(
+            "driver: {:?}\n",
+            core::str::from_utf8(&info_capability.driver)
+        );
 
         Ok(0)
     }
@@ -98,18 +125,17 @@ impl Operations for RustClient {
         pr_info!("Rust Client Seek\n");
         let _len = match offset {
             SeekFrom::Start(pfn) => {
-                pr_info!("Incoming pfn: {}\n", pfn);
-                let kern_addr = pfn_to_virt(pfn);
-                pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
-
-                // let mut buffer = vec![1, 2, 3];
-                let mut buffer = Vec::new();
-                let _ = buffer.try_push(69);
-                let buffer_addr = buffer.as_ptr() as usize;
-                pr_info!("Buffer virtual addr: {:x}\n", buffer_addr);
-                unsafe { pr_info!("Buffer value: {}\n", *(buffer_addr as *const u8)) };
-                let byte = unsafe { *(kern_addr as *const u8) };
-                pr_info!("First byte at that address: {}\n", byte);
+                // pr_info!("Incoming pfn: {}\n", pfn);
+                // let kern_addr = pfn_to_virt(pfn);
+                // pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
+                // // let mut buffer = vec![1, 2, 3];
+                // let mut buffer = Vec::new();
+                // let _ = buffer.try_push(69);
+                // let buffer_addr = buffer.as_ptr() as usize;
+                // pr_info!("Buffer virtual addr: {:x}\n", buffer_addr);
+                // unsafe { pr_info!("Buffer value: {}\n", *(buffer_addr as *const u8)) };
+                // let byte = unsafe { *(kern_addr as *const u8) };
+                // pr_info!("First byte at that address: {}\n", byte);
                 // pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
             }
             _ => {
