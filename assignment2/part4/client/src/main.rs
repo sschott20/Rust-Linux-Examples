@@ -72,6 +72,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 }
 
 fn main() -> io::Result<()> {
+    // let stream = TcpStream::connect("127.0.0.1:54321").expect("failed to connect");
 
     if !Uid::effective().is_root() {
         panic!("You must run this executable with root permissions");

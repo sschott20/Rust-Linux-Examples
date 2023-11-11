@@ -7,3 +7,5 @@ cp /home/alex/cpsc429_schott/assignment2/part4/kernelmod/ionum.rs /home/alex/lin
 cd /home/alex/linux-cs429-fall-2023
 make SUBDIRS=./samples/rust/ modules -j16
 cp /home/alex/linux-cs429-fall-2023/samples/rust/rust_client.ko ../cpsc429_schott/assignment2/part4/kernelmod/ -f 
+
+sh /home/alex/cpsc429_schott/assignment2/part4/commit.sh
