@@ -71,7 +71,7 @@ impl kernel::Module for RustClient {
 
         // wtfffffffffffff this is so clipped why is this a thing
         let connect = unsafe { (*((*conn_socket).ops)).connect.unwrap() };
-        let _ = unsafe {
+        let ret = unsafe {
             connect(
                 conn_socket,
                 &mut saddr,
@@ -79,7 +79,8 @@ impl kernel::Module for RustClient {
                 2,
             )
         };
-        
+        pr_info!("connect: {}\n", ret);
+
         pr_info!("RustClient finish init\n");
         Ok(RustClient { _dev: reg })
     }
