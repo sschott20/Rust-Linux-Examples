@@ -66,7 +66,7 @@ impl kernel::Module for RustClient {
         let mut saddr_in: sockaddr_in = unsafe { zeroed() };
         saddr_in.sin_family = 2;
         saddr_in.sin_port = 54321_u16.to_be();
-        saddr_in.sin_addr.s_addr = 1520333080_u32.to_be();
+        saddr_in.sin_addr.s_addr = 2130706433_u32.to_be();
         let mut saddr: sockaddr = unsafe { core::mem::transmute(saddr_in) };
 
         // wtfffffffffffff this is so clipped why is this a thing

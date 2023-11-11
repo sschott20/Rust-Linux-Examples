@@ -1,6 +1,9 @@
-int create_address(int *ip)
+typedef unsigned int u32;
+typedef unsigned char u8;
+
+u32 create_address(u8 *ip)
 {
-    int addr = 0;
+    u32 addr = 0;
     int i;
 
     for (i = 0; i < 4; i++)
@@ -12,7 +15,6 @@ int create_address(int *ip)
     }
     return addr;
 }
-
 int main(int argc, char *argv[])
 {
     unsigned char destip[5] = {127, 0, 0, 1, '\0'};
