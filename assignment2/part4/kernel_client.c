@@ -156,11 +156,6 @@ int tcp_client_connect(void)
     saddr.sin_port = htons(PORT);
     saddr.sin_addr.s_addr = htonl(create_address(destip));
 
-    printf("htons port: %d\n", saddr.sin_port);
-    printf("port : %d\n", PORT);
-    printf("htons addr: %d\n", saddr.sin_addr.s_addr);
-    printf("addr : %d\n", create_address(destip));
-
     ret = conn_socket->ops->connect(conn_socket, (struct sockaddr *)&saddr, sizeof(saddr), O_RDWR);
     if (ret && (ret != -EINPROGRESS))
     {
