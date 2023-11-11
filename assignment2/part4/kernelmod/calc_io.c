@@ -50,18 +50,20 @@
 #define IOCSIZE_SHIFT (_IOC_SIZESHIFT)
 
 #include <stdio.h>
-#include <stdlib.h>     /* atoi */
+#include <stdlib.h> /* atoi */
 
 int main(int argc, char *argv[])
 {
     // get command line arg as int
-    if (argc != 2)
+    if (argc != 3)
     {
-        printf("Usage: ./get_sizes <int>\n");
+        printf("Usage: ./get_sizes <arg> <size>\n");
         return 1;
     }
-    int arg = atoi(argv[1]);
-    char data_size[arg];
 
-    printf("%d\n", _IOR('V', 0, data_size));
+    int sz = atoi(argv[2]);
+    char data_size[sz];
+    int arg = atoi(argv[1]);
+
+    printf("%d\n", _IOR('V', arg, data_size));
 }

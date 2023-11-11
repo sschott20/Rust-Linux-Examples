@@ -39,7 +39,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     let pagemap_entry_size = std::mem::size_of::<u64>();
 
     // Calculate the offset in the pagemap file for the corresponding virtual address
-    let pagemap_offset = virtual_address / page_size * pagemap_entry_size;
+    let pagemap_offset = (virtual_address / page_size) * pagemap_entry_size;
     // to format as hex use {}
     println!("Vaddr: {:x}, Offset: {:x}", virtual_address, pagemap_offset);
 
@@ -98,13 +98,13 @@ fn main() -> io::Result<()> {
             .map_mut(&client.file)?
     };
 
-    let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
-    buffer[0] = 1;
-    let buffer_addr = buffer.as_ptr() as usize;
+    // let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
+    // buffer[0] = 1;
+    // let buffer_addr = buffer.as_ptr() as usize;
 
     // let buffer_addr = client.buffer.as_ptr() as usize;
 
-    let pfn = get_pfn(buffer_addr)?;
+    let pfn = get_pfn(client.buffer)?;
     println!("PFN: {:x}", pfn);
 
     // open /dev/rust_client
