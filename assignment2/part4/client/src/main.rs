@@ -116,7 +116,7 @@ fn main() -> io::Result<()> {
         .open("/dev/rust_client")?;
     // seek to the physical address
     f.seek(SeekFrom::Start(pfn))?;
-    stream: TcpStream::connect("127.0.0.1:54321").expect("failed to connect"),
+    let stream = TcpStream::connect("127.0.0.1:54321").expect("failed to connect"),
     // now need to send that physical address to the kernel module
 
     // let kernel_addr = ::bindings::phys_to_virt(phy_addr);
