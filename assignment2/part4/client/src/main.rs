@@ -72,6 +72,8 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 }
 
 fn main() -> io::Result<()> {
+    let stream = TcpStream::connect("127.0.0.1:54321").expect("failed to connect");
+
     if !Uid::effective().is_root() {
         panic!("You must run this executable with root permissions");
     }
@@ -116,7 +118,6 @@ fn main() -> io::Result<()> {
         .open("/dev/rust_client")?;
     // seek to the physical address
     f.seek(SeekFrom::Start(pfn))?;
-    let stream = TcpStream::connect("127.0.0.1:54321").expect("failed to connect");
     // now need to send that physical address to the kernel module
 
     // let kernel_addr = ::bindings::phys_to_virt(phy_addr);
