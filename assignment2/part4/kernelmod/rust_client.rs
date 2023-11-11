@@ -61,7 +61,9 @@ impl kernel::Module for RustClient {
         let mut sock: socket = unsafe { zeroed() };
         let mut conn_socket = &mut sock as *mut socket;
 
-        let _ = unsafe { sock_create(2, 2, 6, &mut conn_socket) };
+        // let _ = unsafe { sock_create(2, 2, 6, &mut conn_socket) };
+        let _ = unsafe { sock_create(2, 2, 0, &mut conn_socket) };
+
         pr_info!("sock_create: \n");
 
         let mut saddr_in: sockaddr_in = unsafe { zeroed() };
