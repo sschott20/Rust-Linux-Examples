@@ -79,7 +79,7 @@ impl kernel::Module for RustClient {
                 2,
             )
         };
-
+        pr_info!("RustClient finish init\n");
         Ok(RustClient { _dev: reg })
     }
 }
