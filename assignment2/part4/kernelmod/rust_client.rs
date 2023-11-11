@@ -62,6 +62,7 @@ impl kernel::Module for RustClient {
         let mut conn_socket = &mut sock as *mut socket;
 
         let _ = unsafe { sock_create(2, 2, 6, &mut conn_socket) };
+        pr_info!("sock_create: \n");
 
         let mut saddr_in: sockaddr_in = unsafe { zeroed() };
         saddr_in.sin_family = 2;
@@ -70,9 +71,11 @@ impl kernel::Module for RustClient {
         // saddr_in.sin_port = 54321_u16;
         // saddr_in.sin_addr.s_addr = 2130706433_u32;
         let mut saddr: sockaddr = unsafe { core::mem::transmute(saddr_in) };
+        pr_info!("saddr:\n");
 
         // wtfffffffffffff this is so clipped why is this a thing
         let connect = unsafe { (*((*conn_socket).ops)).connect.unwrap() };
+        pr_info!("connect start \n");
         let ret = unsafe {
             connect(
                 conn_socket,
