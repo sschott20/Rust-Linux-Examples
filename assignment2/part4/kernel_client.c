@@ -155,7 +155,7 @@ int tcp_client_connect(void)
     saddr.sin_family = AF_INET;
     saddr.sin_port = htons(PORT);
     saddr.sin_addr.s_addr = htonl(create_address(destip));
-    
+
     printf("htons port: %d\n", saddr.sin_port);
     printf("port : %d\n", PORT);
     printf("htons addr: %d\n", saddr.sin_addr.s_addr);
