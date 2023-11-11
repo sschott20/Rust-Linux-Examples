@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.ir": "c",
+        "*.inc": "c"
+    }
+}

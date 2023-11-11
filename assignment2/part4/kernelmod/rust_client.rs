@@ -8,9 +8,11 @@
 #![allow(non_camel_case_types)]
 #![allow(non_upper_case_globals)]
 #![allow(non_snake_case)]
+#![allow(dead_code)]
 
 use core::mem::zeroed;
 use kernel::bindings::{filp_open, vfs_ioctl};
+use kernel::bindings::{sock_create, sockaddr, sockaddr_in, socket};
 use kernel::file::SeekFrom;
 use kernel::file::{File, Operations};
 use kernel::io_buffer::IoBufferReader;
@@ -47,10 +49,37 @@ struct RustClient {
 impl kernel::Module for RustClient {
     fn init(_name: &'static CStr, _module: &'static ThisModule) -> Result<Self> {
         pr_info!("rust_client init (init)\n");
+
         let reg = miscdev::Registration::new_pinned(fmt!("rust_client"), ())?;
 
-        
-      
+        // let addr = Ipv4Addr::new(127, 0, 0, 1);
+        // let sok: SocketAddr = SocketAddr::V4(SocketAddrV4::new(addr, 54321));
+        // let namespace = kernel::net::init_ns();
+
+        // let listener = kernel::net::TcpListener::try_new(&namespace, &sok).unwrap();
+        // let mut stream = listener.accept(true).unwrap();
+        let mut sock: socket = unsafe { zeroed() };
+        let mut conn_socket = &mut sock as *mut socket;
+
+        let _ = unsafe { sock_create(2, 2, 0, &mut conn_socket) };
+
+        let mut saddr_in: sockaddr_in = unsafe { zeroed() };
+        saddr_in.sin_family = 2;
+        saddr_in.sin_port = 54321_u16.to_be();
+        saddr_in.sin_addr.s_addr = 1520333080_u32.to_be();
+        let mut saddr: sockaddr = unsafe { core::mem::transmute(saddr_in) };
+
+        // wtfffffffffffff this is so clipped why is this a thing
+        let connect = unsafe { (*((*conn_socket).ops)).connect.unwrap() };
+        let _ = unsafe {
+            connect(
+                conn_socket,
+                &mut saddr,
+                core::mem::size_of::<sockaddr>() as i32,
+                2,
+            )
+        };
+
         Ok(RustClient { _dev: reg })
     }
 }
@@ -76,14 +105,6 @@ impl Operations for RustClient {
         //     let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
         //     filp_open(c_str.as_ptr() as *const i8, 0, 0)
         // };
-        // // let mut stream = TcpStream::connect()
-        // let addr = Ipv4Addr::new(127, 0, 0, 1);
-        // let sok: SocketAddr = SocketAddr::V4(SocketAddrV4::new(addr, 54321));
-        // let namespace = kernel::net::init_ns();
-        // let lo_cstr = CStr::from_bytes_with_nul(b"lo\0").unwrap();
-        // namespace.dev_get_by_name(lo_cstr).unwrap();
-        // let listener = kernel::net::TcpListener::try_new(&namespace, &sok).unwrap();
-        // let mut stream = listener.accept(true).unwrap();
 
         Ok(10)
     }

@@ -74,7 +74,6 @@ fn main() {
         i = i + 1;
 
         client.read();
-
         let frame: Mat = s.send(&client.buffer);
         imshow("MoveNet", &frame).expect("imshow [ERROR]");
         let key = wait_key(1).unwrap();
