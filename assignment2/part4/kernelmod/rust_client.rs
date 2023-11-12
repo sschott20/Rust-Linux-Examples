@@ -178,7 +178,7 @@ impl Operations for RustClient {
                     ..bindings::msghdr::default()
                 };
                 let mut vec = bindings::kvec {
-                    iov_base: kern_addr as *mut u8 as _,
+                    iov_base: slice.as_mut_ptr() as _,
                     iov_len: 10,
                 };
 
