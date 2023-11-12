@@ -84,65 +84,20 @@ impl kernel::Module for RustClient {
             )
         })?;
 
-        // int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
-        //     int flags);
         to_result(unsafe {
-            bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _ )
+            bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
         })?;
+        let mut buf: [u8; 10] = [69; 10];
+        let mut msg = bindings::msghdr {
+            msg_flags: bindings::MSG_DONTWAIT,
+            ..bindings::msghdr::default()
+        };
+        let mut vec = bindings::kvec {
+            iov_base: buf.as_ptr() as *mut u8 as _,
+            iov_len: buf.len(),
+        };
 
-        // let mut sock: socket = unsafe { zeroed() };
-        // let mut conn_socket = &mut sock as *mut socket;
-
-        // // let _ = unsafe { sock_create_kern(2, 2, 6, &mut conn_socket) };
-        // let _ =
-        //     unsafe { sock_create_kern(&mut kernel::bindings::init_net, 2, 2, 0, &mut conn_socket) };
-
-        // pr_info!("sock_create_kern: \n");
-
-        // let mut saddr_in: sockaddr_in = unsafe { zeroed() };
-        // saddr_in.sin_family = 2;
-        // saddr_in.sin_port = 54321_u16.to_be();
-
-        // // 127.0.0.1 packed into a u32 and then converted to big endian
-        // saddr_in.sin_addr.s_addr = 2130706433_u32.to_be();
-
-        // // saddr_in.sin_port = 54321_u16;
-        // // saddr_in.sin_addr.s_addr = 2130706433_u32;
-        // let mut saddr: sockaddr = unsafe { core::mem::transmute(saddr_in) };
-        // pr_info!("saddr:\n");
-
-        // // wtfffffffffffff this is so clipped why is this a thing
-        // let connect = unsafe { (*((*conn_socket).ops)).connect.unwrap() };
-        // pr_info!("connect start \n");
-        // let ret = unsafe {
-        //     connect(
-        //         conn_socket,
-        //         &mut saddr,
-        //         core::mem::size_of::<sockaddr>() as i32,
-        //         2,
-        //     )
-        // };
-        // pr_info!("connect: {}\n", ret);
-
-        // let mut msg: msghdr = unsafe { zeroed() };
-        // let mut vec: kvec = unsafe { zeroed() };
-        // let mut reply: [u8; 10] = [69; 10];
-        // msg.msg_name = core::ptr::null_mut();
-        // msg.msg_namelen = 0;
-
-        // msg.__bindgen_anon_1.msg_control = core::ptr::null_mut();
-        // msg.msg_controllen = 0;
-
-        // // MSG_DONTWAIT
-        // msg.msg_flags = 0x40;
-
-        // let mut left = reply.len();
-        // let mut written = 0;
-        // vec.iov_len = left;
-        // vec.iov_base = reply.as_ptr() as *mut c_void;
-
-        // let mut len = unsafe { kernel_sendmsg(conn_socket, &mut msg, &mut vec, left, left) };
-        // pr_info!("kernel_sendmsg: {}\n", len);
+        let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
 
         pr_info!("RustClient finish init\n");
         Ok(RustClient { _dev: reg })

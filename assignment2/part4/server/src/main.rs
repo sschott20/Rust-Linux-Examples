@@ -136,6 +136,9 @@ fn main() {
         match stream {
             Ok(mut stream) => {
                 println!("New connection:\n");
+                let mut buffer = [0; 10];
+                stream.read_exact(&mut buffer).unwrap();
+                println!("buffer: {:?}", buffer);
                 // let mut server = Server { stream: stream };
 
                 // loop {
