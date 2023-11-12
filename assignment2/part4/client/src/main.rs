@@ -109,7 +109,6 @@ fn main() -> io::Result<()> {
 
     // let buffer_addr = client.buffer.as_ptr() as usize;
     let pfn = get_pfn(buffer_addr)?;
-    let pfn = get_pfn(buffer_addr + 4096)?;
 
     println!("PFN: {:x}", pfn);
 
@@ -120,6 +119,8 @@ fn main() -> io::Result<()> {
         .open("/dev/rust_client")?;
     // seek to the physical address
 
+    f.seek(SeekFrom::Start(pfn))?;
+    let pfn = get_pfn(buffer_addr + 4096)?;
     f.seek(SeekFrom::Start(pfn))?;
 
     // now need to send that physical address to the kernel module
