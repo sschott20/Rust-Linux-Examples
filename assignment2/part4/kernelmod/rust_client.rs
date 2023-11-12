@@ -11,10 +11,11 @@
 #![allow(dead_code)]
 
 use core::mem::zeroed;
-use kernel::bindings::{filp_open, vfs_ioctl};
+use kernel::bindings::{filp_open, kernel_sendmsg, vfs_ioctl};
+use kernel::bindings::{kvec, msghdr};
 use kernel::bindings::{sock_create, sockaddr, sockaddr_in, socket};
-use kernel::bindings::{msghdr, kvec};
 
+use core::ffi::c_void;
 use kernel::file::SeekFrom;
 use kernel::file::{File, Operations};
 use kernel::io_buffer::IoBufferReader;
@@ -93,19 +94,25 @@ impl kernel::Module for RustClient {
         };
         pr_info!("connect: {}\n", ret);
 
-        let msg : msghdr = unsafe { zeroed() };
-        let vec : kvec = unsafe { zeroed() };
-        let reply : [u8; 10] = [69; 10]
-        msg.msg_name = 0;
+        let mut msg: msghdr = unsafe { zeroed() };
+        let mut vec: kvec = unsafe { zeroed() };
+        let mut reply: [u8; 10] = [69; 10];
+        msg.msg_name = core::ptr::null_mut();
         msg.msg_namelen = 0;
 
-        msg.msg_control = 0;
+        msg.__bindgen_anon_1.msg_control = core::ptr::null_mut();
         msg.msg_controllen = 0;
 
         // MSG_DONTWAIT
         msg.msg_flags = 0x40;
 
-        
+        let mut left = reply.len();
+        let mut written = 0;
+        vec.iov_len = left;
+        vec.iov_base = reply.as_ptr() as *mut c_void;
+
+        let mut len = unsafe { kernel_sendmsg(conn_socket, &mut msg, &mut vec, left, left) };
+        pr_info!("kernel_sendmsg: {}\n", len);
 
         pr_info!("RustClient finish init\n");
         Ok(RustClient { _dev: reg })
