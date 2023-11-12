@@ -119,6 +119,10 @@ fn main() -> io::Result<()> {
         .open("/dev/rust_client")?;
     // seek to the physical address
     f.seek(SeekFrom::Start(pfn))?;
+    f.seek(SeekFrom::Start(pfn))?;
+    f.seek(SeekFrom::Start(pfn))?;
+    f.seek(SeekFrom::Start(pfn))?;
+
     // now need to send that physical address to the kernel module
 
     // let kernel_addr = ::bindings::phys_to_virt(phy_addr);
