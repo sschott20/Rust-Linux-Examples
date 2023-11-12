@@ -47,6 +47,9 @@ const PAGE_OFFSET: u64 = 0xffff_8000_0000_0000; // example for x86_64, typically
 fn pfn_to_virt(pfn: u64) -> u64 {
     ((pfn << 12) + PAGE_OFFSET) as u64
 }
+fn pfn_to_phys(pfn: u64) -> u64 {
+    (pfn << 12) as u64
+}
 
 struct RustClient {
     _dev: Pin<Box<miscdev::Registration<RustClient>>>,
@@ -148,15 +151,20 @@ impl Operations for RustClient {
                     bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
                 })?;
 
-                let kern_addr = pfn_to_virt(pfn);
-                pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
-                
+                // let kern_addr = pfn_to_virt(pfn);
+                let phys_addr = pfn_to_phys(pfn);
+                let kern_addr = unsafe { bindings::ioremap(phys_addr, 4096) };
+                // void *ioremap(unsigned long phys_addr, unsigned long size);
+
+                // pub fn ioremap(offset: resource_size_t, size: core::ffi::c_ulong) -> *mut core::ffi::c_void;
+                pr_info!("Physical addr: {:x}\n", phys_addr);
+                // pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
                 // let mut buf: [u8; 10] = [69; 10];
                 let mut msg = bindings::msghdr {
                     msg_flags: bindings::MSG_DONTWAIT,
                     ..bindings::msghdr::default()
                 };
-                let mut vec = bindings::kvec { 
+                let mut vec = bindings::kvec {
                     iov_base: kern_addr as *mut u8 as _,
                     iov_len: 10,
                 };
