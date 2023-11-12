@@ -13,6 +13,8 @@
 use core::mem::zeroed;
 use kernel::bindings::{filp_open, vfs_ioctl};
 use kernel::bindings::{sock_create, sockaddr, sockaddr_in, socket};
+use kernel::bindings::{msghdr, kvec};
+
 use kernel::file::SeekFrom;
 use kernel::file::{File, Operations};
 use kernel::io_buffer::IoBufferReader;
@@ -69,7 +71,10 @@ impl kernel::Module for RustClient {
         let mut saddr_in: sockaddr_in = unsafe { zeroed() };
         saddr_in.sin_family = 2;
         saddr_in.sin_port = 54321_u16.to_be();
+
+        // 127.0.0.1 packed into a u32 and then converted to big endian
         saddr_in.sin_addr.s_addr = 2130706433_u32.to_be();
+
         // saddr_in.sin_port = 54321_u16;
         // saddr_in.sin_addr.s_addr = 2130706433_u32;
         let mut saddr: sockaddr = unsafe { core::mem::transmute(saddr_in) };
@@ -87,6 +92,20 @@ impl kernel::Module for RustClient {
             )
         };
         pr_info!("connect: {}\n", ret);
+
+        let msg : msghdr = unsafe { zeroed() };
+        let vec : kvec = unsafe { zeroed() };
+        let reply : [u8; 10] = [69; 10]
+        msg.msg_name = 0;
+        msg.msg_namelen = 0;
+
+        msg.msg_control = 0;
+        msg.msg_controllen = 0;
+
+        // MSG_DONTWAIT
+        msg.msg_flags = 0x40;
+
+        
 
         pr_info!("RustClient finish init\n");
         Ok(RustClient { _dev: reg })
