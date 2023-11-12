@@ -10,12 +10,14 @@
 #![allow(non_snake_case)]
 #![allow(dead_code)]
 
+use core::cell::UnsafeCell;
+use core::ffi::c_void;
 use core::mem::zeroed;
+use kernel::bindings;
 use kernel::bindings::{filp_open, kernel_sendmsg, vfs_ioctl};
 use kernel::bindings::{kvec, msghdr};
 use kernel::bindings::{sock_create_kern, sockaddr, sockaddr_in, socket};
-
-use core::ffi::c_void;
+use kernel::error::to_result;
 use kernel::file::SeekFrom;
 use kernel::file::{File, Operations};
 use kernel::io_buffer::IoBufferReader;
@@ -26,11 +28,12 @@ use kernel::prelude::Vec;
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
-
 mod ionum;
 use ionum::*;
-mod bindings;
-use bindings::*;
+mod v4l2bindings;
+use v4l2bindings::*;
+
+pub struct Namespace(UnsafeCell<bindings::net>);
 
 module! {
     type: RustClient,
@@ -55,65 +58,91 @@ impl kernel::Module for RustClient {
 
         let reg = miscdev::Registration::new_pinned(fmt!("rust_client"), ())?;
 
-        // let addr = Ipv4Addr::new(127, 0, 0, 1);
-        // let sok: SocketAddr = SocketAddr::V4(SocketAddrV4::new(addr, 54321));
-        // let namespace = kernel::net::init_ns();
+        let v4 = Ipv4Addr::new(127, 0, 0, 1);
+        let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(v4, 54321));
 
-        // let listener = kernel::net::TcpListener::try_new(&namespace, &sok).unwrap();
-        // let mut stream = listener.accept(true).unwrap();
-        let mut sock: socket = unsafe { zeroed() };
-        let mut conn_socket = &mut sock as *mut socket;
+        let namespace: &'static Namespace =
+            unsafe { &*core::ptr::addr_of!(bindings::init_net).cast() };
 
-        // let _ = unsafe { sock_create_kern(2, 2, 6, &mut conn_socket) };
-        let _ =
-            unsafe { sock_create_kern(&mut kernel::bindings::init_net, 2, 2, 0, &mut conn_socket) };
+        let mut socket = core::ptr::null_mut();
 
-        pr_info!("sock_create_kern: \n");
-
-        let mut saddr_in: sockaddr_in = unsafe { zeroed() };
-        saddr_in.sin_family = 2;
-        saddr_in.sin_port = 54321_u16.to_be();
-
-        // 127.0.0.1 packed into a u32 and then converted to big endian
-        saddr_in.sin_addr.s_addr = 2130706433_u32.to_be();
-
-        // saddr_in.sin_port = 54321_u16;
-        // saddr_in.sin_addr.s_addr = 2130706433_u32;
-        let mut saddr: sockaddr = unsafe { core::mem::transmute(saddr_in) };
-        pr_info!("saddr:\n");
-
-        // wtfffffffffffff this is so clipped why is this a thing
-        let connect = unsafe { (*((*conn_socket).ops)).connect.unwrap() };
-        pr_info!("connect start \n");
-        let ret = unsafe {
-            connect(
-                conn_socket,
-                &mut saddr,
-                core::mem::size_of::<sockaddr>() as i32,
-                2,
-            )
+        let (pf, addr, addrlen) = match addr {
+            SocketAddr::V4(addr) => (
+                bindings::PF_INET,
+                &addr as *const _ as _,
+                core::mem::size_of::<sockaddr_in>(),
+            ),
+            _ => panic!("ipv6 not supported"),
         };
-        pr_info!("connect: {}\n", ret);
+        to_result(unsafe {
+            bindings::sock_create_kern(
+                namespace.0.get(),
+                pf as _,
+                bindings::sock_type_SOCK_STREAM as _,
+                bindings::IPPROTO_TCP as _,
+                &mut socket,
+            )
+        })?;
 
-        let mut msg: msghdr = unsafe { zeroed() };
-        let mut vec: kvec = unsafe { zeroed() };
-        let mut reply: [u8; 10] = [69; 10];
-        msg.msg_name = core::ptr::null_mut();
-        msg.msg_namelen = 0;
+        // int kernel_connect(struct socket *sock, struct sockaddr *addr, int addrlen,
+        //     int flags);
+        to_result(unsafe {
+            bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _ )
+        })?;
 
-        msg.__bindgen_anon_1.msg_control = core::ptr::null_mut();
-        msg.msg_controllen = 0;
+        // let mut sock: socket = unsafe { zeroed() };
+        // let mut conn_socket = &mut sock as *mut socket;
 
-        // MSG_DONTWAIT
-        msg.msg_flags = 0x40;
+        // // let _ = unsafe { sock_create_kern(2, 2, 6, &mut conn_socket) };
+        // let _ =
+        //     unsafe { sock_create_kern(&mut kernel::bindings::init_net, 2, 2, 0, &mut conn_socket) };
 
-        let mut left = reply.len();
-        let mut written = 0;
-        vec.iov_len = left;
-        vec.iov_base = reply.as_ptr() as *mut c_void;
+        // pr_info!("sock_create_kern: \n");
 
-        let mut len = unsafe { kernel_sendmsg(conn_socket, &mut msg, &mut vec, left, left) };
-        pr_info!("kernel_sendmsg: {}\n", len);
+        // let mut saddr_in: sockaddr_in = unsafe { zeroed() };
+        // saddr_in.sin_family = 2;
+        // saddr_in.sin_port = 54321_u16.to_be();
+
+        // // 127.0.0.1 packed into a u32 and then converted to big endian
+        // saddr_in.sin_addr.s_addr = 2130706433_u32.to_be();
+
+        // // saddr_in.sin_port = 54321_u16;
+        // // saddr_in.sin_addr.s_addr = 2130706433_u32;
+        // let mut saddr: sockaddr = unsafe { core::mem::transmute(saddr_in) };
+        // pr_info!("saddr:\n");
+
+        // // wtfffffffffffff this is so clipped why is this a thing
+        // let connect = unsafe { (*((*conn_socket).ops)).connect.unwrap() };
+        // pr_info!("connect start \n");
+        // let ret = unsafe {
+        //     connect(
+        //         conn_socket,
+        //         &mut saddr,
+        //         core::mem::size_of::<sockaddr>() as i32,
+        //         2,
+        //     )
+        // };
+        // pr_info!("connect: {}\n", ret);
+
+        // let mut msg: msghdr = unsafe { zeroed() };
+        // let mut vec: kvec = unsafe { zeroed() };
+        // let mut reply: [u8; 10] = [69; 10];
+        // msg.msg_name = core::ptr::null_mut();
+        // msg.msg_namelen = 0;
+
+        // msg.__bindgen_anon_1.msg_control = core::ptr::null_mut();
+        // msg.msg_controllen = 0;
+
+        // // MSG_DONTWAIT
+        // msg.msg_flags = 0x40;
+
+        // let mut left = reply.len();
+        // let mut written = 0;
+        // vec.iov_len = left;
+        // vec.iov_base = reply.as_ptr() as *mut c_void;
+
+        // let mut len = unsafe { kernel_sendmsg(conn_socket, &mut msg, &mut vec, left, left) };
+        // pr_info!("kernel_sendmsg: {}\n", len);
 
         pr_info!("RustClient finish init\n");
         Ok(RustClient { _dev: reg })
