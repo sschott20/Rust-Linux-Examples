@@ -11,6 +11,8 @@
 #![allow(dead_code)]
 
 use core::cell::UnsafeCell;
+use kernel::io_mem::{IoMem, Resource};
+
 use core::ffi::c_void;
 use core::mem::zeroed;
 use kernel::bindings;
@@ -152,12 +154,15 @@ impl Operations for RustClient {
                 })?;
 
                 // let kern_addr = pfn_to_virt(pfn);
-                let phys_addr = pfn_to_phys(pfn);
-                let kern_addr = unsafe { bindings::ioremap(phys_addr, 4096) };
+                let mut phys_addr = pfn_to_phys(pfn);
+                let mut kern_addr = unsafe { bindings::ioremap(phys_addr, 4096) } as *mut u8;
+                let slice = unsafe { kernel::prelude::Vec::from_raw_parts(kern_addr, 10, 10) };
+                pr_info!("Slice data: {:x}\n", slice[0]);
                 // void *ioremap(unsigned long phys_addr, unsigned long size);
 
                 // pub fn ioremap(offset: resource_size_t, size: core::ffi::c_ulong) -> *mut core::ffi::c_void;
                 pr_info!("Physical addr: {:x}\n", phys_addr);
+
                 // pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
                 // let mut buf: [u8; 10] = [69; 10];
                 let mut msg = bindings::msghdr {
