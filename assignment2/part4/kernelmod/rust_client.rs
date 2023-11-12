@@ -13,7 +13,7 @@
 use core::mem::zeroed;
 use kernel::bindings::{filp_open, kernel_sendmsg, vfs_ioctl};
 use kernel::bindings::{kvec, msghdr};
-use kernel::bindings::{sock_create, sockaddr, sockaddr_in, socket};
+use kernel::bindings::{sock_create_kern, sockaddr, sockaddr_in, socket};
 
 use core::ffi::c_void;
 use kernel::file::SeekFrom;
@@ -64,10 +64,11 @@ impl kernel::Module for RustClient {
         let mut sock: socket = unsafe { zeroed() };
         let mut conn_socket = &mut sock as *mut socket;
 
-        // let _ = unsafe { sock_create(2, 2, 6, &mut conn_socket) };
-        let _ = unsafe { sock_create(2, 2, 0, &mut conn_socket) };
+        // let _ = unsafe { sock_create_kern(2, 2, 6, &mut conn_socket) };
+        let _ =
+            unsafe { sock_create_kern(&mut kernel::bindings::init_net, 2, 2, 0, &mut conn_socket) };
 
-        pr_info!("sock_create: \n");
+        pr_info!("sock_create_kern: \n");
 
         let mut saddr_in: sockaddr_in = unsafe { zeroed() };
         saddr_in.sin_family = 2;

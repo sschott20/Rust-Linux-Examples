@@ -135,15 +135,16 @@ fn main() {
     for stream in listener.incoming() {
         match stream {
             Ok(mut stream) => {
-                let mut server = Server { stream: stream };
+                println!("New connection:\n");
+                // let mut server = Server { stream: stream };
 
-                loop {
-                    let mut frame = server.recieve();
+                // loop {
+                //     let mut frame = server.recieve();
 
-                    let frame = app.dnn(frame);
+                //     let frame = app.dnn(frame);
 
-                    server.send(frame);
-                }
+                //     server.send(frame);
+                // }
                 // break;
             }
             Err(e) => {
