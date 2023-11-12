@@ -159,7 +159,7 @@ impl Operations for RustClient {
                 let mut kern_addr =
                     unsafe { bindings::memremap(phys_addr, 10, bindings::MEMREMAP_WB as _) }
                         as *mut u8;
-
+                
                 let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 10) };
 
                 pr_info!("Physical addr: {:x}\n", phys_addr);
