@@ -58,47 +58,6 @@ impl kernel::Module for RustClient {
 
         let reg = miscdev::Registration::new_pinned(fmt!("rust_client"), ())?;
 
-        let v4 = Ipv4Addr::new(127, 0, 0, 1);
-        let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(v4, 54321));
-
-        let namespace: &'static Namespace =
-            unsafe { &*core::ptr::addr_of!(bindings::init_net).cast() };
-
-        let mut socket = core::ptr::null_mut();
-
-        let (pf, addr, addrlen) = match addr {
-            SocketAddr::V4(addr) => (
-                bindings::PF_INET,
-                &addr as *const _ as _,
-                core::mem::size_of::<sockaddr_in>(),
-            ),
-            _ => panic!("ipv6 not supported"),
-        };
-        to_result(unsafe {
-            bindings::sock_create_kern(
-                namespace.0.get(),
-                pf as _,
-                bindings::sock_type_SOCK_STREAM as _,
-                bindings::IPPROTO_TCP as _,
-                &mut socket,
-            )
-        })?;
-
-        to_result(unsafe {
-            bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
-        })?;
-        let mut buf: [u8; 10] = [69; 10];
-        let mut msg = bindings::msghdr {
-            msg_flags: bindings::MSG_DONTWAIT,
-            ..bindings::msghdr::default()
-        };
-        let mut vec = bindings::kvec {
-            iov_base: buf.as_ptr() as *mut u8 as _,
-            iov_len: buf.len(),
-        };
-
-        let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
-
         pr_info!("RustClient finish init\n");
         Ok(RustClient { _dev: reg })
     }
@@ -107,10 +66,6 @@ impl kernel::Module for RustClient {
 impl Operations for RustClient {
     fn open(_context: &(), _file: &File) -> Result {
         pr_info!("RustClient was opened\n");
-
-        // let stream = TcpStream::connect("127.0.0.1:54321").unwrap();
-        // ioctl_read!(vidioc_querycap, VIDIOC_MAGIC, 0, v4l2_capability);
-        // let _ = unsafe { vfs_ioctl(file, VIDIOC_MAGIC as u32, 0) };
 
         Ok(())
     }
@@ -121,10 +76,6 @@ impl Operations for RustClient {
         _offset: u64,
     ) -> Result<usize> {
         pr_info!("RustClient Read\n");
-        // let mut file = unsafe {
-        //     let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
-        //     filp_open(c_str.as_ptr() as *const i8, 0, 0)
-        // };
 
         Ok(10)
     }
@@ -160,17 +111,63 @@ impl Operations for RustClient {
         let _len = match offset {
             SeekFrom::Start(pfn) => {
                 pr_info!("Incoming pfn: {}\n", pfn);
+
+                // let mut buffer = Vec::new();
+                // let _ = buffer.try_push(69);
+                // let buffer_addr = buffer.as_ptr() as usize;
+                // pr_info!("Buffer virtual addr: {:x}\n", buffer_addr);
+                // unsafe { pr_info!("Buffer value: {}\n", *(buffer_addr as *const u8)) };
+
+                let v4 = Ipv4Addr::new(127, 0, 0, 1);
+                let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(v4, 54321));
+
+                let namespace: &'static Namespace =
+                    unsafe { &*core::ptr::addr_of!(bindings::init_net).cast() };
+
+                let mut socket = core::ptr::null_mut();
+
+                let (pf, addr, addrlen) = match addr {
+                    SocketAddr::V4(addr) => (
+                        bindings::PF_INET,
+                        &addr as *const _ as _,
+                        core::mem::size_of::<sockaddr_in>(),
+                    ),
+                    _ => panic!("ipv6 not supported"),
+                };
+                to_result(unsafe {
+                    bindings::sock_create_kern(
+                        namespace.0.get(),
+                        pf as _,
+                        bindings::sock_type_SOCK_STREAM as _,
+                        bindings::IPPROTO_TCP as _,
+                        &mut socket,
+                    )
+                })?;
+
+                to_result(unsafe {
+                    bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
+                })?;
+
                 let kern_addr = pfn_to_virt(pfn);
                 pr_info!("Kernel virtual addr: {:x}\n", kern_addr);
+                
+                // let mut buf: [u8; 10] = [69; 10];
+                let mut msg = bindings::msghdr {
+                    msg_flags: bindings::MSG_DONTWAIT,
+                    ..bindings::msghdr::default()
+                };
+                let mut vec = bindings::kvec { 
+                    iov_base: kern_addr as *mut u8 as _,
+                    iov_len: 10,
+                };
 
-                let mut buffer = Vec::new();
-                let _ = buffer.try_push(69);
-                let buffer_addr = buffer.as_ptr() as usize;
-                pr_info!("Buffer virtual addr: {:x}\n", buffer_addr);
-                unsafe { pr_info!("Buffer value: {}\n", *(buffer_addr as *const u8)) };
+                // let mut vec = bindings::kvec {
+                //     iov_base: buf.as_ptr() as *mut u8 as _,
+                //     iov_len: buf.len(),
+                // };
 
-                let byte = unsafe { *(kern_addr as *const u8) };
-                pr_info!("First byte at that address: {}\n", byte);
+                let r =
+                    unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
             }
             _ => {
                 return Err(EINVAL);
