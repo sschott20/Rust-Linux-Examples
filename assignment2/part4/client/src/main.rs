@@ -106,7 +106,9 @@ fn main() -> io::Result<()> {
     // buffer[0] = 1;
     // let buffer_addr = buffer.as_ptr() as usize;
     let mut buffer: [u8; 10] = [69; 10];
-    let buffer_addr = client.buffer.as_ptr() as usize;
+    let buffer_addr = buffer.as_ptr() as usize;
+
+    // let buffer_addr = client.buffer.as_ptr() as usize;
 
     let pfn = get_pfn(buffer_addr)?;
     println!("PFN: {:x}", pfn);
