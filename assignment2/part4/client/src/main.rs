@@ -104,7 +104,7 @@ fn main() -> io::Result<()> {
 
     // let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
     // buffer[0] = 1;
-    let mut buffer: [u8; 10] = [69; 10];
+    let mut buffer: [u8; 10] = [69; 4096];
     let buffer_addr = buffer.as_ptr() as usize;
 
     // let buffer_addr = client.buffer.as_ptr() as usize;
@@ -119,9 +119,7 @@ fn main() -> io::Result<()> {
         .open("/dev/rust_client")?;
     // seek to the physical address
     f.seek(SeekFrom::Start(pfn))?;
-    f.seek(SeekFrom::Start(pfn))?;
-    f.seek(SeekFrom::Start(pfn))?;
-    f.seek(SeekFrom::Start(pfn))?;
+
 
     // now need to send that physical address to the kernel module
 
