@@ -34,6 +34,7 @@ mod ionum;
 use ionum::*;
 mod v4l2bindings;
 use v4l2bindings::*;
+// /home/alex/linux-cs429-fall-2023/rust/bindings/bindings_generated.rs
 
 pub struct Namespace(UnsafeCell<bindings::net>);
 
@@ -155,10 +156,14 @@ impl Operations for RustClient {
 
                 // let kern_addr = pfn_to_virt(pfn);
                 let mut phys_addr = pfn_to_phys(pfn);
-                let mut kern_addr = unsafe { bindings::ioremap(phys_addr, 4096) } as *mut u8;
+                let mut kern_addr =
+                    unsafe { bindings::memremap(phys_addr, 4096, bindings::MEMREMAP_WB as _) }
+                        as *mut u8;
+
+                let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 10) };
+
                 pr_info!("Physical addr: {:x}\n", phys_addr);
 
-                let slice = unsafe { kernel::prelude::Vec::from_raw_parts(kern_addr, 10, 10) };
                 pr_info!("Slice data: \n");
 
                 pr_info!("Slice data: {:x}\n", slice[0]);
