@@ -96,8 +96,7 @@ impl Operations for RustClient {
         _offset: u64,
     ) -> Result<usize> {
         pr_info!("RustClient Read\n");
-        let pfn_list = data.pfn_list.lock();
-        let pfn = pfn_list[0];
+
         let v4 = Ipv4Addr::new(127, 0, 0, 1);
         let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(v4, 54321));
 
@@ -128,6 +127,9 @@ impl Operations for RustClient {
             bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
         })?;
 
+        let pfn_list = data.pfn_list.lock();
+        let pfn = pfn_list[0];
+
         let mut phys_addr = pfn_to_phys(pfn);
         let mut kern_addr =
             unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
@@ -144,7 +146,7 @@ impl Operations for RustClient {
         };
         let mut vec = bindings::kvec {
             iov_base: slice.as_mut_ptr() as _,
-            iov_len: 2 * 4096,
+            iov_len: 4096,
         };
 
         let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
@@ -184,7 +186,10 @@ impl Operations for RustClient {
                 pr_info!("Incoming pfn: {}\n", pfn);
                 let mut pfn_list = data.pfn_list.lock();
                 pfn_list.try_push(pfn)?;
-                pr_info!("PFN list {:?}\n", pfn_list.last());
+                pr_info!("PFN list: \n");
+                for p in pfn_list.iter() {
+                    pr_info!("-- {} \n", p);
+                }
             }
             _ => {
                 return Err(EINVAL);
