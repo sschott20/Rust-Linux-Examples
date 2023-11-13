@@ -126,12 +126,12 @@ fn main() -> io::Result<()> {
         acc = acc + 4096;
     }
     // loop {
-    // let mut buffer = [0; 110646];
+    let mut buffer = [0; 110646];
 
-    let mut buffer: Vec<u8> = vec![0; 110646];
+    // let mut buffer: Vec<u8> = vec![0; 110646];
     client.read();
-    let len = f.read(&mut buffer);
-    println!("buffer recieve size: {}", len.unwrap());
+    let len = f.read_exact(&mut buffer);
+    // println!("buffer recieve size: {}", len.unwrap());
     client.qbuf();
     // f.read(&mut buffer)?;
     println!("buffer recieve size: {}", buffer.len());
