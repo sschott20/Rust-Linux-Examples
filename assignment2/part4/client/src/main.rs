@@ -149,7 +149,7 @@ fn main() -> io::Result<()> {
         // if key > 0 && key != 255 {
         //     break;
         // }
-    }
+    // }
 
     // now need to send that physical address to the kernel module
 

@@ -161,6 +161,11 @@ impl Operations for RustClient {
 
             let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
         }
+
+        let mut buf: v4l2_buffer = unsafe { zeroed() };
+        buf.type_ = 1;
+        buf.memory = 1;
+        buf.index = 0;
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
 
         // recieve the processed .bmp image back
