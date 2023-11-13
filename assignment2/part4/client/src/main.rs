@@ -140,7 +140,6 @@ fn main() -> io::Result<()> {
         println!("buffer: {:x}", buffer[i]);
     }
     // println!("buffer recieve size: {}", len.unwrap());
-    client.qbuf();
     // f.read(&mut buffer)?;
     println!("buffer recieve size: {}", buffer.len());
 
@@ -151,17 +150,17 @@ fn main() -> io::Result<()> {
         .truncate(true)
         .open("dump.bmp")?;
     dumpf.write_all(&buffer)?;
-    // let mut flipped = Mat::default();
+    let mut flipped = Mat::default();
 
-    // opencv::imgcodecs::imdecode_to(
-    //     &opencv::types::VectorOfu8::from_iter(buffer),
-    //     -1,
-    //     &mut flipped,
-    // )
-    // .unwrap();
+    opencv::imgcodecs::imdecode_to(
+        &opencv::types::VectorOfu8::from_iter(buffer),
+        -1,
+        &mut flipped,
+    )
+    .unwrap();
 
     // let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
-    // opencv::imgcodecs::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
+    opencv::imgcodecs::imwrite("test.bmp", &flipped, &Vector::new()).unwrap();
     // imshow("MoveNet", &frame).expect("imshow [ERROR]");
 
     // let key = wait_key(10000).unwrap();
@@ -171,6 +170,7 @@ fn main() -> io::Result<()> {
     // }
 
     // now need to send that physical address to the kernel module
+    client.qbuf();
 
     // let kernel_addr = ::bindings::phys_to_virt(phy_addr);
     // println!("Kernel Address: {:x}", kernel_addr);
