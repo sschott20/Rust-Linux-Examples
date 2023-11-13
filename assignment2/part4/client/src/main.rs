@@ -131,7 +131,7 @@ fn main() -> io::Result<()> {
 
         // f.read(&mut tmp)?;
         let mut buffer: Vec<u8> = vec![0; 110646];
-        f.read_exact(&mut tmp)?;
+        f.read_exact(&mut buffer)?;
         // println!("buffer recieve size: {}", buffer.len());
         let mut flipped = Mat::default();
 
