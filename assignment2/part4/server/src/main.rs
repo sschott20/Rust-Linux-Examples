@@ -139,6 +139,7 @@ fn main() {
                 println!("New connection:\n");
                 let mut buffer = [0; 4096];
                 stream.read_exact(&mut buffer).unwrap();
+                
                 let mut file = File::options()
                     .write(true)
                     .read(true)

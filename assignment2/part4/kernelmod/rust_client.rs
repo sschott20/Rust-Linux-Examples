@@ -128,28 +128,28 @@ impl Operations for RustClient {
         })?;
 
         let pfn_list = data.pfn_list.lock();
-        let pfn = pfn_list[0];
+        for pfn in pfn_list.iter() {
+            let mut phys_addr = pfn_to_phys(*pfn);
+            let mut kern_addr =
+                unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
+                    as *mut u8;
 
-        let mut phys_addr = pfn_to_phys(pfn);
-        let mut kern_addr =
-            unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
-                as *mut u8;
+            let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
 
-        let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
+            pr_info!("Physical addr: {:x}\n", phys_addr);
+            pr_info!("Slice data: {:x}\n", slice[0]);
 
-        pr_info!("Physical addr: {:x}\n", phys_addr);
-        pr_info!("Slice data: {:x}\n", slice[0]);
+            let mut msg = bindings::msghdr {
+                msg_flags: bindings::MSG_DONTWAIT,
+                ..bindings::msghdr::default()
+            };
+            let mut vec = bindings::kvec {
+                iov_base: slice.as_mut_ptr() as _,
+                iov_len: 4096,
+            };
 
-        let mut msg = bindings::msghdr {
-            msg_flags: bindings::MSG_DONTWAIT,
-            ..bindings::msghdr::default()
-        };
-        let mut vec = bindings::kvec {
-            iov_base: slice.as_mut_ptr() as _,
-            iov_len: 4096,
-        };
-
-        let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
+            let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
+        }
         Ok(10)
     }
     fn write(
