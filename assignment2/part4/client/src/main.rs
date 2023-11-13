@@ -142,7 +142,9 @@ fn main() -> io::Result<()> {
     // println!("buffer recieve size: {}", len.unwrap());
     // f.read(&mut buffer)?;
     println!("buffer recieve size: {}", buffer.len());
-
+    for i in 0..10000 {
+        println!("buffer: {:x}", buffer[i])
+    }
     let mut dumpf = File::options()
         .write(true)
         .read(true)
@@ -150,6 +152,7 @@ fn main() -> io::Result<()> {
         .truncate(true)
         .open("dump.bmp")?;
     dumpf.write_all(&buffer)?;
+
     let mut flipped = Mat::default();
 
     opencv::imgcodecs::imdecode_to(
@@ -158,9 +161,7 @@ fn main() -> io::Result<()> {
         &mut flipped,
     )
     .unwrap();
-    for i in 0..10000 {
-        println!("buffer: {:x}", buffer[i])
-    }
+
     // let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
     opencv::imgcodecs::imwrite("test.bmp", &flipped, &Vector::new()).unwrap();
     // imshow("MoveNet", &frame).expect("imshow [ERROR]");
