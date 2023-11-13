@@ -86,7 +86,7 @@ impl Operations for RustClient {
 
     fn open(ctxt: &Arc<Device>, _file: &File) -> Result<Arc<Device>> {
         pr_info!("RustClient was opened\n");
-
+        let mut ret_buf: [u8; 110646] = [0; 110646];
         Ok(ctxt.clone())
     }
     fn read(
@@ -156,29 +156,33 @@ impl Operations for RustClient {
             let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
         }
         pr_info!("sendmsg loop done \n");
+        let mut ret_buf: Vec<u8> = Vec::try_with_capacity(110646).unwrap();
+        // ret_buf.try_resize(110646, 69).unwrap();
+        // let mut ret_buf: [u8; 110646] = [0; 110646];
 
-        let mut ret_buf: Vec<u8> = Vec::new();
-        ret_buf.try_resize(110646, 69).unwrap();
-        // let mut ret_buf_ptr = ret_buf.as_mut_ptr();
-        // let mut ret_buf: &[u8] = &mut ret_buf_vec;
-        // let mut ret_buf = [0; 110646];
+        let mut acc = 0;
+        while acc < 110646 {
+            let mut tmpbuf: [u8; 4096] = [0; 4096];
+            let mut msg = bindings::msghdr::default();
+            let mut vec = bindings::kvec {
+                iov_base: tmpbuf.as_mut_ptr().cast(),
+                iov_len: 4096,
+            };
+            let r = unsafe {
+                bindings::kernel_recvmsg(
+                    socket,
+                    &mut msg,
+                    &mut vec,
+                    1,
+                    vec.iov_len,
+                    bindings::MSG_DONTWAIT as _,
+                )
+            };
+            // append tmpbuf to ret_buf
+            ret_buf.try_extend_from_slice(&tmpbuf).unwrap();
+            acc += 4096;
+        }
 
-        let mut msg = bindings::msghdr::default();
-        let mut vec = bindings::kvec {
-            iov_base: ret_buf.as_mut_ptr().cast(),
-            iov_len: ret_buf.len(),
-        };
-        pr_info!("start receive\n");
-        let r = unsafe {
-            bindings::kernel_recvmsg(
-                socket,
-                &mut msg,
-                &mut vec,
-                1,
-                vec.iov_len,
-                bindings::MSG_DONTWAIT as _,
-            )
-        };
         pr_info!("end receive\n");
         writer.write_slice(&ret_buf[0..][..ret_buf.len()])?;
         Ok(ret_buf.len())
