@@ -126,11 +126,7 @@ impl Operations for RustClient {
         to_result(unsafe {
             bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
         })?;
-        let mut buf: v4l2_buffer = unsafe { zeroed() };
-        buf.type_ = 1;
-        buf.memory = 1;
-        buf.index = 0;
-        pr_info!("Buffer length: {:?}\n", buf.length);
+
 
         let mut filp = unsafe {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
@@ -138,9 +134,15 @@ impl Operations for RustClient {
         };
 
         pr_info!("filp open: \n");
+
+        let mut buf: v4l2_buffer = unsafe { zeroed() };
+        buf.type_ = 1;
+        buf.memory = 1;
+        buf.index = 0;
+
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
         // pr_info!("ioctl querybuf: \n");
-        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
+        let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
         pr_info!("ioctl dqbuf: \n");
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
         // let pfn_list = data.pfn_list.lock();
