@@ -147,7 +147,7 @@ impl Operations for RustClient {
         };
         pr_info!("filp open \n");
 
-        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
+        let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
         pr_info!("ioctl querybuf and dqbuf \n");
         // i = i + 1;
@@ -158,7 +158,7 @@ impl Operations for RustClient {
         // i = i + 1;
         // pr_info!("i = {}\n", i);
         for pfn in pfn_list.iter() {
-            pr_info!("pfn: {:x}\n", pfn);
+            // pr_info!("pfn: {:x}\n", pfn);
             let mut phys_addr = pfn_to_phys(*pfn);
             let mut kern_addr =
                 unsafe { bindings::memremap(phys_addr, 4096, bindings::MEMREMAP_WB as _) }

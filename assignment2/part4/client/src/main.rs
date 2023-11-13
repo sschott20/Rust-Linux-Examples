@@ -121,7 +121,7 @@ fn main() -> io::Result<()> {
     let mut acc = 0;
     while acc < IMG_SIZE {
         let pfn = get_pfn(buffer_addr + acc)?;
-        // println!("PFN: {:x}", pfn);
+        println!("PFN: {:x}", pfn);
 
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;
