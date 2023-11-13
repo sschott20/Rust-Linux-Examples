@@ -216,7 +216,7 @@ impl Operations for RustClient {
         let stream = TcpStream { sock: socket };
         let buffer = &mut [0; 100];
         pr_info!("start receive\n");
-        stream.read(buffer, false).unwrap();
+        stream.read(buffer, true).unwrap();
         for i in 0..100 {
             pr_info!("buffer: {:x}\n", buffer[i]);
         }
