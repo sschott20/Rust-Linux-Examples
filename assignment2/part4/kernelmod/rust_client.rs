@@ -213,50 +213,50 @@ impl Operations for RustClient {
             let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
         }
 
-        let stream = TcpStream { sock: socket };
-        let buffer = &mut [0; 100];
+        // let stream = TcpStream { sock: socket };
+        // let buffer = &mut [0; 100];
         pr_info!("start receive\n");
-        stream.read(buffer, true).unwrap();
-        for i in 0..100 {
-            pr_info!("buffer: {:x}\n", buffer[i]);
-        }
+        // stream.read(buffer, true).unwrap();
+        // for i in 0..100 {
+        //     pr_info!("buffer: {:x}\n", buffer[i]);
+        // }
 
         pr_info!("sendmsg loop done \n");
-        // let mut ret_buf: Vec<u8> = Vec::try_with_capacity(110646).unwrap();
-        // // ret_buf.try_resize(110646, 69).unwrap();
-        // // let mut ret_buf: [u8; 110646] = [0; 110646];
+        let mut ret_buf: Vec<u8> = Vec::try_with_capacity(110646).unwrap();
+        // ret_buf.try_resize(110646, 69).unwrap();
+        // let mut ret_buf: [u8; 110646] = [0; 110646];
 
-        // let mut acc = 0;
-        // while acc < 110646 {
-        //     let mut tmpbuf: [u8; 4096] = [0; 4096];
-        //     let tmp_buf_final: &mut [u8] = &mut tmpbuf;
-        //     let mut msg = bindings::msghdr::default();
-        //     let mut vec = bindings::kvec {
-        //         iov_base: tmp_buf_final.as_mut_ptr().cast(),
-        //         iov_len: 4096,
-        //     };
-        //     let r = unsafe {
-        //         bindings::kernel_recvmsg(
-        //             socket,
-        //             &mut msg,
-        //             &mut vec,
-        //             1,
-        //             vec.iov_len,
-        //             bindings::MSG_DONTWAIT as _,
-        //         )
-        //     };
-        //     for i in 0..100 {
-        //         pr_info!("tmpbuf: {:x}\n", tmpbuf[i]);
-        //     }
-        //     ret_buf.try_extend_from_slice(&tmpbuf).unwrap();
-        //     acc += 4096;
-        // }
-        // for i in 0..100 {
-        //     pr_info!("ret_buf: {:x}\n", ret_buf[i]);
-        // }
-        // pr_info!("end receive\n");
+        let mut acc = 0;
+        while acc < 110646 {
+            let mut tmpbuf: [u8; 4096] = [0; 4096];
+            let tmp_buf_final: &mut [u8] = &mut tmpbuf;
+            let mut msg = bindings::msghdr::default();
+            let mut vec = bindings::kvec {
+                iov_base: tmp_buf_final.as_mut_ptr().cast(),
+                iov_len: 4096,
+            };
+            let r = unsafe {
+                bindings::kernel_recvmsg(
+                    socket,
+                    &mut msg,
+                    &mut vec,
+                    1,
+                    vec.iov_len,
+                    0 as _,
+                )
+            };
+            for i in 0..100 {
+                pr_info!("tmpbuf: {:x}\n", tmpbuf[i]);
+            }
+            ret_buf.try_extend_from_slice(&tmpbuf).unwrap();
+            acc += 4096;
+        }
+        for i in 0..100 {
+            pr_info!("ret_buf: {:x}\n", ret_buf[i]);
+        }
+        pr_info!("end receive\n");
         // let mut ret_buf_slice: &[u8] = &ret_buf;
-        writer.write_slice(buffer)?;
+        writer.write_slice(&ret_buf)?;
         Ok(110646)
         // Ok(ret_buf.len())
     }
