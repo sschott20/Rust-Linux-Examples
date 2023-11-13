@@ -90,12 +90,14 @@ impl Operations for RustClient {
         Ok(ctxt.clone())
     }
     fn read(
-        _data: ArcBorrow<'_, Device>,
+        data: ArcBorrow<'_, Device>,
         _file: &File,
         writer: &mut impl IoBufferWriter,
         _offset: u64,
     ) -> Result<usize> {
         pr_info!("RustClient Read\n");
+        let pfn_list = data.pfn_list.lock();
+        let pfn = pfn_list[0];
         let v4 = Ipv4Addr::new(127, 0, 0, 1);
         let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(v4, 54321));
 
@@ -181,8 +183,8 @@ impl Operations for RustClient {
             SeekFrom::Start(pfn) => {
                 pr_info!("Incoming pfn: {}\n", pfn);
                 let mut pfn_list = data.pfn_list.lock();
-                pfn_list.push(pfn);
-                pr_info!("PFN list {:?}\n", pfn_list);
+                pfn_list.try_push(pfn)?;
+                pr_info!("PFN list {:?}\n", pfn_list.last());
             }
             _ => {
                 return Err(EINVAL);
