@@ -130,11 +130,13 @@ impl Operations for RustClient {
         buf.type_ = 1;
         buf.memory = 1;
         buf.index = 0;
+        pr_info!("Buffer length: {:?}\n", buf.length);
 
         let mut filp = unsafe {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 2, 0)
         };
+        pr_info!("filp open: \n");
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
         pr_info!("Buffer length: {:?}\n", buf.length);
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };

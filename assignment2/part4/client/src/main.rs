@@ -127,9 +127,9 @@ fn main() -> io::Result<()> {
         acc += 4096;
     }
     // loop {
-    let mut buffer = [0; 110646];
+    // let mut buffer = [0; 110646];
 
-    // let mut buffer: Vec<u8> = vec![10; 110646];
+    let mut buffer: Vec<u8> = vec![0; 110646];
     f.read_exact(&mut buffer)?;
 
     // f.read(&mut buffer)?;
