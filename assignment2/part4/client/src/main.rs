@@ -126,15 +126,15 @@ fn main() -> io::Result<()> {
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;
     }
-    let mut tmp = [0; 110646];
-    f.read(&mut tmp)?;
-    let outf = File::options()
-        .write(true)
-        .read(true)
-        .create(true)
-        .truncate(true)
-        .open("out.bmp")?;
-    outf.write_all(&tmp)?;
+    loop {
+        let mut tmp = [0; 110646];
+        f.read(&mut tmp)?;
+        imshow("MoveNet", &frame).expect("imshow [ERROR]");
+        let key = wait_key(1).unwrap();
+        if key > 0 && key != 255 {
+            break;
+        }
+    }
 
     // now need to send that physical address to the kernel module
 
