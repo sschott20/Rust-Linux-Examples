@@ -22,8 +22,7 @@ use tflitec::interpreter::{Interpreter, Options};
 use tflitec::model::Model;
 use utils::*;
 
-
-const IMG_SIZE = 462848;
+const IMG_SIZE: usize = 462848;
 struct Server {
     stream: TcpStream,
 }
@@ -138,8 +137,10 @@ fn main() {
         match stream {
             Ok(mut stream) => {
                 println!("New connection:\n");
-                let mut buffer = [0; IMG_SIZE];
+                let mut buffer = [0; 4096];
                 stream.read_exact(&mut buffer).unwrap();
+                let mut file = File::open("tmp.yuv").unwrap();
+                file.write_all(&buffer).unwrap();
                 println!("buffer: {:?}", buffer);
                 // let mut server = Server { stream: stream };
 
