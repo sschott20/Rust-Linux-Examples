@@ -153,12 +153,12 @@ impl Operations for RustClient {
         // i = i + 1;
         // pr_info!("i = {}\n", i);
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
-
+        pr_info!("starting loop \n");
         let pfn_list = data.pfn_list.lock();
         // i = i + 1;
         // pr_info!("i = {}\n", i);
         for pfn in pfn_list.iter() {
-            // pr_info!("pfn: {:x}\n", pfn);
+            pr_info!("pfn: {:x}\n", pfn);
             let mut phys_addr = pfn_to_phys(*pfn);
             let mut kern_addr =
                 unsafe { bindings::memremap(phys_addr, 4096, bindings::MEMREMAP_WB as _) }
@@ -233,7 +233,7 @@ impl Operations for RustClient {
         let _len = match offset {
             SeekFrom::Start(pfn) => {
                 let mut pfn_list = data.pfn_list.lock();
-                pr_info!("PFN: {:x}\n", pfn);
+
                 pfn_list.try_push(pfn)?;
             }
             _ => {
