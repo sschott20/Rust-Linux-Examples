@@ -1,4 +1,3 @@
-sudo modprobe v4l2loopback devices=1 exclusive_caps=1
 ffmpeg -f v4l2              \
        -input_format mjpeg  \
        -framerate 1        \
