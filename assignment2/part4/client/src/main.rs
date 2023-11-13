@@ -142,8 +142,8 @@ fn main() -> io::Result<()> {
         &mut flipped,
     )
     .unwrap();
-    let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
-    opencv::imgcodecs::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
+    // let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
+    opencv::imgcodecs::imwrite("test.bmp", &flipped, &Vector::new()).unwrap();
     // imshow("MoveNet", &frame).expect("imshow [ERROR]");
 
     // let key = wait_key(10000).unwrap();
