@@ -157,10 +157,12 @@ impl Operations for RustClient {
         }
         pr_info!("sendmsg loop done \n");
 
-        // let mut ret_buf: Vec<u8> = Vec::new();
-        // ret_buf.try_resize(110646, 69).unwrap();
-        let mut ret_buf = [0; 110646];
-        
+        let mut ret_buf: Vec<u8> = Vec::new();
+        ret_buf.try_resize(110646, 69).unwrap();
+        // let mut ret_buf_ptr = ret_buf.as_mut_ptr();
+        // let mut ret_buf: &[u8] = &mut ret_buf_vec;
+        // let mut ret_buf = [0; 110646];
+
         let mut msg = bindings::msghdr::default();
         let mut vec = bindings::kvec {
             iov_base: ret_buf.as_mut_ptr().cast(),
