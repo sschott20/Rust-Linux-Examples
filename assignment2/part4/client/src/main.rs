@@ -38,7 +38,7 @@ use utils::*;
 const IMG_SIZE: usize = 462848;
 
 fn get_pfn(virtual_address: usize) -> io::Result<u64> {
-    println!("Virtual address: {}", virtual_address);
+    // println!("Virtual address: {}", virtual_address);
     let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE) or page_size::get()
     let pagemap_entry_size = std::mem::size_of::<u64>();
 
@@ -121,7 +121,7 @@ fn main() -> io::Result<()> {
     let mut acc = 0;
     while acc < IMG_SIZE {
         let pfn = get_pfn(buffer_addr + acc)?;
-        println!("PFN: {:x}", pfn);
+        // println!("PFN: {:x}", pfn);
 
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;

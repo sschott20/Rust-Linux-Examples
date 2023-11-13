@@ -181,7 +181,7 @@ impl Operations for RustClient {
                 bindings::MSG_DONTWAIT as _,
             )
         };
-        writer.
+        // writer.
         Ok(10)
     }
     fn write(
