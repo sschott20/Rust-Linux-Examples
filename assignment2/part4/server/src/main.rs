@@ -30,12 +30,23 @@ impl Server {
     fn recieve(&mut self) -> Mat {
         // let mut buffer: Vec<u8> = vec![0; 110646];
         // println!("recieve");
-        
+
         let mut buffer: Vec<u8> = vec![0; 462848];
-
-
-
-        self.stream.read_exact(&mut buffer).unwrap();
+        let mut acc = 0;
+        while acc < IMG_SIZE {
+            let mut tmpbuf: Vec<u8> = vec![0; 4096];
+            self.stream.read_exact(&mut tmpbuf).unwrap();
+            buffer.splice(acc..acc + 4096, tmpbuf.iter().cloned());
+            acc += 4096;
+        }
+        let mut f = File::options()
+            .write(true)
+            .read(true)
+            .create(true)
+            .open("tmp.yuv")
+            .unwrap();
+        f.write_all(&buffer).unwrap();
+        // self.stream.read_exact(&mut buffer).unwrap();
 
         let mut outbuf: Vec<u8> = vec![0; 462848 * 2];
 
