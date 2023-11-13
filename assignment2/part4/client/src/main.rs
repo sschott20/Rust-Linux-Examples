@@ -126,8 +126,14 @@ fn main() -> io::Result<()> {
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;
     }
-    let mut tmp = [0; IMG_SIZE];
+    let mut tmp = [0; 110646];
     f.read(&mut tmp)?;
+    let outf = File::options()
+        .write(true)
+        .read(true)
+        .create(true)
+        .truncate(true)
+        .open("tmp.yuv")?;
 
     // now need to send that physical address to the kernel module
 

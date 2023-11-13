@@ -181,8 +181,9 @@ impl Operations for RustClient {
                 bindings::MSG_DONTWAIT as _,
             )
         };
-        // writer.
-        Ok(10)
+        // write entire ret_buf to writer
+        writer.write_slice(&ret_buf)?;
+        Ok(ret_buf.len())
     }
     fn write(
         _data: ArcBorrow<'_, Device>,
@@ -212,7 +213,7 @@ impl Operations for RustClient {
     // will be used to pass data / addr from user to kernel space
     // seekfrom start means we are sending the physical address of the mmap buffer
     fn seek(data: ArcBorrow<'_, Device>, _file: &File, offset: SeekFrom) -> Result<u64> {
-        pr_info!("Rust Client Seek\n");
+        // pr_info!("Rust Client Seek\n");
         let _len = match offset {
             SeekFrom::Start(pfn) => {
                 let mut pfn_list = data.pfn_list.lock();
