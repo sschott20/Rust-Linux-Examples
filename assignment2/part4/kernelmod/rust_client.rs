@@ -169,7 +169,7 @@ impl Operations for RustClient {
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
 
         // recieve the processed .bmp image back
-        // let mut ret_buf: [u8; 110646] = [0; 110646];
+        let mut ret_buf: [u8; 110646] = [0; 110646];
 
         // let mut msg = bindings::msghdr::default();
         // let mut vec = bindings::kvec {
