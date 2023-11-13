@@ -39,14 +39,6 @@ impl Server {
             buffer.splice(acc..acc + 4096, tmpbuf.iter().cloned());
             acc += 4096;
         }
-        let mut f = File::options()
-            .write(true)
-            .read(true)
-            .create(true)
-            .truncate(true)
-            .open("tmp.yuv")
-            .unwrap();
-        f.write_all(&buffer).unwrap();
 
         let mut outbuf: Vec<u8> = vec![0; 462848 * 2];
 
@@ -92,7 +84,8 @@ impl Server {
         let _ = opencv::core::merge(&channels, &mut frame).unwrap();
 
         // println!("frame: {:?}", frame);
-
+        opencv::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
+        
         frame
     }
     fn send(&mut self, frame: Mat) {

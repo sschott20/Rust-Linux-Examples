@@ -182,7 +182,7 @@ impl Operations for RustClient {
             )
         };
         // write entire ret_buf to writer
-        let _ = writer.write_slice(&ret_buf);
+        writer.write_slice(&ret_buf).unwrap();
         Ok(10)
     }
     fn write(
@@ -192,20 +192,6 @@ impl Operations for RustClient {
         _offset: u64,
     ) -> Result<usize> {
         pr_info!("RustClient Write\n");
-
-        let mut info_capability: v4l2_capability = unsafe { zeroed() };
-
-        let mut filp = unsafe {
-            let c_str = CStr::from_bytes_with_nul(b"/dev/video0\0").unwrap();
-            filp_open(c_str.as_ptr() as *const i8, 2, 0)
-        };
-
-        let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
-
-        pr_info!(
-            "driver: {:?}\n",
-            core::str::from_utf8(&info_capability.driver)
-        );
 
         Ok(1)
     }

@@ -126,7 +126,7 @@ fn main() -> io::Result<()> {
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;
     }
-    loop {
+    // loop {
         // let mut tmp = [0; 110646];
 
         // f.read(&mut tmp)?;
@@ -142,13 +142,13 @@ fn main() -> io::Result<()> {
         )
         .unwrap();
         let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
+        opencv::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
+        // imshow("MoveNet", &frame).expect("imshow [ERROR]");
 
-        imshow("MoveNet", &frame).expect("imshow [ERROR]");
-
-        let key = wait_key(10000).unwrap();
-        if key > 0 && key != 255 {
-            break;
-        }
+        // let key = wait_key(10000).unwrap();
+        // if key > 0 && key != 255 {
+        //     break;
+        // }
     }
 
     // now need to send that physical address to the kernel module
