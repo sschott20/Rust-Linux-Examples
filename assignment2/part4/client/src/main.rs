@@ -106,11 +106,12 @@ fn main() -> io::Result<()> {
 
     // let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
     // buffer[0] = 1;
-    let mut buffer: [u8; IMG_SIZE] = [69; IMG_SIZE];
-    let buffer_addr = buffer.as_ptr() as usize;
+    // let mut buffer: [u8; IMG_SIZE] = [69; IMG_SIZE];
+    // let buffer_addr = buffer.as_ptr() as usize;
 
-    // let buffer_addr = client.buffer.as_ptr() as usize;
-    let pfn = get_pfn(buffer_addr)?;
+    let buffer_addr = client.buffer.as_ptr() as usize;
+    // let pfn = get_pfn(buffer_addr)?;
+
 
     println!("PFN: {:x}", pfn);
 
