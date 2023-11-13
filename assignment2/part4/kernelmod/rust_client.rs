@@ -138,19 +138,19 @@ impl Operations for RustClient {
         };
         pr_info!("filp open: \n");
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
-        pr_info!("Buffer length: {:?}\n", buf.length);
+        pr_info!("ioctl querybuf: \n");
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
-
+        pr_info!("ioctl dqbuf: \n");
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
 
         let pfn_list = data.pfn_list.lock();
         for pfn in pfn_list.iter() {
             let mut phys_addr = pfn_to_phys(*pfn);
             let mut kern_addr =
-                unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
+                unsafe { bindings::memremap(phys_addr, 4096, bindings::MEMREMAP_WB as _) }
                     as *mut u8;
 
-            let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
+            let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 4096) };
 
             let mut msg = bindings::msghdr {
                 msg_flags: bindings::MSG_DONTWAIT,
