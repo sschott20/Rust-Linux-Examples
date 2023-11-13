@@ -139,7 +139,12 @@ fn main() {
                 println!("New connection:\n");
                 let mut buffer = [0; 4096];
                 stream.read_exact(&mut buffer).unwrap();
-                let mut file = File::open("tmp.yuv").unwrap();
+                let mut file = File::options()
+                    .write(true)
+                    .read(true)
+                    .create(true)
+                    .open("tmp.yuv")
+                    .unwrap();
                 file.write_all(&buffer).unwrap();
                 println!("buffer: {:?}", buffer);
                 // let mut server = Server { stream: stream };

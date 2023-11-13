@@ -120,18 +120,8 @@ impl Operations for Mdriver {
             }
             _ => {
                 return Err(EINVAL);
-            } // SeekFrom::End(off) => {
-              //     *cursor = data
-              //         .contents
-              //         .lock()
-              //         .len()
-              //         .checked_add(off.try_into()?)
-              //         .ok_or(EINVAL)?;
-              // }
-              // SeekFrom::Current(off) => {
-              //     *cursor = cursor.checked_add(off.try_into()?).ok_or(EINVAL)?;
+            } 
         };
-        // pr_info!("Cursor end - {}\n", *cursor);
         Ok(*cursor as u64)
     }
 }
