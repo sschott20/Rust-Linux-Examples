@@ -1,0 +1,33 @@
+Doesn't fully work (it is close though). The client kernel module correctly recieves the pfn from the user space client, translates them to find the kernel addresses of the v4l buffer and reads the .yuv camera input directly from memory, correctly. Then it correctly sends that data to the server using kernel::net, which is recieved and processed by the server. However, when trying to recieve the processed image back, the client recieves a corrupted image. I have no idea why this is happeneing, because the server is sending the correct image, but there is a problem in how I am reading the buffer back, or something. Time spent was just too long and I had to move on to other things.
+
+RIP
+
+To run: 
+
+setup ssh tunnel in virtual box
+
+make sure camera is enabled
+
+setup camera remap using ffmpeg: 
+
+sudo modprobe v4l2loopback devices=1 exclusive_caps=1
+
+ffmpeg -f v4l2              \
+       -input_format mjpeg  \
+       -framerate 1        \
+       -video_size 640x360 \
+       -i /dev/video0       \
+       -pix_fmt yuyv422     \
+       -f v4l2 /dev/video2  
+
+v4l2-ctl --list-devices
+
+insert kernel module:
+sh krun.sh
+
+then start server
+sh server.sh 
+
+then start client   
+sh client.sh
+
