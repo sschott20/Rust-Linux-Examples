@@ -131,7 +131,7 @@ fn main() -> io::Result<()> {
     let mut buffer: Vec<u8> = vec![0; 110646];
     client.read();
     let len = f.read_exact(&mut buffer);
-    println("first 10 bytes of buffer: {:x}", buffer[0..10]);
+    println!("first 10 bytes of buffer: {:x}", buffer[0..10]);
 
     // println!("buffer recieve size: {}", len.unwrap());
     client.qbuf();
