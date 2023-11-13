@@ -126,30 +126,30 @@ fn main() -> io::Result<()> {
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;
     }
-    // loop {
-    // let mut tmp = [0; 110646];
+    loop {
+        // let mut tmp = [0; 110646];
 
-    // f.read(&mut tmp)?;
-    let mut buffer: Vec<u8> = vec![0; 110646];
-    f.read_exact(&mut buffer)?;
-    // println!("buffer recieve size: {}", buffer.len());
-    let mut flipped = Mat::default();
+        // f.read(&mut tmp)?;
+        let mut buffer: Vec<u8> = vec![0; 110646];
+        f.read_exact(&mut buffer)?;
+        // println!("buffer recieve size: {}", buffer.len());
+        let mut flipped = Mat::default();
 
-    opencv::imgcodecs::imdecode_to(
-        &opencv::types::VectorOfu8::from_iter(buffer),
-        -1,
-        &mut flipped,
-    )
-    .unwrap();
-    let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
+        opencv::imgcodecs::imdecode_to(
+            &opencv::types::VectorOfu8::from_iter(buffer),
+            -1,
+            &mut flipped,
+        )
+        .unwrap();
+        let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
 
-    imshow("MoveNet", &frame).expect("imshow [ERROR]");
+        imshow("MoveNet", &frame).expect("imshow [ERROR]");
 
-    let key = wait_key(1).unwrap();
-    if key > 0 && key != 255 {
-        break;
+        let key = wait_key(1).unwrap();
+        if key > 0 && key != 255 {
+            break;
+        }
     }
-    // }
 
     // now need to send that physical address to the kernel module
 
