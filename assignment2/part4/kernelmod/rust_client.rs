@@ -158,7 +158,7 @@ impl Operations for RustClient {
         pr_info!("sendmsg loop done \n");
 
         let mut ret_buf: Vec<u8> = Vec::new();
-        let _ = ret_buf.try_resize(110646, 0);
+        ret_buf.try_resize(110646, 69).unwrap();
 
         let mut msg = bindings::msghdr::default();
         let mut vec = bindings::kvec {
