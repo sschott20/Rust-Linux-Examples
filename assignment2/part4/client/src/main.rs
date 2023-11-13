@@ -129,6 +129,7 @@ fn main() -> io::Result<()> {
     let mut buffer = [0; 110646];
 
     // let mut buffer: Vec<u8> = vec![0; 110646];
+    client.read()
     f.read(&mut buffer)?;
 
     // f.read(&mut buffer)?;

@@ -127,7 +127,6 @@ impl Operations for RustClient {
             bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
         })?;
 
-
         let mut filp = unsafe {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 2, 0)
@@ -135,39 +134,51 @@ impl Operations for RustClient {
 
         pr_info!("filp open: \n");
 
-        let mut buf: v4l2_buffer = unsafe { zeroed() };
-        buf.type_ = 1;
-        buf.memory = 1;
-        buf.index = 0;
+        let pfn_list = data.pfn_list.lock();
+        for pfn in pfn_list.iter() {
+            // pr_info!("pfn: {:x}\n", pfn);
+            let mut phys_addr = pfn_to_phys(*pfn);
+            let mut kern_addr =
+                unsafe { bindings::memremap(phys_addr, 4096, bindings::MEMREMAP_WB as _) }
+                    as *mut u8;
 
-        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
-        // pr_info!("ioctl querybuf: \n");
-        let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
-        pr_info!("ioctl dqbuf: \n");
-        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
-        // let pfn_list = data.pfn_list.lock();
+            let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 4096) };
 
-        // for pfn in pfn_list.iter() {
-        //     let mut phys_addr = pfn_to_phys(*pfn);
+            let mut msg = bindings::msghdr {
+                msg_flags: bindings::MSG_DONTWAIT,
+                ..bindings::msghdr::default()
+            };
+            let mut vec = bindings::kvec {
+                iov_base: slice.as_mut_ptr() as _,
+                iov_len: 4096,
+            };
 
-        //     let mut kern_addr =
-        //         unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
-        //             as *mut u8;
+            let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
+        }
+        pr_info!("sendmsg loop done \n");
 
-        //     let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
+        let mut ret_buf: Vec<u8> = Vec::new();
+        let _ = ret_buf.try_resize(110646, 0);
 
-        //     let mut msg = bindings::msghdr {
-        //         msg_flags: bindings::MSG_DONTWAIT,
-        //         ..bindings::msghdr::default()
-        //     };
-        //     let mut vec = bindings::kvec {
-        //         iov_base: slice.as_mut_ptr() as _,
-        //         iov_len: 4096,
-        //     };
-
-        //     let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
-        // }
-        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
+        let mut msg = bindings::msghdr::default();
+        let mut vec = bindings::kvec {
+            iov_base: ret_buf.as_mut_ptr().cast(),
+            iov_len: ret_buf.len(),
+        };
+        pr_info!("start receive\n");
+        let r = unsafe {
+            bindings::kernel_recvmsg(
+                socket,
+                &mut msg,
+                &mut vec,
+                1,
+                vec.iov_len,
+                bindings::MSG_DONTWAIT as _,
+            )
+        };
+        pr_info!("end receive\n");
+        let _ = writer.write_slice(&ret_buf);
+        // let _ = writer.write(&ret_buf);
 
         Ok(10)
     }
