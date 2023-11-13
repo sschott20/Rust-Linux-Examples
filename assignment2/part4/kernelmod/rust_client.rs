@@ -180,7 +180,7 @@ impl Operations for RustClient {
         let _ = writer.write_slice(&ret_buf);
         // let _ = writer.write(&ret_buf);
 
-        Ok(10)
+        Ok(110646)
     }
     fn write(
         _data: ArcBorrow<'_, Device>,
