@@ -38,6 +38,7 @@ impl Server {
             self.stream.read_exact(&mut tmpbuf).unwrap();
             buffer.splice(acc..acc + 4096, tmpbuf.iter().cloned());
             acc += 4096;
+            println!("buffer recieve size: {}", buffer.len());
         }
 
         let mut outbuf: Vec<u8> = vec![0; 462848 * 2];
