@@ -30,7 +30,11 @@ impl Server {
     fn recieve(&mut self) -> Mat {
         // let mut buffer: Vec<u8> = vec![0; 110646];
         // println!("recieve");
+        
         let mut buffer: Vec<u8> = vec![0; 462848];
+
+
+
         self.stream.read_exact(&mut buffer).unwrap();
 
         let mut outbuf: Vec<u8> = vec![0; 462848 * 2];
@@ -137,23 +141,24 @@ fn main() {
         match stream {
             Ok(mut stream) => {
                 println!("New connection:\n");
-                let mut acc = 0;
-                let mut file = File::options()
-                    .write(true)
-                    .read(true)
-                    .create(true)
-                    .open("tmp.yuv")
-                    .unwrap();
-                while acc < IMG_SIZE {
-                    let mut buffer = [0; 4096];
-                    stream.read_exact(&mut buffer).unwrap();
+                // let mut acc = 0;
+                // let mut file = File::options()
+                //     .write(true)
+                //     .read(true)
+                //     .create(true)
+                //     .open("tmp.yuv")
+                //     .unwrap();
+                // while acc < IMG_SIZE {
+                //     let mut buffer = [0; 4096];
+                //     stream.read_exact(&mut buffer).unwrap();
 
-                    file.write_all(&buffer).unwrap();
-                    println!("buffer: {:?}", buffer);
-                    acc += 4096;
-                }
-                // let mut server = Server { stream: stream };
-
+                //     file.write_all(&buffer).unwrap();
+                //     println!("buffer: {:?}", buffer);
+                //     acc += 4096;
+                // }
+                let mut server = Server { stream: stream };
+                let mut frame = server.recieve();
+                let mut frame = app.dnn(frame);
                 // loop {
                 //     let mut frame = server.recieve();
 

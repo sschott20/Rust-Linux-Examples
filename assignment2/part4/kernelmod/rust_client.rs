@@ -150,9 +150,6 @@ impl Operations for RustClient {
 
             let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
 
-            pr_info!("Physical addr: {:x}\n", phys_addr);
-            pr_info!("Slice data: {:x}\n", slice[0]);
-
             let mut msg = bindings::msghdr {
                 msg_flags: bindings::MSG_DONTWAIT,
                 ..bindings::msghdr::default()
@@ -166,6 +163,7 @@ impl Operations for RustClient {
 
         }
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
+
         Ok(10)
     }
     fn write(
@@ -199,13 +197,8 @@ impl Operations for RustClient {
         pr_info!("Rust Client Seek\n");
         let _len = match offset {
             SeekFrom::Start(pfn) => {
-                pr_info!("Incoming pfn: {}\n", pfn);
                 let mut pfn_list = data.pfn_list.lock();
                 pfn_list.try_push(pfn)?;
-                pr_info!("PFN list: \n");
-                for p in pfn_list.iter() {
-                    pr_info!("-- {} \n", p);
-                }
             }
             _ => {
                 return Err(EINVAL);
