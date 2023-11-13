@@ -178,6 +178,9 @@ impl Operations for RustClient {
                     bindings::MSG_DONTWAIT as _,
                 )
             };
+            for i in 0..100 {
+                pr_info!("tmpbuf: {:x}\n", tmpbuf[i]);
+            }
             ret_buf.try_extend_from_slice(&tmpbuf).unwrap();
             acc += 4096;
         }

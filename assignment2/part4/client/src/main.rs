@@ -135,8 +135,10 @@ fn main() -> io::Result<()> {
     let len = f.read_exact(&mut tmp_buf);
     buffer.extend_from_slice(&tmp_buf);
     // let len = f.read_exact(&mut buffer);
-    println!("first 10 bytes of buffer: {:x}", buffer[0]);
-
+    // print first 10 bytes from buffer:
+    for i in 0..10 {
+        println!("buffer: {:x}", buffer[i]);
+    }
     // println!("buffer recieve size: {}", len.unwrap());
     client.qbuf();
     // f.read(&mut buffer)?;
