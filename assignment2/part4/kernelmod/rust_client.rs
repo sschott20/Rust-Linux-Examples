@@ -24,7 +24,6 @@ use kernel::file::SeekFrom;
 use kernel::file::{File, Operations};
 use kernel::io_buffer::IoBufferReader;
 use kernel::io_buffer::IoBufferWriter;
-use kernel::net::TcpStream;
 use kernel::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use kernel::prelude::Vec;
 use kernel::prelude::*;
@@ -40,6 +39,64 @@ use v4l2bindings::*;
 // /home/alex/linux-cs429-fall-2023/rust/bindings/bindings_generated.rs
 
 pub struct Namespace(UnsafeCell<bindings::net>);
+
+pub struct TcpStream {
+    pub(crate) sock: *mut bindings::socket,
+}
+impl TcpStream {
+    /// Reads data from a connected socket.
+    ///
+    /// On success, returns the number of bytes read, which will be zero if the connection is
+    /// closed.
+    ///
+    /// If no data is immediately available for reading, one of two behaviours will occur:
+    /// - If `block` is `false`, returns [`crate::error::code::EAGAIN`];
+    /// - If `block` is `true`, blocks until an error occurs, the connection is closed, or some
+    ///   becomes readable.
+    pub fn read(&self, buf: &mut [u8], block: bool) -> Result<usize> {
+        let mut msg = bindings::msghdr::default();
+        let mut vec = bindings::kvec {
+            iov_base: buf.as_mut_ptr().cast(),
+            iov_len: buf.len(),
+        };
+        // SAFETY: The type invariant guarantees that the socket is valid, and `vec` was
+        // initialised with the output buffer.
+        let r = unsafe {
+            bindings::kernel_recvmsg(
+                self.sock,
+                &mut msg,
+                &mut vec,
+                1,
+                vec.iov_len,
+                if block { 0 } else { bindings::MSG_DONTWAIT } as _,
+            )
+        };
+        if r < 0 {
+            Err(Error::from_kernel_errno(r))
+        } else {
+            Ok(r as _)
+        }
+    }
+
+    pub fn write(&self, buf: &[u8], block: bool) -> Result<usize> {
+        let mut msg = bindings::msghdr {
+            msg_flags: if block { 0 } else { bindings::MSG_DONTWAIT },
+            ..bindings::msghdr::default()
+        };
+        let mut vec = bindings::kvec {
+            iov_base: buf.as_ptr() as *mut u8 as _,
+            iov_len: buf.len(),
+        };
+        // SAFETY: The type invariant guarantees that the socket is valid, and `vec` was
+        // initialised with the input  buffer.
+        let r = unsafe { bindings::kernel_sendmsg(self.sock, &mut msg, &mut vec, 1, vec.iov_len) };
+        if r < 0 {
+            Err(Error::from_kernel_errno(r))
+        } else {
+            Ok(r as _)
+        }
+    }
+}
 
 module! {
     type: RustClient,
@@ -155,6 +212,11 @@ impl Operations for RustClient {
 
             let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
         }
+
+        let stream = TcpStream { sock: socket };
+        let buffer = &mut [0; 110646];
+        stream.read(buffer, false);
+
         pr_info!("sendmsg loop done \n");
         let mut ret_buf: Vec<u8> = Vec::try_with_capacity(110646).unwrap();
         // ret_buf.try_resize(110646, 69).unwrap();
