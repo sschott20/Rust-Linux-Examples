@@ -12,7 +12,7 @@ use nix::unistd::Uid;
 use nix::ioctl_write_ptr;
 mod bindings;
 use bindings::*;
-use opencv::core::{flip, Mat, Vec3b};
+use opencv::core::{flip, Mat, Vec3b, Vector};
 use opencv::videoio::*;
 use opencv::{highgui::*, prelude::*, videoio};
 use std::net::TcpStream;
@@ -142,7 +142,7 @@ fn main() -> io::Result<()> {
         )
         .unwrap();
         let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
-        opencv::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
+        opencv::imgcodecs::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
         // imshow("MoveNet", &frame).expect("imshow [ERROR]");
 
         // let key = wait_key(10000).unwrap();

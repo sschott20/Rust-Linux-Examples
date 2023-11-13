@@ -84,8 +84,8 @@ impl Server {
         let _ = opencv::core::merge(&channels, &mut frame).unwrap();
 
         // println!("frame: {:?}", frame);
-        opencv::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
-        
+        opencv::imgcodecs::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
+
         frame
     }
     fn send(&mut self, frame: Mat) {
