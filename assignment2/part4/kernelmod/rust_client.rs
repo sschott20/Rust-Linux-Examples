@@ -97,19 +97,15 @@ impl Operations for RustClient {
         _offset: u64,
     ) -> Result<usize> {
         pr_info!("RustClient Read\n");
-        let mut i = 0;
-        i = i + 1;
-        pr_info!("i = {}\n", i);
+
         let v4 = Ipv4Addr::new(127, 0, 0, 1);
         let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(v4, 54321));
-        i = i + 1;
-        pr_info!("i = {}\n", i);
+
         let namespace: &'static Namespace =
             unsafe { &*core::ptr::addr_of!(bindings::init_net).cast() };
 
         let mut socket = core::ptr::null_mut();
-        i = i + 1;
-        pr_info!("i = {}\n", i);
+
         let (pf, addr, addrlen) = match addr {
             SocketAddr::V4(addr) => (
                 bindings::PF_INET,
@@ -118,8 +114,7 @@ impl Operations for RustClient {
             ),
             _ => panic!("ipv6 not supported"),
         };
-        i = i + 1;
-        pr_info!("i = {}\n", i);
+
         to_result(unsafe {
             bindings::sock_create_kern(
                 namespace.0.get(),
@@ -129,11 +124,14 @@ impl Operations for RustClient {
                 &mut socket,
             )
         })?;
+        let mut i = 0;
         i = i + 1;
         pr_info!("i = {}\n", i);
+
         to_result(unsafe {
             bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
         })?;
+
         i = i + 1;
         pr_info!("i = {}\n", i);
         let mut buf: v4l2_buffer = unsafe { zeroed() };
