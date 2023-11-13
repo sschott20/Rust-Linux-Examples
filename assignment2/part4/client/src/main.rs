@@ -129,7 +129,7 @@ fn main() -> io::Result<()> {
     // loop {
     // let mut buffer = [0; 110646];
 
-    let mut buffer: Vec<u8> = vec![0; 110646];
+    let mut buffer: Vec<u8> = vec![10; 110646];
     f.read(&mut buffer)?;
 
     // f.read(&mut buffer)?;
