@@ -171,21 +171,21 @@ impl Operations for RustClient {
         // recieve the processed .bmp image back
         let mut ret_buf: [u8; 110646] = [0; 110646];
 
-        let mut msg = bindings::msghdr::default();
-        let mut vec = bindings::kvec {
-            iov_base: ret_buf.as_mut_ptr().cast(),
-            iov_len: ret_buf.len(),
-        };
-        let r = unsafe {
-            bindings::kernel_recvmsg(
-                socket,
-                &mut msg,
-                &mut vec,
-                1,
-                vec.iov_len,
-                bindings::MSG_DONTWAIT as _,
-            )
-        };
+        // let mut msg = bindings::msghdr::default();
+        // let mut vec = bindings::kvec {
+        //     iov_base: ret_buf.as_mut_ptr().cast(),
+        //     iov_len: ret_buf.len(),
+        // };
+        // let r = unsafe {
+        //     bindings::kernel_recvmsg(
+        //         socket,
+        //         &mut msg,
+        //         &mut vec,
+        //         1,
+        //         vec.iov_len,
+        //         bindings::MSG_DONTWAIT as _,
+        //     )
+        // };
         // write entire ret_buf to writer
         writer.write_slice(&ret_buf).unwrap();
         Ok(10)
