@@ -139,10 +139,10 @@ impl Operations for RustClient {
             // pr_info!("pfn: {:x}\n", pfn);
             let mut phys_addr = pfn_to_phys(*pfn);
             let mut kern_addr =
-                unsafe { bindings::memremap(phys_addr, 4096, bindings::MEMREMAP_WB as _) }
+                unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
                     as *mut u8;
 
-            let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 4096) };
+            let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
 
             let mut msg = bindings::msghdr {
                 msg_flags: bindings::MSG_DONTWAIT,

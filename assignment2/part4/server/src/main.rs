@@ -146,25 +146,24 @@ fn main() {
         match stream {
             Ok(mut stream) => {
                 println!("New connection:\n");
-                let mut acc = 0;
-                let mut file = File::options()
-                    .write(true)
-                    .read(true)
-                    .create(true)
-                    .open("tmp.yuv")
-                    .unwrap();
-                while acc < IMG_SIZE {
-                    let mut buffer = [0; 4096];
-                    stream.read_exact(&mut buffer).unwrap();
-
-                    file.write_all(&buffer).unwrap();
-                    println!("buffer: {:?}", buffer);
-                    acc += 4096;
-                }
-                // let mut server = Server { stream: stream };
-                // let mut frame = server.recieve();
-                // let mut frame = app.dnn(frame);
-                // server.send(frame);
+                // let mut acc = 0;
+                // let mut file = File::options()
+                //     .write(true)
+                //     .read(true)
+                //     .create(true)
+                //     .open("tmp.yuv")
+                //     .unwrap();
+                // while acc < IMG_SIZE {
+                //     println!("acc: {}", acc);
+                //     let mut buffer = [0; 4096];
+                //     stream.read_exact(&mut buffer).unwrap();
+                //     file.write_all(&buffer).unwrap();
+                //     acc += 4096;
+                // }
+                let mut server = Server { stream: stream };
+                let mut frame = server.recieve();
+                let mut frame = app.dnn(frame);
+                server.send(frame);
                 // loop {
                 //     let mut frame = server.recieve();
 
