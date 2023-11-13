@@ -127,10 +127,10 @@ fn main() -> io::Result<()> {
         acc += 4096;
     }
     // loop {
-    let mut buffer = [0; 110646];
+    // let mut buffer = [0; 110646];
 
+    let mut buffer: Vec<u8> = vec![0; 110646];
     f.read(&mut buffer)?;
-    // let mut buffer: Vec<u8> = vec![0; 110646];
 
     // f.read(&mut buffer)?;
     // println!("buffer recieve size: {}", buffer.len());
