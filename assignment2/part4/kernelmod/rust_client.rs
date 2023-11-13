@@ -179,6 +179,7 @@ impl Operations for RustClient {
             iov_base: ret_buf.as_mut_ptr().cast(),
             iov_len: ret_buf.len(),
         };
+        pr_info!("start receive\n");
         let r = unsafe {
             bindings::kernel_recvmsg(
                 socket,
@@ -189,7 +190,7 @@ impl Operations for RustClient {
                 bindings::MSG_DONTWAIT as _,
             )
         };
-
+        pr_info!("end receive\n");
         // write entire ret_buf to writer
         let _ = writer.write_slice(&ret_buf);
         // let _ = writer.write(&ret_buf);
