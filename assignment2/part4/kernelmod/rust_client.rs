@@ -177,7 +177,7 @@ impl Operations for RustClient {
             )
         };
         pr_info!("end receive\n");
-        let _ = writer.write_slice(&ret_buf);
+        let _ = writer.write(&ret_buf);
         // let _ = writer.write(&ret_buf);
 
         Ok(110646)
