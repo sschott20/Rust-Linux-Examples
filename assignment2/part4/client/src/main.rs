@@ -132,7 +132,7 @@ fn main() -> io::Result<()> {
     f.read(&mut buffer)?;
 
     // f.read(&mut buffer)?;
-    // println!("buffer recieve size: {}", buffer.len());
+    // println!("buffer recieve size: {}", buffer.len());   
     // let mut flipped = Mat::default();
 
     // opencv::imgcodecs::imdecode_to(

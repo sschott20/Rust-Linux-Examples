@@ -145,27 +145,27 @@ impl Operations for RustClient {
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
         let pfn_list = data.pfn_list.lock();
 
-        for pfn in pfn_list.iter() {
-            let mut phys_addr = pfn_to_phys(*pfn);
+        // for pfn in pfn_list.iter() {
+        //     let mut phys_addr = pfn_to_phys(*pfn);
 
-            let mut kern_addr =
-                unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
-                    as *mut u8;
+        //     let mut kern_addr =
+        //         unsafe { bindings::memremap(phys_addr, 2 * 4096, bindings::MEMREMAP_WB as _) }
+        //             as *mut u8;
 
-            let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
+        //     let mut slice = unsafe { core::slice::from_raw_parts_mut(kern_addr, 2 * 4096) };
 
-            let mut msg = bindings::msghdr {
-                msg_flags: bindings::MSG_DONTWAIT,
-                ..bindings::msghdr::default()
-            };
-            let mut vec = bindings::kvec {
-                iov_base: slice.as_mut_ptr() as _,
-                iov_len: 4096,
-            };
+        //     let mut msg = bindings::msghdr {
+        //         msg_flags: bindings::MSG_DONTWAIT,
+        //         ..bindings::msghdr::default()
+        //     };
+        //     let mut vec = bindings::kvec {
+        //         iov_base: slice.as_mut_ptr() as _,
+        //         iov_len: 4096,
+        //     };
 
-            let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
-        }
-        let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
+        //     let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
+        // }
+        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
 
         Ok(10)
     }
