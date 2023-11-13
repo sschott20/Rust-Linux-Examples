@@ -233,6 +233,7 @@ impl Operations for RustClient {
         let _len = match offset {
             SeekFrom::Start(pfn) => {
                 let mut pfn_list = data.pfn_list.lock();
+                pr_info!("PFN: {:x}\n", pfn);
                 pfn_list.try_push(pfn)?;
             }
             _ => {
