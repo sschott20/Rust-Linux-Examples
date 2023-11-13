@@ -142,21 +142,22 @@ impl Operations for RustClient {
         };
         pr_info!("filp open \n");
 
-        let mut buf: v4l2_buffer = unsafe { zeroed() };
-        buf.type_ = 1;
-        buf.memory = 1;
-        buf.index = 0;
+        // let mut buf: v4l2_buffer = unsafe { zeroed() };
+        // buf.type_ = 1;
+        // buf.memory = 1;
+        // buf.index = 0;
 
-        let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
-        pr_info!("ioctl querybuf \n");
+        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
+        // pr_info!("ioctl querybuf \n");
 
-        let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
-        pr_info!("ioctl dqbuf \n");
+        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
+        // pr_info!("ioctl dqbuf \n");
         // i = i + 1;
         // pr_info!("i = {}\n", i);
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
-        pr_info!("starting loop \n");
-        let pfn_list = data.pfn_list.lock();
+
+        // pr_info!("starting loop \n");
+        // let pfn_list = data.pfn_list.lock();
         // i = i + 1;
         // pr_info!("i = {}\n", i);
         // for pfn in pfn_list.iter() {
