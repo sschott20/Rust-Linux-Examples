@@ -144,7 +144,7 @@ fn main() -> io::Result<()> {
     // f.read(&mut buffer)?;
     println!("buffer recieve size: {}", buffer.len());
 
-    let dumpf = File::options()
+    let mut dumpf = File::options()
         .write(true)
         .read(true)
         .create(true)
