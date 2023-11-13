@@ -143,7 +143,7 @@ impl Operations for RustClient {
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
         pr_info!("ioctl dqbuf: \n");
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
-        let pfn_list = data.pfn_list.lock();
+        // let pfn_list = data.pfn_list.lock();
 
         // for pfn in pfn_list.iter() {
         //     let mut phys_addr = pfn_to_phys(*pfn);
