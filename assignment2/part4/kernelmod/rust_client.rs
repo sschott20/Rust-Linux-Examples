@@ -178,13 +178,15 @@ impl Operations for RustClient {
                     bindings::MSG_DONTWAIT as _,
                 )
             };
-            // append tmpbuf to ret_buf
             ret_buf.try_extend_from_slice(&tmpbuf).unwrap();
             acc += 4096;
         }
-
+        for i in 0..100 {
+            pr_info!("ret_buf: {:x}\n", ret_buf[i]);
+        }
         pr_info!("end receive\n");
-        writer.write_slice(&ret_buf[0..][..ret_buf.len()])?;
+        let mut ret_buf_slice: &[u8] = &ret_buf;
+        writer.write_slice(ret_buf_slice)?;
         Ok(ret_buf.len())
     }
     fn write(
