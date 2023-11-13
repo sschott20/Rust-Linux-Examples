@@ -126,14 +126,14 @@ fn main() -> io::Result<()> {
         acc = acc + 4096;
     }
     // loop {
-    let mut buffer = [0; 110646];
+    // let mut buffer = [0; 110646];
 
-    // let mut buffer: Vec<u8> = vec![0; 110646];
-    client.read()
+    let mut buffer: Vec<u8> = vec![0; 110646];
+    client.read();
     f.read(&mut buffer)?;
-
+    client.qbuf();
     // f.read(&mut buffer)?;
-    // println!("buffer recieve size: {}", buffer.len());   
+    println!("buffer recieve size: {}", buffer.len());
     // let mut flipped = Mat::default();
 
     // opencv::imgcodecs::imdecode_to(
