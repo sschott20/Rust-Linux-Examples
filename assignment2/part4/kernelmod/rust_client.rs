@@ -177,10 +177,8 @@ impl Operations for RustClient {
             )
         };
         pr_info!("end receive\n");
-        let _ = writer.write(&ret_buf);
-        // let _ = writer.write(&ret_buf);
-
-        Ok(110646)
+        writer.write_slice(&ret_buf[0..][..ret_buf.len()])?;
+        Ok(ret_buf.len())
     }
     fn write(
         _data: ArcBorrow<'_, Device>,
