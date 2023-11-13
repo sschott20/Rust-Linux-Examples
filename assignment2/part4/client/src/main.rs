@@ -35,6 +35,8 @@ use std::{
 };
 use utils::*;
 
+const IMG_SIZE: usize = 462848;
+
 fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     println!("Virtual address: {}", virtual_address);
     let page_size = 4096; // Obtain this from sysconf(_SC_PAGESIZE) or page_size::get()
@@ -104,7 +106,7 @@ fn main() -> io::Result<()> {
 
     // let mut buffer: Vec<u8> = vec![0; 4096]; // This is your buffer
     // buffer[0] = 1;
-    let mut buffer: [u8; 2 * 4096] = [69; 2 * 4096];
+    let mut buffer: [u8; IMG_SIZE] = [69; IMG_SIZE];
     let buffer_addr = buffer.as_ptr() as usize;
 
     // let buffer_addr = client.buffer.as_ptr() as usize;
@@ -118,10 +120,12 @@ fn main() -> io::Result<()> {
         .read(true)
         .open("/dev/rust_client")?;
     // seek to the physical address
-
-    f.seek(SeekFrom::Start(pfn))?;
-    let pfn = get_pfn(buffer_addr + 4096)?;
-    f.seek(SeekFrom::Start(pfn))?;
+    let mut acc = 0;
+    while acc < IMG_SIZE {
+        let pfn = get_pfn(buffer_addr + acc)?;
+        f.seek(SeekFrom::Start(pfn))?;
+        acc += 4096;
+    }
 
     // now need to send that physical address to the kernel module
 
