@@ -147,7 +147,7 @@ impl Operations for RustClient {
         };
         pr_info!("filp open \n");
 
-        let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
+        // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
         pr_info!("ioctl querybuf and dqbuf \n");
         // i = i + 1;
