@@ -27,6 +27,7 @@ use kernel::io_buffer::IoBufferWriter;
 use kernel::net::TcpStream;
 use kernel::net::{Ipv4Addr, SocketAddr, SocketAddrV4};
 use kernel::prelude::Vec;
+
 use kernel::prelude::*;
 use kernel::sync::smutex::Mutex;
 use kernel::{miscdev, Module};
@@ -169,7 +170,9 @@ impl Operations for RustClient {
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
 
         // recieve the processed .bmp image back
-        let mut ret_buf: [u8; 110646] = [69; 110646];
+        // let mut ret_buf: [u8; 110646] = [69; 110646];
+        let mut ret_buf: Vec<u8> = Vec::new();
+        let _ = ret_buf.try_resize(110646, 0);
 
         let mut msg = bindings::msghdr::default();
         let mut vec = bindings::kvec {
@@ -188,8 +191,9 @@ impl Operations for RustClient {
         // };
 
         // write entire ret_buf to writer
-        writer.write_slice(&ret_buf).unwrap();
-        Ok(ret_buf.len())
+        let _ = writer.write_slice(&ret_buf);
+        // let _ = writer.write(&ret_buf);
+        Ok(1)
     }
     fn write(
         _data: ArcBorrow<'_, Device>,
