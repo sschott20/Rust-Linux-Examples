@@ -158,7 +158,9 @@ fn main() -> io::Result<()> {
         &mut flipped,
     )
     .unwrap();
-
+    for i in 0..10000 {
+        println!("buffer: {:x}", buffer[i])
+    }
     // let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
     opencv::imgcodecs::imwrite("test.bmp", &flipped, &Vector::new()).unwrap();
     // imshow("MoveNet", &frame).expect("imshow [ERROR]");
