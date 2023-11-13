@@ -126,6 +126,8 @@ fn main() -> io::Result<()> {
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;
     }
+    let mut tmp = [0; IMG_SIZE];
+    f.read(&mut tmp)?;
 
     // now need to send that physical address to the kernel module
 
