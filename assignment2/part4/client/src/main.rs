@@ -45,7 +45,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
     // Calculate the offset in the pagemap file for the corresponding virtual address
     let pagemap_offset = (virtual_address / page_size) * pagemap_entry_size;
     // to format as hex use {}
-    println!("Vaddr: {:x}, Offset: {:x}", virtual_address, pagemap_offset);
+    // println!("Vaddr: {:x}, Offset: {:x}", virtual_address, pagemap_offset);
 
     // Open the pagemap file for the current process
     let mut pagemap_file = File::open("/proc/self/pagemap")?;
@@ -59,7 +59,7 @@ fn get_pfn(virtual_address: usize) -> io::Result<u64> {
 
     // Convert to u64 and check if the page is present
     let entry_val = u64::from_ne_bytes(entry);
-    println!("Entry: {:#066b}", entry_val);
+    // println!("Entry: {:#066b}", entry_val);
     let is_present = (entry_val >> 63) & 1 == 1;
 
     // Mask out the flags and shift to get the PFN if present
@@ -112,9 +112,6 @@ fn main() -> io::Result<()> {
     let buffer_addr = client.buffer.as_ptr() as usize;
     // let pfn = get_pfn(buffer_addr)?;
 
-
-    println!("PFN: {:x}", pfn);
-
     // open /dev/rust_client
     let mut f = File::options()
         .write(true)
@@ -124,6 +121,8 @@ fn main() -> io::Result<()> {
     let mut acc = 0;
     while acc < IMG_SIZE {
         let pfn = get_pfn(buffer_addr + acc)?;
+        println!("PFN: {:x}", pfn);
+
         f.seek(SeekFrom::Start(pfn))?;
         acc += 4096;
     }
