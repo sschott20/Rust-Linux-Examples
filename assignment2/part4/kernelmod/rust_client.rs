@@ -160,10 +160,28 @@ impl Operations for RustClient {
             };
 
             let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
-
         }
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
 
+        // recieve the processed .bmp image back
+        let mut ret_buf: [u8; 110646] = [0; 110646];
+
+        let mut msg = bindings::msghdr::default();
+        let mut vec = bindings::kvec {
+            iov_base: ret_buf.as_mut_ptr().cast(),
+            iov_len: ret_buf.len(),
+        };
+        let r = unsafe {
+            bindings::kernel_recvmsg(
+                socket,
+                &mut msg,
+                &mut vec,
+                1,
+                vec.iov_len,
+                bindings::MSG_DONTWAIT as _,
+            )
+        };
+        writer.
         Ok(10)
     }
     fn write(

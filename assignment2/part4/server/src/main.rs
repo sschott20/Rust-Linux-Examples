@@ -43,10 +43,10 @@ impl Server {
             .write(true)
             .read(true)
             .create(true)
+            .truncate(true)
             .open("tmp.yuv")
             .unwrap();
         f.write_all(&buffer).unwrap();
-        // self.stream.read_exact(&mut buffer).unwrap();
 
         let mut outbuf: Vec<u8> = vec![0; 462848 * 2];
 
@@ -170,6 +170,7 @@ fn main() {
                 let mut server = Server { stream: stream };
                 let mut frame = server.recieve();
                 let mut frame = app.dnn(frame);
+                server.send(frame);
                 // loop {
                 //     let mut frame = server.recieve();
 
