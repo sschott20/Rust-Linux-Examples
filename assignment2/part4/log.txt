@@ -1,5 +1,9 @@
 Doesn't fully work (it is close though). The client kernel module correctly recieves the pfn from the user space client, translates them to find the kernel addresses of the v4l buffer and reads the .yuv camera input directly from memory, correctly. Then it correctly sends that data to the server using kernel::net, which is recieved and processed by the server. However, when trying to recieve the processed image back, the client recieves a corrupted image. I have no idea why this is happeneing, because the server is sending the correct image, but there is a problem in how I am reading the buffer back, or something. Time spent was just too long and I had to move on to other things.
 
+As for things I did well, I thought I found some nice workaround to writing the macros in rust by writing a c program to just pre compute them all for the ioctl calls. These can be found in the ipaddr.c and calc_io.c in kernelmod/
+
+Other than that I think my code is super messy, and I think a lot of my frustration and time on this part has stemmed from me not knowing rust very well and I think I could have done a lot better if I had more time to learn rust. 
+
 RIP
 
 To run: 
