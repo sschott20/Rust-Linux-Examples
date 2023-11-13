@@ -117,19 +117,18 @@ fn main() -> io::Result<()> {
         .write(true)
         .read(true)
         .open("/dev/rust_client")?;
-    // seek to the physical address
+
     let mut acc = 0;
     while acc < IMG_SIZE {
         let pfn = get_pfn(buffer_addr + acc)?;
-        // println!("PFN: {:x}", pfn);
 
         f.seek(SeekFrom::Start(pfn))?;
-        acc += 4096;
+        acc = acc + 4096;
     }
     // loop {
-    // let mut buffer = [0; 110646];
+    let mut buffer = [0; 110646];
 
-    let mut buffer: Vec<u8> = vec![0; 110646];
+    // let mut buffer: Vec<u8> = vec![0; 110646];
     f.read_exact(&mut buffer)?;
 
     // f.read(&mut buffer)?;
