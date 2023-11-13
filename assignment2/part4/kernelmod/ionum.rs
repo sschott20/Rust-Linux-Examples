@@ -30,7 +30,6 @@ pub(crate) const  VIDIOC_REQBUFS : u32 = 1075074568;
 // 1079531017
 pub(crate) const  VIDIOC_QUERYBUF: u32  = 1079531017;
 
-
 // #define VIDIOC_STREAMON		 _IOW('V', 18, int)
 // 1074026002
 pub(crate) const  VIDIOC_STREAMON: u32  = 1074026002;
