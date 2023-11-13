@@ -128,10 +128,13 @@ fn main() -> io::Result<()> {
     // loop {
     // let mut buffer = [0; 100];
 
-    let mut buffer: Vec<u8> = vec![0; 110646];
-    // let mut tmp_buf: [u8; 110646] = [0; 110646];
+    // let mut buffer: Vec<u8> = vec![0; 110646];
+    let mut buffer: Vec<u8> = Vec::with_capacity(110646);
+    let mut tmp_buf: [u8; 110646] = [0; 110646];
     client.read();
-    let len = f.read_exact(&mut buffer);
+    let len = f.read_exact(&mut tmp_buf);
+    buffer.extend_from_slice(&tmp_buf);
+    // let len = f.read_exact(&mut buffer);
     println!("first 10 bytes of buffer: {:x}", buffer[0]);
 
     // println!("buffer recieve size: {}", len.unwrap());
