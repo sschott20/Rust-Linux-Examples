@@ -157,9 +157,10 @@ impl Operations for RustClient {
         }
         pr_info!("sendmsg loop done \n");
 
-        let mut ret_buf: Vec<u8> = Vec::new();
-        ret_buf.try_resize(110646, 69).unwrap();
-
+        // let mut ret_buf: Vec<u8> = Vec::new();
+        // ret_buf.try_resize(110646, 69).unwrap();
+        let mut ret_buf = [0; 110646];
+        
         let mut msg = bindings::msghdr::default();
         let mut vec = bindings::kvec {
             iov_base: ret_buf.as_mut_ptr().cast(),
@@ -208,7 +209,7 @@ impl Operations for RustClient {
     // will be used to pass data / addr from user to kernel space
     // seekfrom start means we are sending the physical address of the mmap buffer
     fn seek(data: ArcBorrow<'_, Device>, _file: &File, offset: SeekFrom) -> Result<u64> {
-        pr_info!("Rust Client Seek\n");
+        // pr_info!("Rust Client Seek\n");
         let _len = match offset {
             SeekFrom::Start(pfn) => {
                 let mut pfn_list = data.pfn_list.lock();
