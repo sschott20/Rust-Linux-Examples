@@ -163,7 +163,9 @@ impl Operations for RustClient {
             };
 
             let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
+
         }
+        let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
         Ok(10)
     }
     fn write(
