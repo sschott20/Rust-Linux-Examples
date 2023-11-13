@@ -79,7 +79,7 @@ fn main() -> io::Result<()> {
     if !Uid::effective().is_root() {
         panic!("You must run this executable with root permissions");
     }
-    let mut f = File::options().write(true).read(true).open("/dev/video0")?;
+    let mut f = File::options().write(true).read(true).open("/dev/video2")?;
 
     let mut fd = f.as_raw_fd();
 
