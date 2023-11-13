@@ -97,15 +97,19 @@ impl Operations for RustClient {
         _offset: u64,
     ) -> Result<usize> {
         pr_info!("RustClient Read\n");
-
+        let mut i = 0;
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         let v4 = Ipv4Addr::new(127, 0, 0, 1);
         let addr: SocketAddr = SocketAddr::V4(SocketAddrV4::new(v4, 54321));
-
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         let namespace: &'static Namespace =
             unsafe { &*core::ptr::addr_of!(bindings::init_net).cast() };
 
         let mut socket = core::ptr::null_mut();
-
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         let (pf, addr, addrlen) = match addr {
             SocketAddr::V4(addr) => (
                 bindings::PF_INET,
@@ -114,6 +118,8 @@ impl Operations for RustClient {
             ),
             _ => panic!("ipv6 not supported"),
         };
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         to_result(unsafe {
             bindings::sock_create_kern(
                 namespace.0.get(),
@@ -123,10 +129,13 @@ impl Operations for RustClient {
                 &mut socket,
             )
         })?;
-
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         to_result(unsafe {
             bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
         })?;
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         let mut buf: v4l2_buffer = unsafe { zeroed() };
         buf.type_ = 1;
         buf.memory = 1;
@@ -139,10 +148,13 @@ impl Operations for RustClient {
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
         pr_info!("Buffer length: {:?}\n", buf.length);
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
-
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         // let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYCAP, &mut info_capability as *mut _ as u64) };
 
         let pfn_list = data.pfn_list.lock();
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         for pfn in pfn_list.iter() {
             let mut phys_addr = pfn_to_phys(*pfn);
             let mut kern_addr =
@@ -162,18 +174,21 @@ impl Operations for RustClient {
 
             let r = unsafe { bindings::kernel_sendmsg(socket, &mut msg, &mut vec, 1, vec.iov_len) };
         }
-
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         let mut buf: v4l2_buffer = unsafe { zeroed() };
         buf.type_ = 1;
         buf.memory = 1;
         buf.index = 0;
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QBUF, &mut buf as *mut _ as u64) };
-
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         // recieve the processed .bmp image back
         // let mut ret_buf: [u8; 110646] = [69; 110646];
         let mut ret_buf: Vec<u8> = Vec::new();
         let _ = ret_buf.try_resize(110646, 0);
-
+        i = i + 1;
+        pr_info!("i = {}\n", i);
         let mut msg = bindings::msghdr::default();
         let mut vec = bindings::kvec {
             iov_base: ret_buf.as_mut_ptr().cast(),
