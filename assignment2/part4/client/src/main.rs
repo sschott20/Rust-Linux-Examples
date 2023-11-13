@@ -148,6 +148,7 @@ fn main() -> io::Result<()> {
         .write(true)
         .read(true)
         .create(true)
+        .truncate(true)
         .open("dump.bmp")?;
     dumpf.write_all(&buffer)?;
     // let mut flipped = Mat::default();
