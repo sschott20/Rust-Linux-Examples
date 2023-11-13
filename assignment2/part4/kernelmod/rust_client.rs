@@ -163,9 +163,10 @@ impl Operations for RustClient {
         let mut acc = 0;
         while acc < 110646 {
             let mut tmpbuf: [u8; 4096] = [0; 4096];
+            let tmp_buf_final: &mut [u8] = &mut tmpbuf;
             let mut msg = bindings::msghdr::default();
             let mut vec = bindings::kvec {
-                iov_base: tmpbuf.as_mut_ptr().cast(),
+                iov_base: tmp_buf_final.as_mut_ptr().cast(),
                 iov_len: 4096,
             };
             let r = unsafe {
