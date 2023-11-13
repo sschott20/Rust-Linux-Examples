@@ -142,17 +142,9 @@ fn main() -> io::Result<()> {
     // println!("buffer recieve size: {}", len.unwrap());
     // f.read(&mut buffer)?;
     println!("buffer recieve size: {}", buffer.len());
-    for i in 0..10000 {
+    for i in 0..100 {
         println!("buffer: {:x}", buffer[i])
     }
-    let mut dumpf = File::options()
-        .write(true)
-        .read(true)
-        .create(true)
-        .truncate(true)
-        .open("dump.bmp")?;
-    dumpf.write_all(&buffer)?;
-
     let mut flipped = Mat::default();
 
     opencv::imgcodecs::imdecode_to(

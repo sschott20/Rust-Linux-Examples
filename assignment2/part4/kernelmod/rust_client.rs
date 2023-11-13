@@ -221,7 +221,8 @@ impl Operations for RustClient {
         // }
 
         pr_info!("sendmsg loop done \n");
-        let mut ret_buf: Vec<u8> = Vec::try_with_capacity(110646).unwrap();
+        let mut ret_buf: Vec<u8> = Vec::new();
+        ret_buf.try_resize(110646, 69).unwrap();
         let mut msg = bindings::msghdr::default();
         let mut vec = bindings::kvec {
             iov_base: ret_buf.as_mut_ptr().cast(),
@@ -257,9 +258,9 @@ impl Operations for RustClient {
         //     ret_buf.try_extend_from_slice(&tmpbuf).unwrap();
         //     acc += 4096;
         // }
-        // for i in 0..100 {
-        //     pr_info!("ret_buf: {:x}\n", ret_buf[i]);
-        // }
+        for i in 0..100 {
+            pr_info!("ret_buf: {:x}\n", ret_buf[i]);
+        }
         // pr_info!("end receive\n");
         // let mut ret_buf_slice: &[u8] = &ret_buf;
         writer.write_slice(&ret_buf)?;
