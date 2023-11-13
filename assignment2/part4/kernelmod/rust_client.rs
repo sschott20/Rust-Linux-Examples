@@ -214,8 +214,12 @@ impl Operations for RustClient {
         }
 
         let stream = TcpStream { sock: socket };
-        let buffer = &mut [0; 110646];
+        let buffer = &mut [0; 100];
+        pr_info!("start receive\n");
         stream.read(buffer, false).unwrap();
+        for i in 0..100 {
+            pr_info!("buffer: {:x}\n", buffer[i]);
+        }
 
         pr_info!("sendmsg loop done \n");
         // let mut ret_buf: Vec<u8> = Vec::try_with_capacity(110646).unwrap();
