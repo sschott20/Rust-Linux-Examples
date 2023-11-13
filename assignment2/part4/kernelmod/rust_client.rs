@@ -105,6 +105,7 @@ impl Operations for RustClient {
             unsafe { &*core::ptr::addr_of!(bindings::init_net).cast() };
 
         let mut socket = core::ptr::null_mut();
+        pr_info!("ns and sock init \n");
 
         let (pf, addr, addrlen) = match addr {
             SocketAddr::V4(addr) => (
@@ -114,6 +115,8 @@ impl Operations for RustClient {
             ),
             _ => panic!("ipv6 not supported"),
         };
+        pr_info!("pf, addr, addrlen init \n");
+
         to_result(unsafe {
             bindings::sock_create_kern(
                 namespace.0.get(),
@@ -123,10 +126,12 @@ impl Operations for RustClient {
                 &mut socket,
             )
         })?;
+        pr_info!("sock create kern \n");
 
         to_result(unsafe {
             bindings::kernel_connect(socket, addr, addrlen as _, bindings::O_RDWR as _)
         })?;
+        pr_info!("kernel connect \n");
 
         // i = i + 1;
         // pr_info!("i = {}\n", i);
@@ -140,6 +145,7 @@ impl Operations for RustClient {
             let c_str = CStr::from_bytes_with_nul(b"/dev/video2\0").unwrap();
             filp_open(c_str.as_ptr() as *const i8, 2, 0)
         };
+        pr_info!("filp open \n");
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_QUERYBUF, &mut buf as *mut _ as u64) };
         pr_info!("Buffer length: {:?}\n", buf.length);
         let _ = unsafe { vfs_ioctl(filp, VIDIOC_DQBUF, &mut buf as *mut _ as u64) };
