@@ -127,29 +127,29 @@ fn main() -> io::Result<()> {
         acc += 4096;
     }
     // loop {
-        // let mut tmp = [0; 110646];
+    let mut buffer = [0; 110646];
 
-        // f.read(&mut tmp)?;
-        let mut buffer: Vec<u8> = vec![0; 110646];
-        
-        f.read_exact(&mut buffer)?;
-        // println!("buffer recieve size: {}", buffer.len());
-        let mut flipped = Mat::default();
+    // f.read(&mut tmp)?;
+    // let mut buffer: Vec<u8> = vec![0; 110646];
 
-        opencv::imgcodecs::imdecode_to(
-            &opencv::types::VectorOfu8::from_iter(buffer),
-            -1,
-            &mut flipped,
-        )
-        .unwrap();
-        let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
-        opencv::imgcodecs::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
-        // imshow("MoveNet", &frame).expect("imshow [ERROR]");
+    // f.read(&mut buffer)?;
+    // println!("buffer recieve size: {}", buffer.len());
+    // let mut flipped = Mat::default();
 
-        // let key = wait_key(10000).unwrap();
-        // if key > 0 && key != 255 {
-        //     break;
-        // }
+    // opencv::imgcodecs::imdecode_to(
+    //     &opencv::types::VectorOfu8::from_iter(buffer),
+    //     -1,
+    //     &mut flipped,
+    // )
+    // .unwrap();
+    // let frame = resize_with_padding(&flipped, [196 * 2, 196 * 2]);
+    // opencv::imgcodecs::imwrite("test.bmp", &frame, &Vector::new()).unwrap();
+    // imshow("MoveNet", &frame).expect("imshow [ERROR]");
+
+    // let key = wait_key(10000).unwrap();
+    // if key > 0 && key != 255 {
+    //     break;
+    // }
     // }
 
     // now need to send that physical address to the kernel module
