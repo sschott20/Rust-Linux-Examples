@@ -68,14 +68,12 @@ impl Server {
         frameb.set_rows(360);
         frameb.set_cols(640);
 
-
         let mut channels: Vector<Mat> = Vector::new();
         channels.push(framer);
         channels.push(frameg);
         channels.push(frameb);
 
         let _ = opencv::core::merge(&channels, &mut frame).unwrap();
-
 
         // println!("frame: {:?}", frame);
 
@@ -120,8 +118,12 @@ impl App<'_> {
 
 fn main() {
     println!("Server started");
-    let path = format!("resource/lite-model_movenet_singlepose_lightning_tflite_int8_4.tflite");
-    let model = Model::new(&path).expect("Load model [FAILED]");
+    let path = format!("resource/lower_model.tflite");
+    // let path = format!("resource/mod.tflite");
+    let upper_model = Model::new(&path).expect("Load model [FAILED]");
+
+    let path = format!("resource/upper_model.tflite");
+    let lower_model = Model::new(&path).expect("Load model [FAILED]");
 
     let mut app = App {
         interpreter: Interpreter::new(&model, Some(Options::default()))
@@ -131,26 +133,30 @@ fn main() {
     app.interpreter
         .allocate_tensors()
         .expect("Allocate tensors [FAILED]");
+    // open cv load resource/pose.jpg
+    let mut frame = opencv::imgcodecs::imread("resource/pose.jpg", opencv::imgcodecs::IMREAD_COLOR)
+        .expect("Can't load image");
+    app.dnn(frame);
 
-    let listener = TcpListener::bind("10.0.2.15:23451").unwrap();
+    // let listener = TcpListener::bind("10.0.2.15:23451").unwrap();
 
-    for stream in listener.incoming() {
-        match stream {
-            Ok(mut stream) => {
-                let mut server = Server { stream: stream };
+    // for stream in listener.incoming() {
+    //     match stream {
+    //         Ok(mut stream) => {
+    //             let mut server = Server { stream: stream };
 
-                loop {
-                    let mut frame = server.recieve();
+    //             loop {
+    //                 let mut frame = server.recieve();
 
-                    let frame = app.dnn(frame);
+    //                 let frame = app.dnn(frame);
 
-                    server.send(frame);
-                }
-                // break;
-            }
-            Err(e) => {
-                println!("Error accepting connection: {}", e);
-            }
-        }
-    }
+    //                 server.send(frame);
+    //             }
+    //             // break;
+    //         }
+    //         Err(e) => {
+    //             println!("Error accepting connection: {}", e);
+    //         }
+    //     }
+    // }
 }
