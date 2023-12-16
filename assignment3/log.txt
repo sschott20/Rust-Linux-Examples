@@ -1,26 +1,7 @@
-to run: 
+For the dnn I just split it after the first Convolusion node as this means we only need to do a tiny ammount of computation on the client, but we can still scramble up the data of the picture which shouldn't be recoverable. For example just splitting after a subtraction node it would be pretty trivial to reverse engeneer the image. 
 
-setup ssh tunnel in virtual box
+The hard part was the dnn partition for sure, after splitting the dnn everything was just simple user space networking.
 
+For splitting the dnn, it was a nightmare. For starters, with my setup flatc didnt seem to work with rust, the generated .rs file wouldn't compile so I switched to python. Here the big insight was using the --gen-object-api flag as opposed to --gen-mutable which made this astronomically easier.
 
-setup camera remap using ffmpeg: 
-
-sudo modprobe v4l2loopback devices=1 exclusive_caps=1
-
-ffmpeg -f v4l2              \
-       -input_format mjpeg  \
-       -framerate 1        \
-       -video_size 640x360 \
-       -i /dev/video0       \
-       -pix_fmt yuyv422     \
-       -f v4l2 /dev/video2  
-
-v4l2-ctl --list-devices
-
-then start server
-
-sh server.sh 
-
-then start client   
-
-sh client.sh
+The code for generating the model split is in split/split.py, which separates the dnn into two parts, the lower part for the client and the upper part for the server. 
