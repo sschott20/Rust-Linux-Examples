@@ -7,4 +7,3 @@ edition = "2021"
 
 [dependencies]
 opencv = "0.80.0"
-tflitec = "0.6.0"
