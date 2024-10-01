@@ -1,5 +1,4 @@
-# CPSC-429-Principles-of-System-Design
+# For the class CPSC 429: Principles of Computer System Design
 
-
-Linux kernel modules, written in Rust. Scary!
+Collection of examples using Rust inside the linux kernel. 
 
